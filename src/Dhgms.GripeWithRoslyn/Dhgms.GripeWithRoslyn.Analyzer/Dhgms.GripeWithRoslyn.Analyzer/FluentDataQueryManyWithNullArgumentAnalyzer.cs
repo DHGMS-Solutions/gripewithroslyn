@@ -50,12 +50,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
             //return;
             //}
 
-            // Look for calls to Debug.Assert.
-            // Ensure it's the
-            // Look at the parameters. 
-            // If only one, trigger the error.
-
-            // Take a quick peek and see if this is a call to an "Debug.Assert" method.
             InvocationExpressionSyntax invocationExpr = context.Node as InvocationExpressionSyntax;
             if (invocationExpr?.Expression.ToString() != "FluentData.QueryMany")
             {
@@ -73,8 +67,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
                 return;
             }
 
-
-
             var argumentList = invocationExpr.ArgumentList;
 
             if (argumentList?.Arguments.Count != 1)
@@ -82,10 +74,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
                 return;
             }
 
+            // todo: try and remove the tostring call
             var arg = argumentList.Arguments[0];
-            //if (arg)
+            if (!arg.Expression.ToString().Equals("null", StringComparison.Ordinal))
+            {
+                return;
+            }
 
-            // We got us a problem here, boss.
             var diagnostic = Diagnostic.Create(Rule, invocationExpr.GetLocation());
             context.ReportDiagnostic(diagnostic);
         }

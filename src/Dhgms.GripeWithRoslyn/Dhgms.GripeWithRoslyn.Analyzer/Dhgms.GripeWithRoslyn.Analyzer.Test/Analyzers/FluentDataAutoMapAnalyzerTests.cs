@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Test.Analyzers
 {
+    using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;

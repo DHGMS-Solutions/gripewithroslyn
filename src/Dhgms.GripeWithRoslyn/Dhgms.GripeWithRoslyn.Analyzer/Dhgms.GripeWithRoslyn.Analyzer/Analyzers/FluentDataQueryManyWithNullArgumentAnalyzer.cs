@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Dhgms.GripeWithRoslyn.Analyzer
+﻿namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    using System;
     using System.Collections.Immutable;
-    using System.Diagnostics;
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -21,7 +15,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
     /// Based upon : https://raw.githubusercontent.com/Wintellect/Wintellect.Analyzers/master/Source/Wintellect.Analyzers/Wintellect.Analyzers/Usage/CallAssertMethodsWithMessageParameterAnalyzer.cs
     /// </remarks>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class FluentDataAutoMapAnalyzer : DiagnosticAnalyzer
+    public sealed class FluentDataQueryManyWithNullArgument : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "DhgmsGripeWithRoslynAnalyzer";
 
@@ -40,52 +34,45 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         {
             // TODO: Consider registering other actions that act on syntax instead of or in addition to symbols
             // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Analyzer%20Actions%20Semantics.md for more information
-            context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(this.AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
         }
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
             //if (context.IsGeneratedOrNonUserCode())
             //{
-                //return;
+            //return;
             //}
 
             InvocationExpressionSyntax invocationExpr = context.Node as InvocationExpressionSyntax;
-            if (invocationExpr == null)
-            {
-                return;
-            }
-
-            var expression = invocationExpr.Expression as MemberAccessExpressionSyntax;
-            if (expression == null)
-            {
-                return;
-            }
-
-            var methodName = "AutoMap";
-            var classNames = new[]
-                {
-                    "InsertBuilder",
-                    "StoredProcedureBuilder",
-                    "UpdateBuilder"
-                };
-
-            if (!expression.Name.Identifier.ValueText.Equals(methodName, StringComparison.Ordinal))
+            if (invocationExpr?.Expression.ToString() != "FluentData.QueryMany")
             {
                 return;
             }
 
             IMethodSymbol memberSymbol = context.SemanticModel.GetSymbolInfo(invocationExpr).Symbol as IMethodSymbol;
-            if (memberSymbol != null)
+            if (memberSymbol == null)
             {
-                INamedTypeSymbol classSymbol = memberSymbol.ContainingSymbol as INamedTypeSymbol;
-                if (classSymbol != null)
-                {
-                    if (classNames.All(c => !classSymbol.Name.Equals(c, StringComparison.Ordinal)))
-                    {
-                        return;
-                    }
-                }
+                return;
+            }
+
+            if (!memberSymbol.Name.Equals("QueryMany", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            var argumentList = invocationExpr.ArgumentList;
+
+            if (argumentList?.Arguments.Count != 1)
+            {
+                return;
+            }
+
+            // todo: try and remove the tostring call
+            var arg = argumentList.Arguments[0];
+            if (!arg.Expression.ToString().Equals("null", StringComparison.Ordinal))
+            {
+                return;
             }
 
             var diagnostic = Diagnostic.Create(Rule, invocationExpr.GetLocation());

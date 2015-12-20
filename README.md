@@ -1,5 +1,5 @@
 # Gripe With Roslyn
-A simple library to provide Roslyn analyzers to show how to deal with technical debt.
+A simple library to provide Roslyn analyzers to show how to deal with technical debt. Note: The analsys rules here are subjective and based upon things we encounter on a daily basis when maintaining a sizable codebase.
 
 ## Mission Statement
 * Provide a simple library of code warnings around method usage that can impact maintainability or performance of code.

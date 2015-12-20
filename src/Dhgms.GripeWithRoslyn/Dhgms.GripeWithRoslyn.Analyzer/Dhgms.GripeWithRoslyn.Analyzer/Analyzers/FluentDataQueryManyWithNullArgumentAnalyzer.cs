@@ -47,9 +47,10 @@
 
         protected override string[] ContainingTypes => new[]
                 {
-                    "FluentData.IInsertBuilder",
-                    "FluentData.IStoredProcedureBuilder",
-                    "FluentData.IUpdateBuilder"
+                    "FluentData.IInsertBuilder<TEntity>",
+                    "FluentData.IStoredProcedureBuilder<TEntity>",
+                    "FluentData.IUpdateBuilder<TEntity>",
+                    "FluentData.ISelectBuilder<TEntity>"
                 };
 
         protected override void OnValidateArguments(SyntaxNodeAnalysisContext context, ArgumentListSyntax argumentList)

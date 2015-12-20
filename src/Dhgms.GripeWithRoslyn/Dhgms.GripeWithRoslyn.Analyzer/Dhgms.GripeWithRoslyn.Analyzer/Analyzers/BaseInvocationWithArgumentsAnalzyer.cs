@@ -59,7 +59,6 @@
                 return;
             }
 
-            if (context.IsGenerated()) return;
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
             var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;
@@ -70,7 +69,7 @@
 
             var methodSymbol = context.SemanticModel.GetSymbolInfo(memberExpression).Symbol;
             if (methodSymbol == null
-                || ContainingTypes.All(x => !methodSymbol.ContainingType.ToString().Equals(x, StringComparison.Ordinal)))
+                || ContainingTypes.All(x => !methodSymbol.ContainingType.OriginalDefinition.ToString().Equals(x, StringComparison.Ordinal)))
             {
                 return;
             }

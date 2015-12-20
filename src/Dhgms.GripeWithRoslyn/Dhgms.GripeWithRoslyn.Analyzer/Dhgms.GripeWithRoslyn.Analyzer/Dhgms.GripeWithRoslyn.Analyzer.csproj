@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BaseInvocationExpressionAnalyzer.cs" />
+    <Compile Include="Analyzers\BaseInvocationWithArgumentsAnalzyer.cs" />
     <Compile Include="Analyzers\FluentDataAutoMapAnalyzer.cs" />
     <Compile Include="Analyzers\FluentDataQueryManyWithNullArgumentAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

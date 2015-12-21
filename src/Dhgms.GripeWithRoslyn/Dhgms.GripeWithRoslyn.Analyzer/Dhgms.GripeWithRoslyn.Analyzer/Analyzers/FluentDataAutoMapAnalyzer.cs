@@ -11,7 +11,7 @@
     /// <remarks>
     /// Based upon : https://raw.githubusercontent.com/code-cracker/code-cracker/master/src/CSharp/CodeCracker/Performance/UseStaticRegexIsMatchAnalyzer.cs
     /// </remarks>
-    [DiagnosticAnalyzer(LanguageNames.CSharp)]
+    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class FluentDataAutoMapAnalyzer : BaseInvocationExpressionAnalyzer
     {
         public const string DiagnosticId = "DhgmsGripeWithRoslynAnalyzer";
@@ -29,9 +29,11 @@
 
         protected override string[] ContainingTypes => new[]
                 {
-                    "FluentData.InsertBuilder",
-                    "FluentData.StoredProcedureBuilder",
-                    "FluentData.UpdateBuilder"
+                    "FluentData.IInsertBuilder<T>",
+                    "FluentData.IStoredProcedureBuilderDynamic",
+                    "FluentData.IStoredProcedureBuilder<T>",
+                    "FluentData.IUpdateBuilderDynamic",
+                    "FluentData.IUpdateBuilder<T>",
                 };
 
         public FluentDataAutoMapAnalyzer()

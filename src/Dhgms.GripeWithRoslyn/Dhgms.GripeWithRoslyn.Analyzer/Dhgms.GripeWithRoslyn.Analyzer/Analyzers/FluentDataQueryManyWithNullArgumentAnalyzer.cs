@@ -18,12 +18,12 @@
     /// <remarks>
     /// Based upon : https://raw.githubusercontent.com/Wintellect/Wintellect.Analyzers/master/Source/Wintellect.Analyzers/Wintellect.Analyzers/Usage/CallAssertMethodsWithMessageParameterAnalyzer.cs
     /// </remarks>
-    [DiagnosticAnalyzer(LanguageNames.CSharp)]
+    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class FluentDataQueryManyWithNullArgument : BaseInvocationWithArgumentsAnalzyer
     {
         public const string DiagnosticId = "DhgmsGripeWithRoslynAnalyzer";
 
-        private const string Title = "FluentData AutoMap should not be used.";
+        private const string Title = "FluentData QueryMany should not be used with a null value for the mapper.";
 
         private const string MessageFormat = Title;
 
@@ -47,10 +47,11 @@
 
         protected override string[] ContainingTypes => new[]
                 {
-                    "FluentData.IInsertBuilder<TEntity>",
-                    "FluentData.IStoredProcedureBuilder<TEntity>",
-                    "FluentData.IUpdateBuilder<TEntity>",
-                    "FluentData.ISelectBuilder<TEntity>"
+                    "FluentData.ISelectBuilder<TEntity>",
+                    "FluentData.IStoredProcedureBuilder<T>",
+                    "FluentData.IStoredProcedureBuilderDynamic",
+                    "FluentData.IDbCommand",
+                    "FluentData.IQuery"
                 };
 
         protected override void OnValidateArguments(SyntaxNodeAnalysisContext context, ArgumentListSyntax argumentList)

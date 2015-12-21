@@ -1,7 +1,11 @@
-﻿namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    using System;
-    using System.Linq;
     using System.Collections.Immutable;
 
     using CodeCracker;
@@ -13,11 +17,13 @@
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
-    public abstract class BaseInvocationExpressionAnalyzer : DiagnosticAnalyzer
+    using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
+
+    public abstract class BaseInvocationUsingDllAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
 
-        protected BaseInvocationExpressionAnalyzer(
+        protected BaseInvocationUsingDllAnalyzer(
             [NotNull] string diagnosticId,
             [NotNull] string title,
             [NotNull] string message,
@@ -25,16 +31,21 @@
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            this._rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
+            this._rule = new DiagnosticDescriptor(
+                diagnosticId,
+                title,
+                message,
+                category,
+                diagnosticSeverity,
+                isEnabledByDefault: true,
+                description: description);
         }
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+            => ImmutableArray.Create(this._rule);
 
         [NotNull]
-        protected abstract string MethodName { get; }
-
-        [NotNull]
-        protected abstract string[] ContainingTypes { get; }
+        protected abstract string AssemblyName { get; }
 
         /// <summary>
         /// Called once at session start to register actions in the analysis context.
@@ -61,14 +72,16 @@
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
             var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;
-            if (memberExpression == null || !memberExpression.Name.ToString().Equals(MethodName, StringComparison.Ordinal))
+            if (memberExpression == null)
             {
                 return;
             }
 
             var methodSymbol = context.SemanticModel.GetSymbolInfo(memberExpression).Symbol;
-            if (methodSymbol == null
-                || ContainingTypes.All(x => !methodSymbol.ContainingType.OriginalDefinition.ToString().Equals(x, StringComparison.Ordinal)))
+
+            var containingAssembly = methodSymbol?.OriginalDefinition.ContainingAssembly;
+            if (containingAssembly == null
+                || !containingAssembly.Name.Equals(this.AssemblyName, StringComparison.Ordinal))
             {
                 return;
             }

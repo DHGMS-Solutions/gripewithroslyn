@@ -33,9 +33,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Analyzers\BaseInvocationExpressionAnalyzer.cs" />
+    <Compile Include="Analyzers\BaseInvocationUsingDllAnalyzer.cs" />
     <Compile Include="Analyzers\BaseInvocationWithArgumentsAnalzyer.cs" />
     <Compile Include="Analyzers\FluentDataAutoMapAnalyzer.cs" />
     <Compile Include="Analyzers\FluentDataQueryManyWithNullArgumentAnalyzer.cs" />
+    <Compile Include="Analyzers\OracleUnmanagedDataAccessDllAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -1,0 +1,9 @@
+- name: FluentDataAutoMapAnalyzer
+  longname: FluentData AutoMap
+  description: AutoMap attempts to map database entities to POCO objects, but may have unintended consequences and hide issues that affect the stability of your platform.
+- name: FluentDataQueryManyWithNullArgument
+  longname: FluentData QueryMany With Null Argument
+  description: FluentData QueryMany allows you to call the method with null instead of a mapper, which is fine for development and small projects. But can have profound impact on the stability of an application.
+- name: OracleUnmanagedDataAccessDllAnalyzer
+  longname: Oracle Unmanaged Data Access Dll
+  description: There is an example of where you can detect that your codebase is using an older dll. With Oracle you have the new Managed DataAccess library, but you may have the older Oracle.DataAccess library that relies on a valid install of the Oracle client being installed.

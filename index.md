@@ -10,6 +10,6 @@ Gripe With Roslyn is a proof of concept library for leveraging Roslyn Analyzers 
 This collection of rules are examples of scenarios you can check for. They are **not** an indication of best practice, they are merely here to show the sort of QA issues that can be tracked.
 
 {% for roslynanalyzers in site.data.roslynanalyzers %}
-<h2>{{ roslynanalyzers.name }}</h2>
+<h2>{{ roslynanalyzers.longname }}</h2>
 <p>{{ roslynanalyzers.description }}</p>
 {% endfor %}

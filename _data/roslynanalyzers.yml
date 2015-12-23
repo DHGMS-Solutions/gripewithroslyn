@@ -7,3 +7,6 @@
 - name: OracleUnmanagedDataAccessDllAnalyzer
   longname: Oracle Unmanaged Data Access Dll
   description: There is an example of where you can detect that your codebase is using an older dll. With Oracle you have the new Managed DataAccess library, but you may have the older Oracle.DataAccess library that relies on a valid install of the Oracle client being installed.
+- name: RemotingServicesDllAnalyzer
+  longname: .NET Remoting
+  description: .NET remoting is a legacy communication technology. Services should now utilise WCF\WebAPI.

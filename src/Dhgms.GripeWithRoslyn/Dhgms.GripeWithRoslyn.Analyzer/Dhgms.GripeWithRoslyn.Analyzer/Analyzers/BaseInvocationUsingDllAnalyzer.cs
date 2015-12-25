@@ -14,10 +14,22 @@
 
     using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 
+    /// <summary>
+    /// Base class for a Roslyn Analyzer for checking for a method invocation that belongs to a certain dll.
+    /// </summary>
     public abstract class BaseInvocationUsingDllAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
 
+        /// <summary>
+        /// Creates an instance of BaseInvocationUsingDllAnalyzer
+        /// </summary>
+        /// <param name="diagnosticId">The Diagnostic Id</param>
+        /// <param name="title">The title of the analyzer</param>
+        /// <param name="message">The message to display detailing the issue with the analyzer.</param>
+        /// <param name="category">The category the analyzer belongs to.</param>
+        /// <param name="description">The description of the analyzer</param>
+        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
         protected BaseInvocationUsingDllAnalyzer(
             [NotNull] string diagnosticId,
             [NotNull] string title,
@@ -36,9 +48,15 @@
                 description: description);
         }
 
+        /// <summary>
+        /// Returns a set of descriptors for the diagnostics that this analyzer is capable of producing.
+        /// </summary>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(this._rule);
 
+        /// <summary>
+        /// The name of the assembly to check for.
+        /// </summary>
         [NotNull]
         protected abstract string AssemblyName { get; }
 

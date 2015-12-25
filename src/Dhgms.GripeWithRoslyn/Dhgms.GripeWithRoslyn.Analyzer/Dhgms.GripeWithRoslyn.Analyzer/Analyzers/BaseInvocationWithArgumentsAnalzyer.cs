@@ -15,8 +15,20 @@
 
     using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 
+    /// <summary>
+    /// Base class for a Roslyn Analayzer for Method Invocation where you need to validate the arguments passed.
+    /// </summary>
     public abstract class BaseInvocationWithArgumentsAnalzyer : DiagnosticAnalyzer
     {
+        /// <summary>
+        /// Creates an instance of BaseInvocationWithArgumentsAnalzyer
+        /// </summary>
+        /// <param name="diagnosticId">The Diagnostic Id</param>
+        /// <param name="title">The title of the analyzer</param>
+        /// <param name="message">The message to display detailing the issue with the analyzer.</param>
+        /// <param name="category">The category the analyzer belongs to.</param>
+        /// <param name="description">The description of the analyzer</param>
+        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
         protected BaseInvocationWithArgumentsAnalzyer(
             [NotNull] string diagnosticId,
             [NotNull] string title,
@@ -28,13 +40,26 @@
             this.Rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
         }
 
-        protected DiagnosticDescriptor Rule { get; private set; }
 
+        /// <summary>
+        /// Description of the Diagnostic Rule. Used when passing details to Roslyn.
+        /// </summary>
+        protected DiagnosticDescriptor Rule { get; }
+
+        /// <summary>
+        /// Returns a set of descriptors for the diagnostics that this analyzer is capable of producing.
+        /// </summary>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this.Rule);
 
+        /// <summary>
+        /// The name of the method to check for.
+        /// </summary>
         [NotNull]
         protected abstract string MethodName { get; }
 
+        /// <summary>
+        /// The classes the method may belong to.
+        /// </summary>
         [NotNull]
         protected abstract string[] ContainingTypes { get; }
 
@@ -77,6 +102,11 @@
             OnValidateArguments(context, invocationExpression.ArgumentList);
         }
 
+        /// <summary>
+        /// Event for validating the arguments passed
+        /// </summary>
+        /// <param name="context">The context for the Roslyn syntax analysis</param>
+        /// <param name="argumentList">Syntax representation of the argument list.</param>
         protected abstract void OnValidateArguments(SyntaxNodeAnalysisContext context, ArgumentListSyntax argumentList);
     }
 }

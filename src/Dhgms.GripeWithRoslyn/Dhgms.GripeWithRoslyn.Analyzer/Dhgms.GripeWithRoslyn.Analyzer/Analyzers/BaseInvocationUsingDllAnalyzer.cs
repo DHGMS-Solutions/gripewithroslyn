@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+﻿namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    using System;
     using System.Collections.Immutable;
 
     using CodeCracker;
@@ -68,7 +63,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return;
             }
 
-            if (context.IsGenerated()) return;
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
             var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;

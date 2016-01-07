@@ -23,7 +23,7 @@
         /// Creates an instance of RemotingServicesAnalyzer
         /// </summary>
         public RemotingServicesAnalyzer()
-            : base("GR0004",
+            : base(DiagnosticIdsHelper.RemotingServicesAnalyzer,
                   Title,
                   MessageFormat,
                   Category,

@@ -43,6 +43,8 @@
     <Compile Include="Analyzers\FluentDataQueryManyWithNullArgumentAnalyzer.cs" />
     <Compile Include="Analyzers\OracleUnmanagedDataAccessDllAnalyzer.cs" />
     <Compile Include="Analyzers\RemotingServicesAnalyzer.cs" />
+    <Compile Include="Analyzers\ViewModelShouldInheritReactiveObject.cs" />
+    <Compile Include="DiagnosticIdsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>

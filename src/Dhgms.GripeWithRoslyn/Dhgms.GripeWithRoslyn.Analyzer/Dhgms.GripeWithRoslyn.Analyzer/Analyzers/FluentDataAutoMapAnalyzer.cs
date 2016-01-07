@@ -29,7 +29,7 @@
         /// Creates an instance of FluentDataAutoMapAnalyzer
         /// </summary>
         public FluentDataAutoMapAnalyzer()
-            : base("GR0001",
+            : base(DiagnosticIdsHelper.FluentDataAutoMapAnalyzer,
                   Title,
                   MessageFormat,
                   Category,

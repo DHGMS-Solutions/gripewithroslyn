@@ -31,7 +31,7 @@
         /// </summary>
         public FluentDataQueryManyWithNullArgument()
             : base(
-                  "GR0002",
+                  DiagnosticIdsHelper.FluentDataQueryManyWithNullArgumentAnalyzer,
                   Title,
                   MessageFormat,
                   Category,

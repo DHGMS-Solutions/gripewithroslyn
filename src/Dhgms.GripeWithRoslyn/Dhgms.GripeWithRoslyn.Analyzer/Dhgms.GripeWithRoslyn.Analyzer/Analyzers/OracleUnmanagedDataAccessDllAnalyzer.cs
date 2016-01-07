@@ -23,7 +23,7 @@
         /// Creates an instance of OracleUnmanagedDataAccessDllAnalyzer
         /// </summary>
         public OracleUnmanagedDataAccessDllAnalyzer()
-            : base("GR0003",
+            : base(DiagnosticIdsHelper.OracleUnmanagedDllDataAccessDllAnalyzer,
                   Title,
                   MessageFormat,
                   Category,

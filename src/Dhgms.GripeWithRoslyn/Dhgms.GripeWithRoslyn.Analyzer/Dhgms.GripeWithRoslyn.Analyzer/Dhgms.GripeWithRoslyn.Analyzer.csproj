@@ -80,10 +80,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CodeCracker.Common">
-      <HintPath>..\..\packages\codecracker.CSharp.1.0.0-rc5\analyzers\dotnet\cs\CodeCracker.Common.dll</HintPath>
+      <HintPath>..\..\packages\codecracker.CSharp.1.0.0-rc6\analyzers\dotnet\cs\CodeCracker.Common.dll</HintPath>
     </Reference>
     <Reference Include="CodeCracker.CSharp">
-      <HintPath>..\..\packages\codecracker.CSharp.1.0.0-rc5\analyzers\dotnet\cs\CodeCracker.CSharp.dll</HintPath>
+      <HintPath>..\..\packages\codecracker.CSharp.1.0.0-rc6\analyzers\dotnet\cs\CodeCracker.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Annotations.PCL328, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\..\packages\JetBrains.Annotations.10.0.0\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\JetBrains.Annotations.PCL328.dll</HintPath>

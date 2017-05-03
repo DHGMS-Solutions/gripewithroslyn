@@ -13,5 +13,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string OracleUnmanagedDllDataAccessDllAnalyzer => "GR0003";
         internal static string RemotingServicesAnalyzer => "GR0004";
         internal static string ViewModelShouldInheritReactiveObject => "GR0005";
+        internal static string TreatWarningsAsErrorsShouldBeEnabled => "GR0006";
     }
 }

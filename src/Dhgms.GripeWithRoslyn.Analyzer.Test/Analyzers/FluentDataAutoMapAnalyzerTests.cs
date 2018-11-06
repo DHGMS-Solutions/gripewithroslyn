@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Test.Analyzers
 {
@@ -11,15 +12,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Test.Analyzers
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using TestHelper;
 
-    [TestClass]
     public class FluentDataAutoMapAnalyzerTests : CodeFixVerifier
     {
         //Diagnostic and CodeFix both triggered and checked for
-        [TestMethod]
+        [Fact]
         public void TestMethod2()
         {
             var test = @"

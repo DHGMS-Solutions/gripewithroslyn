@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Analy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Analyzer.Test", "Dhgms.GripeWithRoslyn.Analyzer.Test\Dhgms.GripeWithRoslyn.Analyzer.Test.csproj", "{0D5026BC-C817-4153-BCF4-2AE53809A2A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Analyzer.Vsix", "Dhgms.GripeWithRoslyn.Analyzer.Vsix\Dhgms.GripeWithRoslyn.Analyzer.Vsix.csproj", "{C47EB397-7C21-4204-9B2E-C957A8EFD8E6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +21,11 @@ Global
 		{0D5026BC-C817-4153-BCF4-2AE53809A2A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D5026BC-C817-4153-BCF4-2AE53809A2A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D5026BC-C817-4153-BCF4-2AE53809A2A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C47EB397-7C21-4204-9B2E-C957A8EFD8E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C47EB397-7C21-4204-9B2E-C957A8EFD8E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C47EB397-7C21-4204-9B2E-C957A8EFD8E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C47EB397-7C21-4204-9B2E-C957A8EFD8E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D8BABCE-60B5-46C4-9BF5-B18C045B7C5C}
 	EndGlobalSection
 EndGlobal

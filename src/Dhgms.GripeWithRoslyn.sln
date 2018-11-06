@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Analyzer", "Dhgms.GripeWithRoslyn.Analyzer\Dhgms.GripeWithRoslyn.Analyzer\Dhgms.GripeWithRoslyn.Analyzer.csproj", "{C83BD07B-9C2A-4FA9-8F6D-98D761494B6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Analyzer", "Dhgms.GripeWithRoslyn.Analyzer\Dhgms.GripeWithRoslyn.Analyzer.csproj", "{C83BD07B-9C2A-4FA9-8F6D-98D761494B6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Analyzer.Test", "Dhgms.GripeWithRoslyn.Analyzer\Dhgms.GripeWithRoslyn.Analyzer.Test\Dhgms.GripeWithRoslyn.Analyzer.Test.csproj", "{0D5026BC-C817-4153-BCF4-2AE53809A2A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Analyzer.Test", "Dhgms.GripeWithRoslyn.Analyzer.Test\Dhgms.GripeWithRoslyn.Analyzer.Test.csproj", "{0D5026BC-C817-4153-BCF4-2AE53809A2A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Analyzer.Vsix", "Dhgms.GripeWithRoslyn.Analyzer\Dhgms.GripeWithRoslyn.Analyzer.Vsix\Dhgms.GripeWithRoslyn.Analyzer.Vsix.csproj", "{C47EB397-7C21-4204-9B2E-C957A8EFD8E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Analyzer.Vsix", "Dhgms.GripeWithRoslyn.Analyzer.Vsix\Dhgms.GripeWithRoslyn.Analyzer.Vsix.csproj", "{C47EB397-7C21-4204-9B2E-C957A8EFD8E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

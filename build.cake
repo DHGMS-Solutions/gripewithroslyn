@@ -95,7 +95,7 @@ Information("fileVersion: " + fileVersion);
 // Artifacts
 var artifactDirectory = "./artifacts/";
 var testCoverageOutputFile = artifactDirectory + "OpenCover.xml";
-var packageWhitelist = new[] { "Dhgms.GripeWithRoslyn" };
+var packageWhitelist = new[] { "Dhgms.GripeWithRoslyn.Analyser" };
 
 var runSonarQube = false;
 var sonarQubePreview = false;

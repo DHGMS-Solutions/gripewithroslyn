@@ -57,7 +57,7 @@ var isRepository = StringComparer.OrdinalIgnoreCase.Equals(githubOwner + "/" + g
 var isDevelopBranch = StringComparer.OrdinalIgnoreCase.Equals("develop", AppVeyor.Environment.Repository.Branch);
 var isReleaseBranch = StringComparer.OrdinalIgnoreCase.Equals("master", AppVeyor.Environment.Repository.Branch);
 var isTagged = AppVeyor.Environment.Repository.Tag.IsTag;
-var unitTestProjectFilePath = "./src/Dhgms.GripeWithRoslyn.UnitTests/Dhgms.GripeWithRoslyn.UnitTests.csproj";
+var unitTestProjectFilePath = "./src/Dhgms.GripeWithRoslyn.Analyzer.UnitTests/Dhgms.GripeWithRoslyn.Analyzer.UnitTests.csproj";
 
 
 var vsPath = VSWhereLatest();

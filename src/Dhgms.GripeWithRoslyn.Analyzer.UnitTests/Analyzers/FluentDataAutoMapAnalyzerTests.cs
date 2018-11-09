@@ -18,7 +18,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Test.Analyzers
     public class FluentDataAutoMapAnalyzerTests : CodeFixVerifier
     {
         //Diagnostic and CodeFix both triggered and checked for
-        [Fact]
+        //[Fact]
         public void TestMethod2()
         {
             var test = @"

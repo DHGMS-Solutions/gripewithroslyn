@@ -14,5 +14,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string RemotingServicesAnalyzer => "GR0004";
         internal static string ViewModelShouldInheritReactiveObject => "GR0005";
         internal static string TreatWarningsAsErrorsShouldBeEnabled => "GR0006";
+        internal static string UseEncodingUnicodeInsteadOfASCII => "GR0007";
     }
 }

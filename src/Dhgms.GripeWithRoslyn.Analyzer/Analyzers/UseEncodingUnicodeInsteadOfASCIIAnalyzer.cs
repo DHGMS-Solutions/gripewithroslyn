@@ -30,6 +30,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
-        protected override string ClassName => "System.Text.ASCIIEncoding";
+        protected override string ClassName => "global::System.Text.ASCIIEncoding";
     }
 }

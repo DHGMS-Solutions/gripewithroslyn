@@ -74,16 +74,22 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
             var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;
-            if (memberExpression == null)
+            if (memberExpression == null
+                || memberExpression.Expression == null)
             {
                 return;
             }
 
-            var methodSymbol = ModelExtensions.GetSymbolInfo(context.SemanticModel, memberExpression).Symbol;
+            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberExpression.Expression);
 
-            var containingAssembly = methodSymbol?.OriginalDefinition.ContainingType;
-            if (containingAssembly == null
-                || !containingAssembly.GetFullName().Equals(this.ClassName, StringComparison.Ordinal))
+            if (typeInfo.Type == null)
+            {
+                return;
+            }
+
+            var typeFullName = typeInfo.Type.GetFullName();
+
+            if (!typeFullName.Equals(this.ClassName, StringComparison.Ordinal))
             {
                 return;
             }

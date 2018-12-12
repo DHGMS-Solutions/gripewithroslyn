@@ -15,5 +15,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string ViewModelShouldInheritReactiveObject => "GR0005";
         internal static string TreatWarningsAsErrorsShouldBeEnabled => "GR0006";
         internal static string UseEncodingUnicodeInsteadOfASCII => "GR0007";
+        internal static string StructureMapShouldNotBeUsed => "GR0008";
     }
 }

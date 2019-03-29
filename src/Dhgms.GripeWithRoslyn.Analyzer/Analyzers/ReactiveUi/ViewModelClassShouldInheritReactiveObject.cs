@@ -1,21 +1,11 @@
-﻿namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+﻿using System;
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
 {
-    using System;
-    using System.Collections.Immutable;
-    using System.Linq;
-
-    using CodeCracker;
-
-    using JetBrains.Annotations;
-
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
-    using DiagnosticDescriptor = Microsoft.CodeAnalysis.DiagnosticDescriptor;
     using DiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
-    using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 
     /// <summary>
     /// Analyzer for checking that a class that has the ViewModel suffix inherits from ReactiveUI.ReactiveObject

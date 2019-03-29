@@ -1,4 +1,4 @@
-﻿namespace CodeCracker
+﻿namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 {
     /// <summary>
     /// Used to indicate what can be said about the initialization

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace CodeCracker
+namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 {
     public static class GeneratedCodeAnalysisExtensions
     {

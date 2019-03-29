@@ -1,9 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 
-namespace CodeCracker
+namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 {
     public static partial class AnalyzerExtensions
     {

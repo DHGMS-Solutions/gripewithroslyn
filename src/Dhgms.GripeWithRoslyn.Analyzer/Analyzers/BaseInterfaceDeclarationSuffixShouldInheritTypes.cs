@@ -1,80 +1,28 @@
-﻿namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CodeCracker;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
+using JetBrains.Annotations;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+
+namespace Dhgms.GripeWithRoslyn.Analyzer
 {
-    using System;
-    using System.Collections.Immutable;
-    using System.Linq;
-
-    using CodeCracker;
-
-    using JetBrains.Annotations;
-
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
-    using DiagnosticDescriptor = Microsoft.CodeAnalysis.DiagnosticDescriptor;
-    using DiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
-    using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
-
-    /// <summary>
-    /// test interface
-    /// </summary>
-    public interface ITest
-    {
-        
-    }
-
-    /// <summary>
-    /// Analyzer for checking that a class that has the ViewModel suffix inherits from ReactiveUI.ReactiveObject
-    /// </summary>
-    [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-    public sealed class ViewModelShouldInheritReactiveObject : BaseClassDeclarationSuffixShouldInheritTypes
-    {
-        private const string DiagnosticId = "DhgmsGripeWithRoslynAnalyzer";
-
-        private const string Title = "ViewModels should inherit from ReactiveUI's ReactiveObject.";
-
-        private const string MessageFormat = Title;
-
-        private const string Category = SupportedCategories.Maintainability;
-
-        private const string Description =
-            "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
-
-        /// <summary>
-        /// Creates an instance of ViewModelShouldInheritReactiveObject
-        /// </summary>
-        public ViewModelShouldInheritReactiveObject()
-            : base(DiagnosticIdsHelper.ViewModelShouldInheritReactiveObject,
-                  Title,
-                  MessageFormat,
-                  Category,
-                  Description,
-                  DiagnosticSeverity.Warning)
-        {
-        }
-
-        /// <summary>
-        /// The suffix of the class to check for.
-        /// </summary>
-        protected override String ClassNameSuffix => "ViewModel";
-
-        /// <summary>
-        /// The containing types the method may belong to.
-        /// </summary>
-        protected override String[] ContainingTypes => new[] { string.Empty };
-    }
-
     /// <summary>
     /// Base class for checking that a suffixed group of classes inherit from expected types
     /// </summary>
-    public abstract class BaseClassDeclarationSuffixShouldInheritTypes : DiagnosticAnalyzer, ITest
+    public abstract class BaseInterfaceDeclarationSuffixShouldInheritTypes : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Creates an instance of BaseInvocationExpressionAnalyzer
+        /// Creates an instance of BaseInterfaceDeclarationSuffixShouldInheritTypes
         /// </summary>
         /// <param name="diagnosticId">The Diagnostic Id</param>
         /// <param name="title">The title of the analyzer</param>
@@ -82,7 +30,7 @@
         /// <param name="category">The category the analyzer belongs to.</param>
         /// <param name="description">The description of the analyzer</param>
         /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
-        protected BaseClassDeclarationSuffixShouldInheritTypes(
+        protected BaseInterfaceDeclarationSuffixShouldInheritTypes(
             [NotNull] string diagnosticId,
             [NotNull] string title,
             [NotNull] string message,
@@ -121,30 +69,30 @@
         /// </param>
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeInvocationExpression, SyntaxKind.ClassDeclaration);
+            context.RegisterSyntaxNodeAction(this.AnalyzeClassDeclarationExpression, SyntaxKind.ClassDeclaration);
         }
 
-        private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
+        private void AnalyzeClassDeclarationExpression(SyntaxNodeAnalysisContext context)
         {
             if (context.IsGenerated())
             {
                 return;
             }
 
-            var typeDeclarationSyntax = context.Node as TypeDeclarationSyntax;
+            var interfaceDeclarationSyntax = context.Node as InterfaceDeclarationSyntax;
 
-            if (typeDeclarationSyntax == null)
+            if (interfaceDeclarationSyntax == null)
             {
                 return;
             }
 
-            var identifier = typeDeclarationSyntax.Identifier;
+            var identifier = interfaceDeclarationSyntax.Identifier;
             if (!identifier.Text.EndsWith(this.ClassNameSuffix, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            var baseList = typeDeclarationSyntax.BaseList;
+            var baseList = interfaceDeclarationSyntax.BaseList;
 
             if (baseList != null)
             {

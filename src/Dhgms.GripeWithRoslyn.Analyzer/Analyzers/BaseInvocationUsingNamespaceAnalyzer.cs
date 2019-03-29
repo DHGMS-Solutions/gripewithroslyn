@@ -1,10 +1,9 @@
-﻿namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
     using System;
     using System.Collections.Immutable;
-
-    using CodeCracker;
-
     using JetBrains.Annotations;
 
     using Microsoft.CodeAnalysis;

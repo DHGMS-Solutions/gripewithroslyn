@@ -24,9 +24,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
         {
             public void MethodName()
             {
-                System.Type.GetType(""System.String"");
-                char[] testValue = null;
-
                 ASCIIEncoding.GetBytes(testValue, 0, 0);
             }
         }
@@ -38,7 +35,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                        new DiagnosticResultLocation("Test0.cs", 11, 17)
+                        new DiagnosticResultLocation("Test0.cs", 9, 17)
                     }
             };
 

@@ -24,7 +24,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
         {
             public void MethodName()
             {
-                ASCIIEncoding.GetBytes(testValue, 0, 0);
+                System.Type.GetType(""System.String"");
             }
         }
     }";

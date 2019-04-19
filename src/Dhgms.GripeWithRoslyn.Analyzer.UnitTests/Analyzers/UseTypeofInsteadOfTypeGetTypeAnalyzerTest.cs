@@ -35,7 +35,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                        new DiagnosticResultLocation("Test0.cs", 9, 17)
+                        new DiagnosticResultLocation("Test0.cs", 10, 17)
                     }
             };
 

@@ -13,7 +13,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    public abstract class BaseInvocationUsingClassAnalyzer : DiagnosticAnalyzer
+    public abstract class BaseSimpleMemberAccessOnTypeAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
 
@@ -26,7 +26,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <param name="category">The category the analyzer belongs to.</param>
         /// <param name="description">The description of the analyzer</param>
         /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
-        protected BaseInvocationUsingClassAnalyzer(
+        protected BaseSimpleMemberAccessOnTypeAnalyzer(
             [NotNull] string diagnosticId,
             [NotNull] string title,
             [NotNull] string message,
@@ -61,26 +61,30 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// </param>
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(this.AnalyzeSimpleMemberAccessExpression, SyntaxKind.SimpleMemberAccessExpression);
         }
 
-        private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
+        private void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
         {
             if (context.IsGenerated())
             {
                 return;
             }
 
-            var invocationExpression = (InvocationExpressionSyntax)context.Node;
+            var memberAccessExpressionSyntax = (MemberAccessExpressionSyntax)context.Node;
 
-            var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;
-            if (memberExpression == null
-                || memberExpression.Expression == null)
+            if (memberAccessExpressionSyntax == null
+                || memberAccessExpressionSyntax.Expression == null)
             {
                 return;
             }
 
-            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberExpression.Expression);
+            if (!memberAccessExpressionSyntax.Name.ToString().Equals(MemberName, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberAccessExpressionSyntax.Expression);
 
             if (typeInfo.Type == null)
             {
@@ -95,10 +99,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             }
 
 
-
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(this._rule, memberAccessExpressionSyntax.GetLocation()));
         }
 
         protected abstract string ClassName { get; }
+
+        protected abstract string MemberName { get; }
     }
 }

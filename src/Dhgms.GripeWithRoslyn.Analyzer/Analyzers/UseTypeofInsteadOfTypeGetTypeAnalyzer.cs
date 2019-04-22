@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    public sealed class UseTypeofInsteadOfTypeGetTypeAnalyzer : BaseInvocationUsingClassAnalyzer
+    public sealed class UseTypeofInsteadOfTypeGetTypeAnalyzer : BaseInvocationExpressionAnalyzer
     {
         private const string Title = "Consider usage of typeof(x) instead of System.Type.GetType.";
 
@@ -29,6 +29,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
-        protected override string ClassName => "global::System.Type";
+        protected override string MethodName => "GetType";
+
+        protected override string[] ContainingTypes => new [] {"global::System.Type"};
     }
 }

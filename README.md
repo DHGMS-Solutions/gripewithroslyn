@@ -3,7 +3,7 @@
 [![NuGet Stats](https://img.shields.io/nuget/dt/dhgms.gripewithroslyn.analyzer.svg)](https://www.nuget.org/packages/dhgms.gripewithroslyn.analyzer/) [![Issue Stats](http://www.issuestats.com/github/dhgms-solutions/gripewithroslyn/badge/issue?style=flat)](http://www.issuestats.com/github/dhgms-solutions/gripewithroslyn) [![Pull Request Stats](http://www.issuestats.com/github/dhgms-solutions/gripewithroslyn/badge/pr?style=flat)](http://www.issuestats.com/github/dhgms-solutions/gripewithroslyn) 
 
 
-A simple library to provide Roslyn analyzers to show how to deal with technical debt. **Note:** The analsys rules here are subjective and based upon things we encounter when maintaining a sizable codebase.
+A simple library to provide Roslyn analyzers to show how to deal with technical debt. **Note:** The anaylsis rules here are subjective and based upon things we encounter when maintaining a sizable codebase.
 
 ## Mission Statement
 * Provide a simple library of code warnings around method usage that can impact maintainability or performance of code.

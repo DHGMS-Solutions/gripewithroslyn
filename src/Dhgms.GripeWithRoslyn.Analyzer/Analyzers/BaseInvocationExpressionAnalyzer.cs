@@ -85,9 +85,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return;
             }
 
-            var methodSymbol = context.SemanticModel.GetSymbolInfo(memberExpression).Symbol;
-            if (methodSymbol == null
-                || ContainingTypes.All(x => !methodSymbol.ContainingType.OriginalDefinition.ToString().Equals(x, StringComparison.Ordinal)))
+            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberExpression.Expression);
+
+            if (typeInfo.Type == null)
+            {
+                return;
+            }
+
+            var typeFullName = typeInfo.Type.GetFullName();
+
+            if (ContainingTypes.All(x => !typeFullName.Equals(x, StringComparison.Ordinal)))
             {
                 return;
             }

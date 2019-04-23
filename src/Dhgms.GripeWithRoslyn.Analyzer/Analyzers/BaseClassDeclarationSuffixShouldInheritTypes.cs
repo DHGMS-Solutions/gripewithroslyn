@@ -51,7 +51,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// The containing types the method may belong to.
         /// </summary>
         [NotNull]
-        protected abstract string[] ContainingTypes { get; }
+        protected abstract string BaseClassFullName { get; }
 
         /// <summary>
         /// Called once at session start to register actions in the analysis context.
@@ -74,9 +74,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return;
             }
 
-            var classDeclarationSyntax = context.Node as ClassDeclarationSyntax;
-
-            if (classDeclarationSyntax == null)
+            if (!(context.Node is ClassDeclarationSyntax classDeclarationSyntax))
             {
                 return;
             }
@@ -89,48 +87,25 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var baseList = classDeclarationSyntax.BaseList;
 
-            if (baseList != null)
+            if (baseList != null
+                && baseList.Types.Count > 0)
             {
-                this.CheckContainingTypeCollection(context, baseList, identifier);
-            }
-            else
-            {
-                this.FlagAllContainingTypes(context, identifier);
-
-                context.ReportDiagnostic(Diagnostic.Create(this._rule, identifier.GetLocation()));
-            }
-
-        }
-
-        private void FlagAllContainingTypes(SyntaxNodeAnalysisContext context, SyntaxToken identifier)
-        {
-            foreach (var containingType in this.ContainingTypes)
-            {
-                context.ReportDiagnostic(Diagnostic.Create(this._rule, identifier.GetLocation()));
-            }
-        }
-
-        private void CheckContainingTypeCollection(
-            SyntaxNodeAnalysisContext context,
-            BaseListSyntax baseList,
-            SyntaxToken identifier)
-        {
-            var baseTypes = baseList.Types;
-
-            foreach (var containingType in this.ContainingTypes)
-            {
-                this.CheckContainingType(context, identifier, containingType, baseTypes);
-            }
-        }
-
-        private void CheckContainingType(SyntaxNodeAnalysisContext context, SyntaxToken identifier, String containingType, SeparatedSyntaxList<BaseTypeSyntax> baseTypes)
-        {
-            foreach (var baseTypeSyntax in baseTypes)
-            {
-                var identifierNameSyntax = baseTypeSyntax.Type as IdentifierNameSyntax;
-                if (identifierNameSyntax != null && identifierNameSyntax.Identifier.Text.Equals(containingType, StringComparison.Ordinal))
+                foreach (var baseTypeSyntax in baseList.Types)
                 {
-                    return;
+                    var baseType = baseTypeSyntax.Type;
+                    var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, baseType);
+
+                    if (typeInfo.Type == null)
+                    {
+                        continue;
+                    }
+
+                    var typeFullName = typeInfo.Type.GetFullName();
+
+                    if (typeFullName.Equals(this.BaseClassFullName, StringComparison.Ordinal))
+                    {
+                        return;
+                    }
                 }
             }
 

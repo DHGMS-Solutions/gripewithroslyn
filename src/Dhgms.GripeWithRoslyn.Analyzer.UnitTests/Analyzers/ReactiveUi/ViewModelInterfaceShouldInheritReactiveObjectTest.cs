@@ -23,12 +23,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers.ReactiveUi
     }";
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.StructureMapShouldNotBeUsed,
-                Message = "StructureMap is end of life so should not be used.",
+                Id = DiagnosticIdsHelper.ViewModelInterfaceShouldInheritReactiveObject,
+                Message = ViewModelInterfaceShouldInheritReactiveObject.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                        new DiagnosticResultLocation("Test0.cs", 21, 17)
+                        new DiagnosticResultLocation("Test0.cs", 4, 26)
                     }
             };
 

@@ -13,9 +13,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ViewModelInterfaceShouldInheritReactiveObject : BaseInterfaceDeclarationSuffixShouldInheritTypes
     {
-        private const string DiagnosticId = "DhgmsGripeWithRoslynAnalyzer";
-
-        private const string Title = "ViewModels should inherit from ReactiveUI's ReactiveObject.";
+        internal const string Title = "ViewModels should inherit from ReactiveUI's ReactiveObject.";
 
         private const string MessageFormat = Title;
 
@@ -28,7 +26,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         /// Creates an instance of ViewModelShouldInheritReactiveObject
         /// </summary>
         public ViewModelInterfaceShouldInheritReactiveObject()
-            : base(DiagnosticIdsHelper.ViewModelShouldInheritReactiveObject,
+            : base(DiagnosticIdsHelper.ViewModelInterfaceShouldInheritReactiveObject,
                   Title,
                   MessageFormat,
                   Category,
@@ -40,14 +38,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         /// <summary>
         /// The suffix of the class to check for.
         /// </summary>
-        protected override String ClassNameSuffix => "ViewModel";
+        protected override string ClassNameSuffix => "ViewModel";
 
-        /// <summary>
-        /// The containing types the method may belong to.
-        /// </summary>
-        protected override String[] ContainingTypes => new[]
-        {
-            "ReactiveUi.IReactiveObject"
-        };
+        protected override string BaseInterfaceFullName => "global::ReactiveUi.IReactiveObject";
     }
 }

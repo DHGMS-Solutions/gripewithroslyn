@@ -16,13 +16,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers.ReactiveUi
         public void ReturnsWarning()
         {
             const string test = @"
-    namespace ConsoleApplication1
+    namespace ReactiveUi
     {
-        namespace ReactiveUi
+        public class ReactiveObject
         {
-            public class ReactiveObject
-            {
-            }
         }
 
         public class Test : ReactiveUi.ReactiveObject
@@ -32,12 +29,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers.ReactiveUi
 
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.StructureMapShouldNotBeUsed,
-                Message = "StructureMap is end of life so should not be used.",
+                Id = DiagnosticIdsHelper.ReactiveObjectClassShouldHaveViewModelSuffix,
+                Message = NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                        new DiagnosticResultLocation("Test0.cs", 21, 17)
+                        new DiagnosticResultLocation("Test0.cs", 8, 22)
                     }
             };
 

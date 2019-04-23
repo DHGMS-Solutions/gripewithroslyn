@@ -13,9 +13,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ViewModelClassShouldInheritReactiveObject : BaseClassDeclarationSuffixShouldInheritTypes
     {
-        private const string DiagnosticId = "DhgmsGripeWithRoslynAnalyzer";
-
-        private const string Title = "ViewModels should inherit from ReactiveUI's ReactiveObject.";
+        private const string Title = "ViewModel classes should inherit from ReactiveUI.ReactiveObject.";
 
         private const string MessageFormat = Title;
 

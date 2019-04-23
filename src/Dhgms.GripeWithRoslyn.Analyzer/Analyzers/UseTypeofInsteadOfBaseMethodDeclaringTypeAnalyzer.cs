@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using CodeCracker;
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers

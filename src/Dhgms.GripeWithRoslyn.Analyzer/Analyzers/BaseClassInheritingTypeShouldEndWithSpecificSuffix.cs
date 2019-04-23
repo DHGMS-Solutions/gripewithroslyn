@@ -56,6 +56,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             context.RegisterSyntaxNodeAction(this.AnalyzeClassDeclarationExpression, SyntaxKind.ClassDeclaration);
         }
 
+        protected abstract string NameSuffix { get; }
+
+        protected abstract string BaseClassFullName { get; }
+
         private void AnalyzeClassDeclarationExpression(SyntaxNodeAnalysisContext context)
         {
             if (context.IsGenerated())
@@ -63,31 +67,51 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return;
             }
 
-            if (!(context.Node is ClassDeclarationSyntax interfaceDeclarationSyntax))
+            if (!(context.Node is ClassDeclarationSyntax classDeclarationSyntax))
             {
                 return;
             }
 
-            /*
-            var identifier = interfaceDeclarationSyntax.Identifier;
-            if (!identifier.Text.EndsWith(this.ClassNameSuffix, StringComparison.OrdinalIgnoreCase))
+            var identifier = classDeclarationSyntax.Identifier;
+            if (identifier.Text.EndsWith(this.NameSuffix, StringComparison.OrdinalIgnoreCase))
+            {
+                // it does end with the desired suffix
+                // no point checking to warn if it should or not.
+                // that's not the point of this validator.
+                return;
+            }
+
+            var baseList = classDeclarationSyntax.BaseList;
+
+            if (baseList == null)
             {
                 return;
             }
 
-            var baseList = interfaceDeclarationSyntax.BaseList;
-
-            if (baseList != null)
+            if (baseList.Types.Count < 1)
             {
-                this.CheckContainingTypeCollection(context, baseList, identifier);
-            }
-            else
-            {
-                this.FlagAllContainingTypes(context, identifier);
 
-                context.ReportDiagnostic(Diagnostic.Create(this._rule, identifier.GetLocation()));
+                return;
             }
-            */
+
+            foreach (var baseTypeSyntax in baseList.Types)
+            {
+                var baseType = baseTypeSyntax.Type;
+                var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, baseType);
+
+                if (typeInfo.Type == null)
+                {
+                    return;
+                }
+
+                var typeFullName = typeInfo.Type.GetFullName();
+
+                if (typeFullName.Equals(this.BaseClassFullName, StringComparison.Ordinal))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(this._rule, identifier.GetLocation()));
+                    return;
+                }
+            }
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Linq;
 
-namespace CodeCracker
+namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 {
     public static class CSharpGeneratedCodeAnalysisExtensions
     {

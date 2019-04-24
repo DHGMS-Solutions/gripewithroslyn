@@ -1,9 +1,8 @@
-﻿namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
     using System;
-
-    using CodeCracker;
-
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;

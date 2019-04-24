@@ -1,4 +1,4 @@
-﻿namespace CodeCracker
+﻿namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 {
     public static class SupportedCategories
     {

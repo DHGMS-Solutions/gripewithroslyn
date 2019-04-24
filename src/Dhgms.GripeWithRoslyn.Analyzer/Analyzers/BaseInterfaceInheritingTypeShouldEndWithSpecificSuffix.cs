@@ -13,12 +13,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    public abstract class BaseSimpleMemberAccessOnTypeAnalyzer : DiagnosticAnalyzer
+    public abstract class BaseInterfaceInheritingTypeShouldEndWithSpecificSuffix : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Creates an instance of BaseInvocationUsingClassAnalyzer
+        /// Creates an instance of BaseInvocationExpressionAnalyzer
         /// </summary>
         /// <param name="diagnosticId">The Diagnostic Id</param>
         /// <param name="title">The title of the analyzer</param>
@@ -26,7 +26,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <param name="category">The category the analyzer belongs to.</param>
         /// <param name="description">The description of the analyzer</param>
         /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
-        protected BaseSimpleMemberAccessOnTypeAnalyzer(
+        protected BaseInterfaceInheritingTypeShouldEndWithSpecificSuffix(
             [NotNull] string diagnosticId,
             [NotNull] string title,
             [NotNull] string message,
@@ -34,21 +34,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            this._rule = new DiagnosticDescriptor(
-                diagnosticId,
-                title,
-                message,
-                category,
-                diagnosticSeverity,
-                isEnabledByDefault: true,
-                description: description);
+            this._rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
         }
 
         /// <summary>
         /// Returns a set of descriptors for the diagnostics that this analyzer is capable of producing.
         /// </summary>
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-            => ImmutableArray.Create(this._rule);
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
 
         /// <summary>
         /// Called once at session start to register actions in the analysis context.
@@ -61,49 +53,67 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// </param>
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeSimpleMemberAccessExpression, SyntaxKind.SimpleMemberAccessExpression);
+            context.RegisterSyntaxNodeAction(this.AnalyzeInterfaceDeclarationExpression, SyntaxKind.InterfaceDeclaration);
         }
 
-        private void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
+        protected abstract string NameSuffix { get; }
+
+        protected abstract string BaseClassFullName { get; }
+
+        private void AnalyzeInterfaceDeclarationExpression(SyntaxNodeAnalysisContext context)
         {
             if (context.IsGenerated())
             {
                 return;
             }
 
-            var memberAccessExpressionSyntax = (MemberAccessExpressionSyntax)context.Node;
+            var interfaceDeclarationSyntax = context.Node as InterfaceDeclarationSyntax;
 
-            if (memberAccessExpressionSyntax == null
-                || memberAccessExpressionSyntax.Expression == null)
+            if (interfaceDeclarationSyntax == null)
             {
                 return;
             }
 
-            if (!memberAccessExpressionSyntax.Name.ToString().Equals(MemberName, StringComparison.Ordinal))
+            var identifier = interfaceDeclarationSyntax.Identifier;
+            if (identifier.Text.EndsWith(this.NameSuffix, StringComparison.OrdinalIgnoreCase))
+            {
+                // it does end with the desired suffix
+                // no point checking to warn if it should or not.
+                // that's not the point of this validator.
+                return;
+            }
+
+            var baseList = interfaceDeclarationSyntax.BaseList;
+
+            if (baseList == null)
             {
                 return;
             }
 
-            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberAccessExpressionSyntax.Expression);
-
-            if (typeInfo.Type == null)
+            if (baseList.Types.Count < 1)
             {
+
                 return;
             }
 
-            var typeFullName = typeInfo.Type.GetFullName();
-
-            if (!typeFullName.Equals(this.ClassName, StringComparison.Ordinal))
+            foreach (var baseTypeSyntax in baseList.Types)
             {
-                return;
+                var baseType = baseTypeSyntax.Type;
+                var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, baseType);
+
+                if (typeInfo.Type == null)
+                {
+                    return;
+                }
+
+                var typeFullName = typeInfo.Type.GetFullName();
+
+                if (typeFullName.Equals(this.BaseClassFullName, StringComparison.Ordinal))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(this._rule, identifier.GetLocation()));
+                    return;
+                }
             }
-
-
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, memberAccessExpressionSyntax.GetLocation()));
         }
-
-        protected abstract string ClassName { get; }
-
-        protected abstract string MemberName { get; }
     }
 }

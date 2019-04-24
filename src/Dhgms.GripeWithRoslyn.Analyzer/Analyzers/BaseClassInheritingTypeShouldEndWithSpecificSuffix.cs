@@ -1,21 +1,19 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using JetBrains.Annotations;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Immutable;
-    using JetBrains.Annotations;
-
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
-    /// <summary>
-    /// Base class for a Roslyn Analyzer that checks a method invocation based on the name and class of the method.
-    /// </summary>
-    public abstract class BaseInvocationExpressionAnalyzer : DiagnosticAnalyzer
+    public abstract class BaseClassInheritingTypeShouldEndWithSpecificSuffix : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
 
@@ -28,7 +26,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <param name="category">The category the analyzer belongs to.</param>
         /// <param name="description">The description of the analyzer</param>
         /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
-        protected BaseInvocationExpressionAnalyzer(
+        protected BaseClassInheritingTypeShouldEndWithSpecificSuffix(
             [NotNull] string diagnosticId,
             [NotNull] string title,
             [NotNull] string message,
@@ -45,18 +43,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
 
         /// <summary>
-        /// The name of the method to check for.
-        /// </summary>
-        [NotNull]
-        protected abstract string MethodName { get; }
-
-        /// <summary>
-        /// The containing types the method may belong to.
-        /// </summary>
-        [NotNull]
-        protected abstract string[] ContainingTypes { get; }
-
-        /// <summary>
         /// Called once at session start to register actions in the analysis context.
         /// </summary>
         /// <remarks>
@@ -67,39 +53,65 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// </param>
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(this.AnalyzeClassDeclarationExpression, SyntaxKind.ClassDeclaration);
         }
 
-        private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
+        protected abstract string NameSuffix { get; }
+
+        protected abstract string BaseClassFullName { get; }
+
+        private void AnalyzeClassDeclarationExpression(SyntaxNodeAnalysisContext context)
         {
             if (context.IsGenerated())
             {
                 return;
             }
 
-            var invocationExpression = (InvocationExpressionSyntax)context.Node;
-
-            var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;
-            if (memberExpression == null || !memberExpression.Name.ToString().Equals(MethodName, StringComparison.Ordinal))
+            if (!(context.Node is ClassDeclarationSyntax classDeclarationSyntax))
             {
                 return;
             }
 
-            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberExpression.Expression);
+            var identifier = classDeclarationSyntax.Identifier;
+            if (identifier.Text.EndsWith(this.NameSuffix, StringComparison.OrdinalIgnoreCase))
+            {
+                // it does end with the desired suffix
+                // no point checking to warn if it should or not.
+                // that's not the point of this validator.
+                return;
+            }
 
-            if (typeInfo.Type == null)
+            var baseList = classDeclarationSyntax.BaseList;
+
+            if (baseList == null)
             {
                 return;
             }
 
-            var typeFullName = typeInfo.Type.GetFullName();
-
-            if (ContainingTypes.All(x => !typeFullName.Equals(x, StringComparison.Ordinal)))
+            if (baseList.Types.Count < 1)
             {
+
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
+            foreach (var baseTypeSyntax in baseList.Types)
+            {
+                var baseType = baseTypeSyntax.Type;
+                var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, baseType);
+
+                if (typeInfo.Type == null)
+                {
+                    return;
+                }
+
+                var typeFullName = typeInfo.Type.GetFullName();
+
+                if (typeFullName.Equals(this.BaseClassFullName, StringComparison.Ordinal))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(this._rule, identifier.GetLocation()));
+                    return;
+                }
+            }
         }
     }
 }

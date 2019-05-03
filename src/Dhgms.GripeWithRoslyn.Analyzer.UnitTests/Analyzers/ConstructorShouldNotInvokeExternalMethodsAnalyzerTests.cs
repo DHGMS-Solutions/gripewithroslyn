@@ -55,8 +55,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
         {
             private readonly int _someField = SomeMethod2();
 
-            public TestObject()
+            public TestObject(string name)
             {
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    throw new ArgumentNullException(nameof(name));
+                }
             }
 
             private int Property

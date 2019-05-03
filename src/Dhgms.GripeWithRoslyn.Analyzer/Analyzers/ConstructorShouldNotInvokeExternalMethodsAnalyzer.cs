@@ -27,6 +27,29 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
 
+        private const string GlobalSystemStringNamespace = "global::System.String";
+
+        private readonly string[] operatorsWhiteList =
+        {
+            "nameof",
+            "typeof"
+        };
+
+        private readonly (string Namespace, string[] Methods)[] _methodWhiteList =
+        {
+            (
+                GlobalSystemStringNamespace,
+                new []
+                {
+                    "Contains",
+                    "EndsWith",
+                    "Equals",
+                    "IsNullOrWhiteSpace",
+                    "IsNullOrEmpty",
+                    "StartsWith",
+                }),
+        };
+
         /// <summary>
         /// Creates an instance of ConstructorShouldNotInvokeExternalMethodsAnalyzer
         /// </summary>
@@ -70,10 +93,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var node = context.Node;
 
-            // might want to skip through whitelist methods
-            // such as string.IsNullOrWhitespace();
+            var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
-            var parentMethodDeclaration = GetConstructorDeclarationSyntax(context.Node);
+            if (GetIsWhitelistedMethod(context, invocationExpression))
+            {
+                return;
+            }
+
+            var parentMethodDeclaration = GetConstructorDeclarationSyntax(invocationExpression);
 
             if (parentMethodDeclaration == null)
             {
@@ -81,6 +108,41 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             }
 
             context.ReportDiagnostic(Diagnostic.Create(this._rule, node.GetLocation()));
+        }
+
+        private bool GetIsWhitelistedMethod(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
+        {
+            switch (invocationExpression.Expression)
+            {
+                case MemberAccessExpressionSyntax memberAccessExpression:
+                    return GetIsWhiteListedMemberAccessMethod(
+                        context,
+                        memberAccessExpression);
+                case IdentifierNameSyntax identifierNameSyntax:
+                {
+                    var methodName = identifierNameSyntax.Identifier.ToFullString();
+                    return operatorsWhiteList.Any(operatorName => operatorName.Equals(methodName, StringComparison.Ordinal));
+                }
+
+                default:
+                    return false;
+            }
+        }
+
+        private bool GetIsWhiteListedMemberAccessMethod(SyntaxNodeAnalysisContext context, MemberAccessExpressionSyntax memberAccessExpression)
+        {
+            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberAccessExpression.Expression);
+            if (typeInfo.Type == null)
+            {
+                return false;
+            }
+
+            var typeFullName = typeInfo.Type.GetFullName();
+            var methodName = memberAccessExpression.Name.ToString();
+
+            return _methodWhiteList
+                .Any(tuple => tuple.Namespace.Equals(typeFullName)
+                              && tuple.Methods.Any(tupleMethod => methodName.Equals(tupleMethod, StringComparison.Ordinal)));
         }
 
         private static ConstructorDeclarationSyntax GetConstructorDeclarationSyntax(SyntaxNode syntaxNode)

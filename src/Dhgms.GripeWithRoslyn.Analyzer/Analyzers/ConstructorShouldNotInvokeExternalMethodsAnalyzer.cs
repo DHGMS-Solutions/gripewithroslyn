@@ -18,14 +18,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     {
         private readonly DiagnosticDescriptor _rule;
 
-        internal const string Title = "ViewModel classes should inherit from a ViewModel interface.";
+        internal const string Title = "Constructors should minimise work and not execute methods";
 
         private const string MessageFormat = Title;
 
         private const string Category = SupportedCategories.Maintainability;
 
         private const string Description =
-            "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
+            "Constructors should minimise work and not execute methods. This is due make code easier to test, poor performance, race conditions and quirks of IDE designer.";
 
         private const string GlobalSystemStringNamespace = "global::System.String";
 

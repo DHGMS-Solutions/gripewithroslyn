@@ -72,6 +72,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         public sealed override void Initialize(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(this.AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(this.AnalyzeObjectCreationExpression, SyntaxKind.ObjectCreationExpression);
         }
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
@@ -90,6 +91,27 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             }
 
             var methodSymbol = context.SemanticModel.GetSymbolInfo(memberExpression).Symbol;
+
+            var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
+            if (containingNamespace == null
+                || !containingNamespace.GetFullName().StartsWith(this.Namespace, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
+        }
+
+        private void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context)
+        {
+            if (context.IsGenerated())
+            {
+                return;
+            }
+
+            var invocationExpression = (ObjectCreationExpressionSyntax)context.Node;
+
+            var methodSymbol = context.SemanticModel.GetSymbolInfo(invocationExpression).Symbol;
 
             var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
             if (containingNamespace == null

@@ -93,7 +93,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
             if (containingNamespace == null
-                || !containingNamespace.Name.StartsWith(this.Namespace, StringComparison.Ordinal))
+                || !containingNamespace.GetFullName().StartsWith(this.Namespace, StringComparison.Ordinal))
             {
                 return;
             }

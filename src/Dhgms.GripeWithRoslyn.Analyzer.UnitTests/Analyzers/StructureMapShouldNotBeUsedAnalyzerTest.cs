@@ -16,19 +16,21 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
         public void ReturnsWarning()
         {
             var test = @"
+    namespace StructureMap
+    {
+        public class Test
+        {
+            public void Method()
+            {
+            }
+        }
+    }
+
     namespace ConsoleApplication1
     {
         using System.Text;
 
-        namespace StructureMap
-        {
-            public class Test
-            {
-                public void Method()
-                {
-                }
-            }
-        }
+
 
         class TypeName
         {
@@ -39,18 +41,33 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
             }
         }
     }";
-            var expected = new DiagnosticResult
+
+            var ctor = new DiagnosticResult
             {
                 Id = DiagnosticIdsHelper.StructureMapShouldNotBeUsed,
                 Message = "StructureMap is end of life so should not be used.",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                        new DiagnosticResultLocation("Test0.cs", 21, 17)
+                        new DiagnosticResultLocation("Test0.cs", 22, 32)
                     }
             };
 
-            VerifyCSharpDiagnostic(test, expected);
+            var methodInvoke = new DiagnosticResult
+            {
+                Id = DiagnosticIdsHelper.StructureMapShouldNotBeUsed,
+                Message = "StructureMap is end of life so should not be used.",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                        new DiagnosticResultLocation("Test0.cs", 23, 17)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(
+                test,
+                ctor,
+                methodInvoke);
         }
 
         //protected override CodeFixProvider GetCSharpCodeFixProvider()

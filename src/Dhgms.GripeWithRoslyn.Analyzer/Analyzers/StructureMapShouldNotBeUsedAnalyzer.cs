@@ -30,6 +30,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
-        protected override string Namespace => "StructureMap";
+        protected override string Namespace => "global::StructureMap";
     }
 }

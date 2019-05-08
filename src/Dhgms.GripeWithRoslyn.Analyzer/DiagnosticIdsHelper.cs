@@ -20,5 +20,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string ReactiveObjectInterfaceShouldHaveViewModelSuffix => "GR0010";
         internal static string ViewModelInterfaceShouldInheritReactiveObject => "GR0011";
         internal static string ConstructorShouldNotInvokeExternalMethods => "GR0012";
+
+        internal static string DoNotUseGdiPlus => "GR0013";
     }
 }

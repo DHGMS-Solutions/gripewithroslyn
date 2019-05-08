@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
+﻿using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using TestHelper;
@@ -9,18 +6,22 @@ using Xunit;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 {
-    public class StructureMapShouldNotBeUsedAnalyzerTest : CodeFixVerifier
+    public sealed class DoNotUseGdiPlusAnalyzerTest : CodeFixVerifier
     {
         //Diagnostic and CodeFix both triggered and checked for
         [Fact]
         public void ReturnsWarning()
         {
             var test = @"
-    namespace StructureMap
+    namespace System.Drawing
     {
-        public class Test
+        public sealed class Bitmap
         {
-            public void Method()
+            public Bitmap(string filename)
+            {
+            }
+
+            public void Bleh()
             {
             }
         }
@@ -28,35 +29,30 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 
     namespace ConsoleApplication1
     {
-        using System.Text;
-
-
-
         class TypeName
         {
             public void MethodName()
             {
-                var instance = new StructureMap.Test();
-                instance.Method();
+                var bitmap = new System.Drawing.Bitmap(""somefile"");
+                bitmap.Bleh();
             }
         }
     }";
-
             var ctor = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.StructureMapShouldNotBeUsed,
-                Message = "StructureMap is end of life so should not be used.",
+                Id = DiagnosticIdsHelper.DoNotUseGdiPlus,
+                Message = DoNotUseGdiPlusAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                        new DiagnosticResultLocation("Test0.cs", 22, 32)
+                        new DiagnosticResultLocation("Test0.cs", 22, 30)
                     }
             };
 
             var methodInvoke = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.StructureMapShouldNotBeUsed,
-                Message = "StructureMap is end of life so should not be used.",
+                Id = DiagnosticIdsHelper.DoNotUseGdiPlus,
+                Message = DoNotUseGdiPlusAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -77,7 +73,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new StructureMapShouldNotBeUsedAnalyzer();
+            return new DoNotUseGdiPlusAnalyzer();
         }
     }
 }

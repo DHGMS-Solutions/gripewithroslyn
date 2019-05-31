@@ -22,5 +22,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string ConstructorShouldNotInvokeExternalMethods => "GR0012";
 
         internal static string DoNotUseGdiPlus => "GR0013";
+        internal static string UseDateTimeUtcNowInsteadofNow => "GR0014";
     }
 }

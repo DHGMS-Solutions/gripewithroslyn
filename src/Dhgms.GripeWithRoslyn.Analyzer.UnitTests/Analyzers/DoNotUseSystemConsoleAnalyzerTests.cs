@@ -36,31 +36,19 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
             }
         }
     }";
-            var ctor = new DiagnosticResult
-            {
-                Id = DiagnosticIdsHelper.DoNotUseGdiPlus,
-                Message = DoNotUseGdiPlusAnalyzer.Title,
-                Severity = DiagnosticSeverity.Warning,
-                Locations =
-                    new[] {
-                        new DiagnosticResultLocation("Test0.cs", 22, 30)
-                    }
-            };
-
             var methodInvoke = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.DoNotUseGdiPlus,
-                Message = DoNotUseGdiPlusAnalyzer.Title,
+                Id = DiagnosticIdsHelper.DoNotUseSystemConsole,
+                Message = DoNotUseSystemConsoleAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                        new DiagnosticResultLocation("Test0.cs", 23, 17)
+                        new DiagnosticResultLocation("Test0.cs", 18, 17)
                     }
             };
 
             VerifyCSharpDiagnostic(
                 test,
-                ctor,
                 methodInvoke);
         }
 

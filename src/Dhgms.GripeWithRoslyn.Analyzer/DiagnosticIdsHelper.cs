@@ -24,5 +24,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseGdiPlus => "GR0013";
         internal static string UseDateTimeUtcNowInsteadofNow => "GR0014";
         internal static string DoNotUseSystemConsole => "GR0015";
+        internal static string DoNotUseSystemSecuritySecureString => "GR0016";
     }
 }

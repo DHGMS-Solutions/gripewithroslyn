@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    public sealed class UseSystemTextJsonInsteadOfNewtonsoftJson : BaseInvocationUsingNamespaceAnalyzer
+    public sealed class UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer : BaseInvocationUsingNamespaceAnalyzer
     {
         internal const string Title = "Consider use of System.Text.Json instead of Newtonsoft.Json (JSON.NET).";
 
@@ -20,7 +20,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "System.Text.Json brings improvements from JSON.NET.";
 
-        public UseSystemTextJsonInsteadOfNewtonsoftJson() : base(
+        public UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer() : base(
             DiagnosticIdsHelper.UseSystemTextJsonInsteadOfNewtonsoftJson,
             Title,
             MessageFormat,

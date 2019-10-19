@@ -17,37 +17,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     {
         private readonly DiagnosticDescriptor _rule;
 
-        internal const string Title = "Constructors should minimise work and not execute methods";
+        internal const string Title = "TryParse should be used inside an If Statement with a unary operation";
 
         private const string MessageFormat = Title;
 
-        private const string Category = SupportedCategories.Maintainability;
+        private const string Category = SupportedCategories.Usage;
 
         private const string Description =
-            "Constructors should minimise work and not execute methods. This is due make code easier to test, poor performance, race conditions and quirks of IDE designer.";
-
-        private const string GlobalSystemStringNamespace = "global::System.String";
-
-        private readonly string[] operatorsWhiteList =
-        {
-            "nameof",
-            "typeof"
-        };
-
-        private readonly (string Namespace, string[] Methods)[] _methodWhiteList =
-        {
-            (
-                GlobalSystemStringNamespace,
-                new []
-                {
-                    "Contains",
-                    "EndsWith",
-                    "Equals",
-                    "IsNullOrWhiteSpace",
-                    "IsNullOrEmpty",
-                    "StartsWith",
-                }),
-        };
+            "TryParse should be used inside an If Statement with a unary operation. This allows mitigating errors with parsing.";
 
         /// <summary>
         /// Creates an instance of ConstructorShouldNotInvokeExternalMethodsAnalyzer
@@ -55,7 +32,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         public TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer()
         {
             this._rule = new DiagnosticDescriptor(
-                DiagnosticIdsHelper.ConstructorShouldNotInvokeExternalMethods,
+                DiagnosticIdsHelper.TryParseShouldBeUsedInLogicalNotIfStatement,
                 Title,
                 MessageFormat,
                 Category,
@@ -94,12 +71,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
-            if (!(invocationExpression.Expression is IdentifierNameSyntax identifierNameSyntax))
+            if (!(invocationExpression.Expression is MemberAccessExpressionSyntax memberAccessExpressionSyntax))
             {
                 return;
             }
 
-            if (!identifierNameSyntax.Identifier.Text.Equals("TryParse", StringComparison.Ordinal))
+            if (!memberAccessExpressionSyntax.Name.Identifier.Text.Equals("TryParse", StringComparison.Ordinal))
             {
                 return;
             }

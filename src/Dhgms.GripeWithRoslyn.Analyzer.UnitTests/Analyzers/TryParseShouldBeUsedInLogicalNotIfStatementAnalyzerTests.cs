@@ -38,7 +38,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
             var expected = new DiagnosticResult
             {
                 Id = DiagnosticIdsHelper.TryParseShouldBeUsedInLogicalNotIfStatement,
-                Message = "Consider usage of typeof(x) instead of MethodBase.GetCurrentMethod().DeclaringType.",
+                Message = TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {

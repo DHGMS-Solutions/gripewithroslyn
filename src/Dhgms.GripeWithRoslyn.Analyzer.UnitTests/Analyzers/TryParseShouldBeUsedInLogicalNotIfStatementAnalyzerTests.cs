@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 {
-    public sealed class UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzerTest : CodeFixVerifier
+    public sealed class TryParseShouldBeUsedInLogicalNotIfStatementAnalyzerTests : CodeFixVerifier
     {
         //Diagnostic and CodeFix both triggered and checked for
         [Fact]
@@ -25,7 +25,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
         {
             public void MethodName()
             {
-                global::System.Reflection.MethodBase.GetCurrentMethod().DeclaringType;
+            if (int.TryParse(""x"", out var result))
+            {
+                throw new ArgumentException(""test"");
+            }
             }
         }
     }";
@@ -34,7 +37,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfASCII,
+                Id = DiagnosticIdsHelper.TryParseShouldBeUsedInLogicalNotIfStatement,
                 Message = "Consider usage of typeof(x) instead of MethodBase.GetCurrentMethod().DeclaringType.",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -53,7 +56,15 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer();
+            return new TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer();
+        }
+
+        public void Test()
+        {
+            if (!int.TryParse("x", out var result))
+            {
+                throw new ArgumentException("test");
+            }
         }
     }
 }

@@ -39,5 +39,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseSystemSecuritySecureString => "GR0016";
 
         internal static string UseSystemTextJsonInsteadOfNewtonsoftJson => "GR0017";
+
+        internal static string TryParseShouldBeUsedInLogicalNotIfStatement => "GR0018";
     }
 }

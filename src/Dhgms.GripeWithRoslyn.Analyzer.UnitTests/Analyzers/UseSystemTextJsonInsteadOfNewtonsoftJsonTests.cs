@@ -10,13 +10,24 @@ using Xunit;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 {
-    public sealed class UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzerTest : CodeFixVerifier
+    public sealed class UseSystemTextJsonInsteadOfNewtonsoftJsonTests : CodeFixVerifier
     {
         //Diagnostic and CodeFix both triggered and checked for
         [Fact]
         public void ReturnsWarning()
         {
             var test = @"
+    namespace Newtonsoft.Json
+    {
+        public static class JsonConvert
+        {
+            public static object DeserializeObject(string value)
+            {
+                return value;
+            }
+        }
+    }
+
     namespace ConsoleApplication1
     {
         using System.Text;
@@ -25,7 +36,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
         {
             public void MethodName()
             {
-                global::System.Reflection.MethodBase.GetCurrentMethod().DeclaringType;
+                global::Newtonsoft.Json.JsonConvert.DeserializeObject(""{}"");
             }
         }
     }";
@@ -34,12 +45,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfASCII,
-                Message = "Consider usage of typeof(x) instead of MethodBase.GetCurrentMethod().DeclaringType.",
+                Id = DiagnosticIdsHelper.UseSystemTextJsonInsteadOfNewtonsoftJson,
+                Message = UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                        new DiagnosticResultLocation("Test0.cs", 10, 17)
+                        new DiagnosticResultLocation("Test0.cs", 21, 17)
                     }
             };
 
@@ -53,7 +64,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer();
+            return new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer();
         }
     }
+
 }

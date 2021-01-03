@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Immutable;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using DiagnosticDescriptor = Microsoft.CodeAnalysis.DiagnosticDescriptor;
 using DiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
 using ReportDiagnostic = Microsoft.CodeAnalysis.ReportDiagnostic;
-using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {

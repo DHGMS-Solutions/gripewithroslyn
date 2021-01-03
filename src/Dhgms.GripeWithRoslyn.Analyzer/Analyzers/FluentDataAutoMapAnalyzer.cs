@@ -14,8 +14,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class FluentDataAutoMapAnalyzer : BaseInvocationExpressionAnalyzer
     {
-        private const string DiagnosticId = "DhgmsGripeWithRoslynAnalyzer";
-
         private const string Title = "FluentData AutoMap should not be used.";
 
         private const string MessageFormat = Title;

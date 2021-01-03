@@ -1,5 +1,4 @@
-﻿using System;
-using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 

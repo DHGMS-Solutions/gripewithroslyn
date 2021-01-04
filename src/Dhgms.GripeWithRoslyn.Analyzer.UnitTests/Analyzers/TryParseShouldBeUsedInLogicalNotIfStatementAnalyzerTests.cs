@@ -58,13 +58,5 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
         {
             return new TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer();
         }
-
-        public void Test()
-        {
-            if (!int.TryParse("x", out var result))
-            {
-                throw new ArgumentException("test");
-            }
-        }
     }
 }

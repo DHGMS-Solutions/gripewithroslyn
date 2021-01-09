@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
-using JetBrains.Annotations;
+﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers

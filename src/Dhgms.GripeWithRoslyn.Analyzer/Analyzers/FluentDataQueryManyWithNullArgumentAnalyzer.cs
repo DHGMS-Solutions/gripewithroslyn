@@ -75,7 +75,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 var diagnostic = Diagnostic.Create(Rule, arg.Expression.GetLocation());
                 context.ReportDiagnostic(diagnostic);
             }
-
         }
     }
 }

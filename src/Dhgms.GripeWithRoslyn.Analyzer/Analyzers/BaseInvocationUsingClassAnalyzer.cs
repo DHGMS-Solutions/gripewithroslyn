@@ -61,26 +61,25 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// </param>
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(this.AnalyzeSimpleMemberAccessExpression, SyntaxKind.SimpleMemberAccessExpression);
         }
 
-        private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
+        private void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
         {
             if (context.IsGenerated())
             {
                 return;
             }
 
-            var invocationExpression = (InvocationExpressionSyntax)context.Node;
+            var memberAccessExpressionSyntax = (MemberAccessExpressionSyntax)context.Node;
 
-            var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;
-            if (memberExpression == null
-                || memberExpression.Expression == null)
+            if (memberAccessExpressionSyntax == null
+                || memberAccessExpressionSyntax.Expression == null)
             {
                 return;
             }
 
-            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberExpression.Expression);
+            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberAccessExpressionSyntax.Expression);
 
             if (typeInfo.Type == null)
             {
@@ -95,8 +94,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             }
 
 
-
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(this._rule, memberAccessExpressionSyntax.GetLocation()));
         }
 
         protected abstract string ClassName { get; }

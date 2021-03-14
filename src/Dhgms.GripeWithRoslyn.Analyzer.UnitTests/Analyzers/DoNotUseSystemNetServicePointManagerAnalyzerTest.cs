@@ -28,7 +28,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 
         public sealed class ServicePointManager
         {
-            public ServicePoint FindServicePoint(Uri uri)
+            public static ServicePoint FindServicePoint(Uri uri)
             {
             }
 
@@ -80,7 +80,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 
         public sealed class ServicePointManager
         {
-            public ServicePoint FindServicePoint()
+            public static ServicePoint FindServicePoint()
             {
             }
 

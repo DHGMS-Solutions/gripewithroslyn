@@ -90,6 +90,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             if (!typeFullName.Equals(this.ClassName, StringComparison.Ordinal))
             {
+                // need to look at if it's a static member access if we get here.
                 return;
             }
 

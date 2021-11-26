@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
@@ -13,6 +9,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Abstract Implementation for an analyzer that ensures a type ends with a specific suffix.
+    /// </summary>
     public abstract class BaseInterfaceInheritingTypeShouldEndWithSpecificSuffix : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
@@ -53,11 +52,19 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// </param>
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeInterfaceDeclarationExpression, SyntaxKind.InterfaceDeclaration);
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+            context.RegisterSyntaxNodeAction(AnalyzeInterfaceDeclarationExpression, SyntaxKind.InterfaceDeclaration);
         }
 
+        /// <summary>
+        /// Gets the name suffix for the name
+        /// </summary>
         protected abstract string NameSuffix { get; }
 
+        /// <summary>
+        /// Gets the full name of the base class this rule applies to.
+        /// </summary>
         protected abstract string BaseClassFullName { get; }
 
         private void AnalyzeInterfaceDeclarationExpression(SyntaxNodeAnalysisContext context)

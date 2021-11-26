@@ -45,7 +45,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
 
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeClassDeclarationExpression, SyntaxKind.ClassDeclaration);
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+            context.RegisterSyntaxNodeAction(AnalyzeClassDeclarationExpression, SyntaxKind.ClassDeclaration);
         }
 
         private void AnalyzeClassDeclarationExpression(SyntaxNodeAnalysisContext context)

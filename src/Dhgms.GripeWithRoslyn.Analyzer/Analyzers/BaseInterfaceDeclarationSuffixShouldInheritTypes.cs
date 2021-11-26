@@ -64,7 +64,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// </param>
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeInterfaceDeclarationExpression, SyntaxKind.InterfaceDeclaration);
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+            context.RegisterSyntaxNodeAction(AnalyzeInterfaceDeclarationExpression, SyntaxKind.InterfaceDeclaration);
         }
 
         private void AnalyzeInterfaceDeclarationExpression(SyntaxNodeAnalysisContext context)

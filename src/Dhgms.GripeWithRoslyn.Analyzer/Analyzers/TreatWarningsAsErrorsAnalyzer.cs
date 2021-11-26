@@ -53,6 +53,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// </param>
         public sealed override void Initialize(AnalysisContext context)
         {
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
             context.RegisterCompilationAction(CompilationAnalysis);
         }
 

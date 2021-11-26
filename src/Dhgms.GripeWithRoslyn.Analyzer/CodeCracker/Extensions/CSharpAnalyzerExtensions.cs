@@ -638,7 +638,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                             {
                                 if (right.IsKind(SyntaxKind.NullLiteralExpression))
                                     currentState = InitializerState.None;
-                                else if (symbol.Equals(context.SemanticModel.GetSymbolInfo(identifier).Symbol))
+                                else if (symbol.Equals(context.SemanticModel.GetSymbolInfo(identifier).Symbol, SymbolEqualityComparer.Default))
                                     currentState = InitializerState.Initializer;
                             }
                         }
@@ -925,7 +925,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             foreach (var interfaceMember in interfaceMembersWithSameName)
             {
                 var implementation = type.FindImplementationForInterfaceMember(interfaceMember);
-                if (implementation != null && implementation.Equals(memberSymbol)) return true;
+                if (implementation != null && implementation.Equals(memberSymbol, SymbolEqualityComparer.Default)) return true;
             }
             return false;
         }

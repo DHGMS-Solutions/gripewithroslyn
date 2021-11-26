@@ -25,6 +25,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
+        /// <inhertitdoc />
         protected override string Namespace => "global::System.Drawing";
     }
 }

@@ -23,9 +23,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
 
         private string ClassNameSuffix = "ViewModel";
 
-        /// <summary>
-        /// Returns a set of descriptors for the diagnostics that this analyzer is capable of producing.
-        /// </summary>
+        /// <inhertitdoc />
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
 
         /// <summary>
@@ -43,6 +41,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
                 Description);
         }
 
+        /// <inhertitdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
             context.EnableConcurrentExecution();

@@ -26,8 +26,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
+        /// <inhertitdoc />
         protected override string MethodName => "EnsureCreated";
 
+        /// <inhertitdoc />
         protected override string[] ContainingTypes => new []
         {
             "Microsoft.EntityFrameworkCore.Infrastructure",

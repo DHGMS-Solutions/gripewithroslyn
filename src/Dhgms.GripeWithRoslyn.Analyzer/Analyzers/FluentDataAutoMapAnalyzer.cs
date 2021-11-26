@@ -36,14 +36,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
-        /// <summary>
-        /// The name of the method to check for.
-        /// </summary>
+        /// <inhertitdoc />
         protected override string MethodName => "AutoMap";
 
-        /// <summary>
-        /// The containing types the method may belong to.
-        /// </summary>
+        /// <inhertitdoc />
         protected override string[] ContainingTypes => new[]
                 {
                     "FluentData.IInsertBuilder<T>",

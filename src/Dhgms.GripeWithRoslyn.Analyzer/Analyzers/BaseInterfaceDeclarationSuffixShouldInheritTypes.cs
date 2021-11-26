@@ -36,32 +36,18 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             this._rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
         }
 
-        /// <summary>
-        /// Returns a set of descriptors for the diagnostics that this analyzer is capable of producing.
-        /// </summary>
+        /// <inhertitdoc />
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
 
-        /// <summary>
-        /// The suffix of the class to check for.
-        /// </summary>
+        /// <inhertitdoc />
         [NotNull]
         protected abstract string ClassNameSuffix { get; }
 
-        /// <summary>
-        /// The containing types the method may belong to.
-        /// </summary>
+        /// <inhertitdoc />
         [NotNull]
         protected abstract string BaseInterfaceFullName { get; }
 
-        /// <summary>
-        /// Called once at session start to register actions in the analysis context.
-        /// </summary>
-        /// <remarks>
-        /// https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Analyzer%20Actions%20Semantics.md for more information
-        /// </remarks>
-        /// <param name="context">
-        /// Roslyn context.
-        /// </param>
+        /// <inhertitdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
             context.EnableConcurrentExecution();

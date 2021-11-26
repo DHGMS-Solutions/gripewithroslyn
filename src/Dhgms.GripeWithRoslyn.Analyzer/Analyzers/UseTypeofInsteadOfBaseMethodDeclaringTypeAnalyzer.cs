@@ -30,8 +30,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
+        /// <inhertitdoc />
         protected override string ClassName => "global::System.Reflection.MethodBase";
 
+        /// <inhertitdoc />
         protected override string MemberName => "DeclaringType";
     }
 }

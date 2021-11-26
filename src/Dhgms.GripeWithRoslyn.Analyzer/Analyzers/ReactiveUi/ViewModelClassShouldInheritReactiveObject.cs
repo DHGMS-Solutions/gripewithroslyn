@@ -34,11 +34,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         {
         }
 
-        /// <summary>
-        /// The suffix of the class to check for.
-        /// </summary>
+        /// <inhertitdoc />
         protected override string ClassNameSuffix => "ViewModel";
 
+        /// <inhertitdoc />
         protected override string BaseClassFullName => "global::ReactiveUi.IReactiveObject";
     }
 }

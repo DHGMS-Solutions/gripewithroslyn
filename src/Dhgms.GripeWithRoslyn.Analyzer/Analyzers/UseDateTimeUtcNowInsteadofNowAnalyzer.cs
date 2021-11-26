@@ -24,8 +24,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
+        /// <inhertitdoc />
         protected override string ClassName => "global::System.DateTime";
 
+        /// <inhertitdoc />
         protected override string MemberName => "Now";
     }
 }

@@ -29,6 +29,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
+        /// <inhertitdoc />
         protected override string ClassName => "global::System.Security.SecureString";
     }
 }

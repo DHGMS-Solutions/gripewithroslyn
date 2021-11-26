@@ -10,14 +10,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class RemotingServicesAnalyzer : BaseInvocationUsingNamespaceAnalyzer
     {
-        private const string Title = ".NET remoting is legacy technology and should not be used. You should be using WCF\\WebAPI.";
+        private const string Title = ".NET remoting is legacy technology and should not be used. You should be using a newer technology.";
 
         private const string MessageFormat = Title;
 
         private const string Category = SupportedCategories.Maintainability;
 
         private const string Description =
-            ".NET remoting is legacy technology and should not be used. You should be using WCF\\WebAPI.";
+            ".NET remoting is legacy technology and should not be used. You should be using a newer technology.";
 
         /// <summary>
         /// Creates an instance of RemotingServicesAnalyzer
@@ -32,9 +32,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
-        /// <summary>
-        /// The namespace to check for.
-        /// </summary>
+        /// <inhertitdoc />
         protected override string Namespace => "System.Runtime.Remoting";
     }
 }

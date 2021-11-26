@@ -32,9 +32,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
-        /// <summary>
-        /// The name of the assembly to check for.
-        /// </summary>
+        /// <inhertitdoc />
         protected override string AssemblyName => "Oracle.DataAccess";
     }
 }

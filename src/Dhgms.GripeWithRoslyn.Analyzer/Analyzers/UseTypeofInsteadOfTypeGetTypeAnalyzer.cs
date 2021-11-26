@@ -29,8 +29,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
+        /// <inhertitdoc />
         protected override string MethodName => "GetType";
 
+        /// <inhertitdoc />
         protected override string[] ContainingTypes => new [] {"global::System.Type"};
     }
 }

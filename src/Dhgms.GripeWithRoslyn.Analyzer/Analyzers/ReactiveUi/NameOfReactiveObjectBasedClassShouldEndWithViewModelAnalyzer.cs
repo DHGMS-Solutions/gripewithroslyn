@@ -25,8 +25,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
                 DiagnosticSeverity.Warning)
         {
         }
+
+        /// <inhertitdoc />
         protected override string NameSuffix => "ViewModel";
 
+        /// <inhertitdoc />
         protected override string BaseClassFullName => "global::ReactiveUi.ReactiveObject";
     }
 }

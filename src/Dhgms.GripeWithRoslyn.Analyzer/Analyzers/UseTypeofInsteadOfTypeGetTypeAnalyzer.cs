@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class UseTypeofInsteadOfTypeGetTypeAnalyzer : BaseInvocationExpressionAnalyzer
     {
         private const string Title = "Consider usage of typeof(x) instead of System.Type.GetType.";
@@ -19,6 +20,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "System.Type.GetType may be a misuse of establishling type information. typeof(x) allows for compile time verification of the type.";
 
+        /// <summary>
+        /// Creates an instance of UseTypeofInsteadOfTypeGetTypeAnalyzer
+        /// </summary>
         public UseTypeofInsteadOfTypeGetTypeAnalyzer() : base(
             DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfASCII,
             Title,

@@ -9,6 +9,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer for ensuring that an inheriting type has a naming convention that ends with a specific suffix.
+    /// </summary>
     public abstract class BaseClassInheritingTypeShouldEndWithSpecificSuffix : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
@@ -44,8 +47,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             context.RegisterSyntaxNodeAction(AnalyzeClassDeclarationExpression, SyntaxKind.ClassDeclaration);
         }
 
+        /// <summary>
+        /// Gets the name suffix that classes should end by.
+        /// </summary>
         protected abstract string NameSuffix { get; }
 
+        /// <summary>
+        /// Gets the full name of the base class that mean inheriting classes should use this rule.
+        /// </summary>
         protected abstract string BaseClassFullName { get; }
 
         private void AnalyzeClassDeclarationExpression(SyntaxNodeAnalysisContext context)

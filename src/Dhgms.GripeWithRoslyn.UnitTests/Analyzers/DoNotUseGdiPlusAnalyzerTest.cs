@@ -6,6 +6,9 @@ using Xunit;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 {
+    /// <summary>
+    /// Unit Tests for the GDI+ analyzer.
+    /// </summary>
     public sealed class DoNotUseGdiPlusAnalyzerTest : CodeFixVerifier
     {
         //Diagnostic and CodeFix both triggered and checked for

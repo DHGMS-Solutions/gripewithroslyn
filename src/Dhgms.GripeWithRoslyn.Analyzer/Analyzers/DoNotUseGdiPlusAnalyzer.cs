@@ -3,6 +3,9 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to ensure GDI+ is not used.
+    /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class DoNotUseGdiPlusAnalyzer : BaseInvocationUsingNamespaceAnalyzer
     {
@@ -15,6 +18,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "GDI+ usage needs to be considered as it is not suitable for web development etc.";
 
+        /// <summary>
+        /// Creates an instance of DoNotUseGdiPlusAnalyzer
+        /// </summary>
         public DoNotUseGdiPlusAnalyzer() : base(
             DiagnosticIdsHelper.DoNotUseGdiPlus,
             Title,

@@ -682,6 +682,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
         private static bool CanSkipInitializer(InitializerState foundState, InitializerState currentState) =>
             foundState == InitializerState.WayToSkipInitializer && currentState == InitializerState.None;
 
+#if TBC
         public static TNode WithoutAllTrivia<TNode>(this TNode node) where TNode : SyntaxNode
         {
             var newNode = node.WithoutTrivia();
@@ -694,6 +695,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             newNode = newNode.WithAdditionalAnnotations(Formatter.Annotation);
             return newNode;
         }
+#endif
 
         public static SyntaxToken WithoutTrivia(this SyntaxToken token)
         {

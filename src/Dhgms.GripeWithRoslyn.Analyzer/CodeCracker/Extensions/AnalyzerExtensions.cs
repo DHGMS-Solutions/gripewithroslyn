@@ -5,6 +5,9 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 {
+    /// <summary>
+    /// Extensions for working with analyzers.
+    /// </summary>
     public static partial class AnalyzerExtensions
     {
         public static SyntaxNode WithSameTriviaAs(this SyntaxNode target, SyntaxNode source)

@@ -15,6 +15,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "EnsureCreatedAsync should not be used in an Application. There are risks around race conditions, initialization time and complexities with high availability when running multiple nodes. Database releases should be done as part of an independent release process.";
 
+        /// <summary>
+        /// Creates an instance of DoNotUseEntityFrameworkCoreEnsureDatabaseCreatedAsyncAnalyzer
+        /// </summary>
         public DoNotUseEntityFrameworkCoreEnsureDatabaseCreatedAsyncAnalyzer()
             : base(
                 DiagnosticIdsHelper.DoNotUseEntityFrameworkCoreDatabaseEnsureCreatedAsync,

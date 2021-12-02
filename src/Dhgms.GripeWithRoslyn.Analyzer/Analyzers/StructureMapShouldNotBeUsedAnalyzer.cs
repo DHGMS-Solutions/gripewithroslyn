@@ -3,6 +3,10 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to ensure structure map is not used.
+    /// </summary>
+    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class StructureMapShouldNotBeUsedAnalyzer : BaseInvocationUsingNamespaceAnalyzer
     {
         private const string Title = "StructureMap is end of life so should not be used.";
@@ -14,6 +18,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "The StructureMap project has been retired. This means there are no gurantees of fixes. This codebase should not be used.";
 
+        /// <summary>
+        /// Creates an instance of StructureMapShouldNotBeUsedAnalyzer
+        /// </summary>
         public StructureMapShouldNotBeUsedAnalyzer() : base(
             DiagnosticIdsHelper.StructureMapShouldNotBeUsed,
             Title,

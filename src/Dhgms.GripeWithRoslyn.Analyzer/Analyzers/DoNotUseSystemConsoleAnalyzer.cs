@@ -3,6 +3,10 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to enure System.Console
+    /// </summary>
+    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class DoNotUseSystemConsoleAnalyzer : BaseInvocationUsingClassAnalyzer
     {
         internal const string Title = "Do not use System.Console.";
@@ -14,6 +18,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "System.Console suggests code that may not be flexible, or carrying out unintended work such as not using a proper logging implementation.";
 
+        /// <summary>
+        /// Creates an instance of DoNotUseSystemConsoleAnalyzer
+        /// </summary>
         public DoNotUseSystemConsoleAnalyzer() : base(
             DiagnosticIdsHelper.DoNotUseSystemConsole,
             Title,

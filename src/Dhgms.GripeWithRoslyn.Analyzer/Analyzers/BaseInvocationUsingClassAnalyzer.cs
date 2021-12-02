@@ -9,6 +9,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Base class for checking if a method invocation is from a specific class.
+    /// </summary>
     public abstract class BaseInvocationUsingClassAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
@@ -85,6 +88,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
         }
 
+        /// <summary>
+        /// Gets the class name the rule should check for.
+        /// </summary>
         protected abstract string ClassName { get; }
     }
 }

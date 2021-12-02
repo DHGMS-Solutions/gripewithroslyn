@@ -12,7 +12,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     /// Analyzer for checking that Treat Warnings As Errors is Enabled.
     /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-    public class TreatWarningsAsErrorsAnalyzer : DiagnosticAnalyzer
+    public sealed class TreatWarningsAsErrorsAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
 

@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer : BaseSimpleMemberAccessOnTypeAnalyzer
     {
         private const string Title = "Consider usage of typeof(x) instead of MethodBase.GetCurrentMethod().DeclaringType.";
@@ -20,6 +21,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "MethodBase.GetCurrentMethod().DeclaringType may be a misuse of establishling type information. typeof(x) allows for compile time verification of the type and avoids reflection.";
 
+        /// <summary>
+        /// Creates an instance of UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer
+        /// </summary>
         public UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer() : base(
             DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfASCII,
             Title,

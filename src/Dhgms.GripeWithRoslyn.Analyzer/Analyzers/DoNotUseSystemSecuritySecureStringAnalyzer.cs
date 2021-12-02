@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class DoNotUseSystemSecuritySecureStringAnalyzer : BaseInvocationUsingClassAnalyzer
     {
         internal const string Title = "Do not use System.Security.SecureString.";
@@ -19,6 +20,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "System.Console suggests code that may not be flexible, or carrying out unintended work such as not using a proper logging implementation.";
 
+        /// <summary>
+        /// Creates an instance of DoNotUseSystemSecuritySecureStringAnalyzer
+        /// </summary>
         public DoNotUseSystemSecuritySecureStringAnalyzer() : base(
             DiagnosticIdsHelper.DoNotUseSystemSecuritySecureString,
             Title,

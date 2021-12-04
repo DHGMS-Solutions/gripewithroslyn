@@ -8,6 +8,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to check if TryParse is used in a logical if statement.
+    /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer : DiagnosticAnalyzer
     {
@@ -68,6 +71,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             {
                 return;
             }
+
+#error check if the return type is boolean
 
             if (IsInIfStatementWithLogicalNotOperation(invocationExpression))
             {

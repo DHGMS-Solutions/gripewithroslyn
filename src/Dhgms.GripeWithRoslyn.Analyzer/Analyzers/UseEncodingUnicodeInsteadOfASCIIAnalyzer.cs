@@ -3,6 +3,9 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to suggest using <see cref="T:System.Text.UnicodeEncoding"/> instead of <see cref="T:System.Text.ASCIIEncoding"/>.
+    /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class UseEncodingUnicodeInsteadOfASCIIAnalyzer : BaseInvocationUsingClassAnalyzer
     {

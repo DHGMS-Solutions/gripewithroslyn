@@ -8,6 +8,9 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to suggest using typeof() instead of <see cref="M:System.Type.GetType"/>.
+    /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class UseTypeofInsteadOfTypeGetTypeAnalyzer : BaseInvocationExpressionAnalyzer
     {

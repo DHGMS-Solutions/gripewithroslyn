@@ -3,6 +3,9 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to suggest the use of <see cref="N:System.Text.Json"/> instead of <see cref="N:Newtonsoft.Json"/>
+    /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer : BaseInvocationUsingNamespaceAnalyzer
     {

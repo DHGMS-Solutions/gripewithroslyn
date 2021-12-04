@@ -74,6 +74,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
         //    return new DhgmsGripeWithRoslynAnalyzerCodeFixProvider();
         //}
 
+        /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new DoNotUseGdiPlusAnalyzer();

@@ -9,6 +9,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Abstract Analyzer for checking Simple Member Access on a Type.
+    /// </summary>
     public abstract class BaseSimpleMemberAccessOnTypeAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
@@ -21,7 +24,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <param name="message">The message to display detailing the issue with the analyzer.</param>
         /// <param name="category">The category the analyzer belongs to.</param>
         /// <param name="description">The description of the analyzer</param>
-        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
+        /// <param name="diagnosticSeverity">The severity associated with breaches of the analyzer</param>
         protected BaseSimpleMemberAccessOnTypeAnalyzer(
             [NotNull] string diagnosticId,
             [NotNull] string title,
@@ -90,8 +93,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             context.ReportDiagnostic(Diagnostic.Create(this._rule, memberAccessExpressionSyntax.GetLocation()));
         }
 
+        /// <summary>
+        /// Gets the fully qualified class name to check for.
+        /// </summary>
         protected abstract string ClassName { get; }
 
+        /// <summary>
+        /// Gets the Member name to check for.
+        /// </summary>
         protected abstract string MemberName { get; }
     }
 }

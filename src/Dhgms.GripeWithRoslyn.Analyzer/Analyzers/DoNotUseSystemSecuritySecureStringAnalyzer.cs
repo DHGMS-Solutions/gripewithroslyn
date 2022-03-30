@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to ensure System.Security.SecureString is not used.
+    /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class DoNotUseSystemSecuritySecureStringAnalyzer : BaseInvocationUsingClassAnalyzer
     {
@@ -29,7 +27,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             MessageFormat,
             Category,
             Description,
-            DiagnosticSeverity.Warning)
+            DiagnosticSeverity.Error)
         {
         }
 

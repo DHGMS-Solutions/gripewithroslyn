@@ -72,7 +72,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return;
             }
 
-#error check if the return type is boolean
+            var type = invocationExpression.GetType();
+
+            if (type != typeof(bool))
+            {
+                return;
+            }
 
             if (IsInIfStatementWithLogicalNotOperation(invocationExpression))
             {

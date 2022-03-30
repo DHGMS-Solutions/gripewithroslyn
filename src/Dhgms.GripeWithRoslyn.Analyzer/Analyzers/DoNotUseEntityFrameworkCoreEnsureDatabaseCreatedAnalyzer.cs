@@ -3,6 +3,9 @@ using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to ensure the EF Core EnsureCreated method is not used in an Application.
+    /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class DoNotUseEntityFrameworkCoreEnsureDatabaseCreatedAnalyzer : BaseInvocationExpressionAnalyzer
     {

@@ -9,6 +9,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer for checking a constructor does not invoke external methods.
+    /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ConstructorShouldNotInvokeExternalMethodsAnalyzer : DiagnosticAnalyzer
     {
@@ -21,7 +24,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Category = SupportedCategories.Maintainability;
 
         private const string Description =
-            "Constructors should minimise work and not execute methods. This is due make code easier to test, poor performance, race conditions and quirks of IDE designer.";
+            "Constructors should minimise work and not execute methods. This is to make code easier to test, avoid performance risks, race conditions and quirks of the IDE designer.";
 
         private const string GlobalSystemStringNamespace = "global::System.String";
 

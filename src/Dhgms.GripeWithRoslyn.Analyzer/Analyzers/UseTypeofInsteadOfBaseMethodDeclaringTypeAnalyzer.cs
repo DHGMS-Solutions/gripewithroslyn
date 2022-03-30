@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
     /// <summary>
-    /// Analyzer to suggest the use of typeof() instead of <seealso cref="MethodBase.GetCurrentMethod().DeclaringType"/>.
+    /// Analyzer to suggest the use of typeof() instead of <see cref="System.Reflection.MethodBase.GetCurrentMethod()"/> and <see cref="System.Reflection.MemberInfo.DeclaringType"/> .
     /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer : BaseSimpleMemberAccessOnTypeAnalyzer

@@ -1,4 +1,8 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
@@ -38,7 +42,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            this._rule = new DiagnosticDescriptor(
+            _rule = new DiagnosticDescriptor(
                 diagnosticId,
                 title,
                 message,
@@ -48,9 +52,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 description: description);
         }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-            => ImmutableArray.Create(this._rule);
+            => ImmutableArray.Create(_rule);
 
         /// <summary>
         /// The namespace to check for.
@@ -58,7 +62,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         [NotNull]
         protected abstract string Namespace { get; }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
             context.EnableConcurrentExecution();
@@ -86,12 +90,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
             if (containingNamespace == null
-                || !containingNamespace.GetFullName().StartsWith(this.Namespace, StringComparison.Ordinal))
+                || !containingNamespace.GetFullName().StartsWith(Namespace, StringComparison.Ordinal))
             {
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, invocationExpression.GetLocation()));
         }
 
         private void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context)
@@ -107,12 +111,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
             if (containingNamespace == null
-                || !containingNamespace.GetFullName().StartsWith(this.Namespace, StringComparison.Ordinal))
+                || !containingNamespace.GetFullName().StartsWith(Namespace, StringComparison.Ordinal))
             {
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, invocationExpression.GetLocation()));
         }
     }
 }

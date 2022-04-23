@@ -1,4 +1,8 @@
-﻿namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 {
     /// <summary>
     /// Used to indicate what can be said about the initialization
@@ -10,10 +14,12 @@
         /// Indicates that the block of statements does NOT initialize the symbol for certain.
         /// </summary>
         None,
+
         /// <summary>
         /// Indicates that the block of statements DOES initialize the symbol for certain.
         /// </summary>
         Initializer,
+
         /// <summary>
         /// Indicates that the block of statements contains a way to skip any initializers
         /// following the given block of statements (for instance a return statement inside

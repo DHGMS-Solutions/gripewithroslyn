@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
@@ -11,7 +15,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     /// <summary>
     /// Analyzer to check if TryParse is used in a logical if statement.
     /// </summary>
-    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
+    [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
@@ -30,7 +34,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// </summary>
         public TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer()
         {
-            this._rule = new DiagnosticDescriptor(
+            _rule = new DiagnosticDescriptor(
                 DiagnosticIdsHelper.TryParseShouldBeUsedInLogicalNotIfStatement,
                 Title,
                 MessageFormat,
@@ -40,10 +44,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 description: Description);
         }
 
-        /// <inhertitdoc />
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
+        /// <inheritdoc />
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         public override void Initialize(AnalysisContext context)
         {
             context.EnableConcurrentExecution();
@@ -84,7 +88,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, node.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, node.GetLocation()));
         }
 
         private bool IsInIfStatementWithLogicalNotOperation(SyntaxNode syntaxNode)
@@ -107,7 +111,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             var currentNode = syntaxNode.Parent;
             while (currentNode != null)
             {
-
                 if (currentNode is T parent)
                 {
                     return parent;

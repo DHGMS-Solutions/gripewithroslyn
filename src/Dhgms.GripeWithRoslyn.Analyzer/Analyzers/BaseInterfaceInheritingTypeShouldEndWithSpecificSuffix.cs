@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using JetBrains.Annotations;
@@ -33,13 +37,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            this._rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
+            _rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
         }
 
-        /// <inhertitdoc />
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
+        /// <inheritdoc />
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
             context.EnableConcurrentExecution();
@@ -72,7 +76,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             }
 
             var identifier = interfaceDeclarationSyntax.Identifier;
-            if (identifier.Text.EndsWith(this.NameSuffix, StringComparison.OrdinalIgnoreCase))
+            if (identifier.Text.EndsWith(NameSuffix, StringComparison.OrdinalIgnoreCase))
             {
                 // it does end with the desired suffix
                 // no point checking to warn if it should or not.
@@ -89,7 +93,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             if (baseList.Types.Count < 1)
             {
-
                 return;
             }
 
@@ -105,9 +108,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
                 var typeFullName = typeInfo.Type.GetFullName();
 
-                if (typeFullName.Equals(this.BaseClassFullName, StringComparison.Ordinal))
+                if (typeFullName.Equals(BaseClassFullName, StringComparison.Ordinal))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(this._rule, identifier.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(_rule, identifier.GetLocation()));
                     return;
                 }
             }

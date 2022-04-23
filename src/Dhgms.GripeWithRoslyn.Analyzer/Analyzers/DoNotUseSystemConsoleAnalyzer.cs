@@ -1,10 +1,14 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
     /// <summary>
-    /// Analyzer to enure System.Console
+    /// Analyzer to enure members of System.Console are not used.
     /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class DoNotUseSystemConsoleAnalyzer : BaseInvocationUsingClassAnalyzer
@@ -19,9 +23,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "System.Console suggests code that may not be flexible, or carrying out unintended work such as not using a proper logging implementation.";
 
         /// <summary>
-        /// Creates an instance of DoNotUseSystemConsoleAnalyzer
+        /// Initializes a new instance of the <see cref="DoNotUseSystemConsoleAnalyzer"/> class.
         /// </summary>
-        public DoNotUseSystemConsoleAnalyzer() : base(
+        public DoNotUseSystemConsoleAnalyzer()
+            : base(
             DiagnosticIdsHelper.DoNotUseSystemConsole,
             Title,
             MessageFormat,
@@ -31,7 +36,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         protected override string ClassName => "global::System.Console";
     }
 }

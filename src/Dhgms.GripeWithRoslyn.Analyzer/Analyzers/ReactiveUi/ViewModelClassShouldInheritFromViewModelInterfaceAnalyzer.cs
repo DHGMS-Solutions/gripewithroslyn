@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
@@ -22,17 +26,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         private const string Description =
             "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
 
-        private string ClassNameSuffix = "ViewModel";
-
-        /// <inhertitdoc />
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
+        private const string ClassNameSuffix = "ViewModel";
 
         /// <summary>
-        /// Creates an instance of ViewModelShouldInheritReactiveObject
+        /// Initializes a new instance of the <see cref="ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer"/> class.
         /// </summary>
         public ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer()
         {
-            this._rule = new DiagnosticDescriptor(
+            _rule = new DiagnosticDescriptor(
                 DiagnosticIdsHelper.ViewModelClassShouldInheritReactiveObject,
                 Title,
                 MessageFormat,
@@ -42,7 +43,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
                 Description);
         }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+
+        /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
             context.EnableConcurrentExecution();
@@ -63,7 +67,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
             }
 
             var identifier = classDeclarationSyntax.Identifier;
-            if (!identifier.Text.EndsWith(this.ClassNameSuffix, StringComparison.OrdinalIgnoreCase))
+            if (!identifier.Text.EndsWith(ClassNameSuffix, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -93,7 +97,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
                 }
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, identifier.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, identifier.GetLocation()));
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
@@ -12,7 +16,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     /// <summary>
     /// Analyzer for checking a constructor does not invoke external methods.
     /// </summary>
-    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
+    [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ConstructorShouldNotInvokeExternalMethodsAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
@@ -54,7 +58,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// </summary>
         public ConstructorShouldNotInvokeExternalMethodsAnalyzer()
         {
-            this._rule = new DiagnosticDescriptor(
+            _rule = new DiagnosticDescriptor(
                 DiagnosticIdsHelper.ConstructorShouldNotInvokeExternalMethods,
                 Title,
                 MessageFormat,
@@ -64,10 +68,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 description: Description);
         }
 
-        /// <inhertitdoc />
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
+        /// <inheritdoc />
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         public override void Initialize(AnalysisContext context)
         {
             context.EnableConcurrentExecution();
@@ -98,7 +102,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, node.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, node.GetLocation()));
         }
 
         private bool GetIsWhitelistedMethod(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
@@ -110,10 +114,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                         context,
                         memberAccessExpression);
                 case IdentifierNameSyntax identifierNameSyntax:
-                {
-                    var methodName = identifierNameSyntax.Identifier.ToFullString();
-                    return operatorsWhiteList.Any(operatorName => operatorName.Equals(methodName, StringComparison.Ordinal));
-                }
+                    {
+                        var methodName = identifierNameSyntax.Identifier.ToFullString();
+                        return operatorsWhiteList.Any(operatorName => operatorName.Equals(methodName, StringComparison.Ordinal));
+                    }
 
                 default:
                     return false;

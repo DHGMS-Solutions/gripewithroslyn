@@ -1,4 +1,8 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
@@ -37,7 +41,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            this._rule = new DiagnosticDescriptor(
+            _rule = new DiagnosticDescriptor(
                 diagnosticId,
                 title,
                 message,
@@ -47,9 +51,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 description: description);
         }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-            => ImmutableArray.Create(this._rule);
+            => ImmutableArray.Create(_rule);
 
         /// <summary>
         /// The name of the assembly to check for.
@@ -57,7 +61,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         [NotNull]
         protected abstract string AssemblyName { get; }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
             context.EnableConcurrentExecution();
@@ -84,12 +88,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var containingAssembly = methodSymbol?.OriginalDefinition.ContainingAssembly;
             if (containingAssembly == null
-                || !containingAssembly.Name.Equals(this.AssemblyName, StringComparison.Ordinal))
+                || !containingAssembly.Name.Equals(AssemblyName, StringComparison.Ordinal))
             {
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, invocationExpression.GetLocation()));
         }
     }
 }

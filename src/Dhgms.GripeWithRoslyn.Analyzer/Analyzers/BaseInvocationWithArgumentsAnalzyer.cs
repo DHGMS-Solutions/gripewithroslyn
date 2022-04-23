@@ -1,4 +1,8 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
@@ -36,7 +40,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            this.Rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
+            Rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
         }
 
 
@@ -45,8 +49,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// </summary>
         protected DiagnosticDescriptor Rule { get; }
 
-        /// <inhertitdoc />
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this.Rule);
+        /// <inheritdoc />
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <summary>
         /// The name of the method to check for.
@@ -60,7 +64,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         [NotNull]
         protected abstract string[] ContainingTypes { get; }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
             context.EnableConcurrentExecution();

@@ -1,4 +1,8 @@
-﻿using System.Collections.Immutable;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System.Collections.Immutable;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -11,7 +15,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     /// <summary>
     /// Analyzer for checking that Treat Warnings As Errors is Enabled.
     /// </summary>
-    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
+    [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class TreatWarningsAsErrorsAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
@@ -33,14 +37,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            this._rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity,
+            _rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity,
                 isEnabledByDefault: true, description: description);
         }
 
-        /// <inhertitdoc />
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
+        /// <inheritdoc />
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
             context.EnableConcurrentExecution();
@@ -52,7 +56,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
             if (context.Compilation.Options.GeneralDiagnosticOption != ReportDiagnostic.Error)
             {
-                var diagnostic = Diagnostic.Create(this._rule, Location.None);
+                var diagnostic = Diagnostic.Create(_rule, Location.None);
                 context.ReportDiagnostic(diagnostic);
             }
         }

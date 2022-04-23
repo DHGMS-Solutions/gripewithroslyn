@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -12,8 +16,15 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
     {
         public static SyntaxNode WithSameTriviaAs(this SyntaxNode target, SyntaxNode source)
         {
-            if (target == null) throw new ArgumentNullException(nameof(target));
-            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
 
             return target
                 .WithLeadingTrivia(source.GetLeadingTrivia())
@@ -24,8 +35,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
         {
             foreach (var kind in kinds)
             {
-                if (displayPart.Kind == kind) return true;
+                if (displayPart.Kind == kind)
+                {
+                    return true;
+                }
             }
+
             return false;
         }
 
@@ -37,13 +52,22 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             var currentNode = node;
             while (true)
             {
-                if (currentNode == null) break;
+                if (currentNode == null)
+                {
+                    break;
+                }
+
                 foreach (var type in types)
                 {
-                    if (currentNode.GetType() == type) return currentNode;
+                    if (currentNode.GetType() == type)
+                    {
+                        return currentNode;
+                    }
                 }
+
                 currentNode = currentNode.Parent;
             }
+
             return null;
         }
 
@@ -53,11 +77,20 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             while (true)
             {
                 var parent = currentNode.Parent;
-                if (parent == null) break;
+                if (parent == null)
+                {
+                    break;
+                }
+
                 var tParent = parent as T;
-                if (tParent != null) return tParent;
+                if (tParent != null)
+                {
+                    return tParent;
+                }
+
                 currentNode = parent;
             }
+
             return null;
         }
 
@@ -67,13 +100,22 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             while (true)
             {
                 var parent = currentNode.Parent;
-                if (parent == null) break;
+                if (parent == null)
+                {
+                    break;
+                }
+
                 foreach (var type in types)
                 {
-                    if (parent.GetType() == type) return parent;
+                    if (parent.GetType() == type)
+                    {
+                        return parent;
+                    }
                 }
+
                 currentNode = parent;
             }
+
             return null;
         }
 
@@ -85,6 +127,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             {
                 methods.AddRange(innerType.GetAllMethodsIncludingFromInnerTypes());
             }
+
             return methods;
         }
 
@@ -92,7 +135,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
         {
             yield return typeSymbol;
             foreach (var b in AllBaseTypes(typeSymbol))
+            {
                 yield return b;
+            }
         }
 
         public static IEnumerable<INamedTypeSymbol> AllBaseTypes(this INamedTypeSymbol typeSymbol)
@@ -116,12 +161,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 
             return result;
         }
+
         public static IEnumerable<SyntaxToken> EnsureProtectedBeforeInternal(this IEnumerable<SyntaxToken> modifiers) => modifiers.OrderByDescending(token => token.RawKind);
 
         public static string GetFullName(this ISymbol symbol, bool addGlobal = true)
         {
             if (symbol.Kind == SymbolKind.TypeParameter)
+            {
                 return symbol.ToString();
+            }
+
             var fullName = symbol.Name;
             var containingSymbol = symbol.ContainingSymbol;
             while (!(containingSymbol is INamespaceSymbol))
@@ -129,10 +178,17 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                 fullName = $"{containingSymbol.Name}.{fullName}";
                 containingSymbol = containingSymbol.ContainingSymbol;
             }
+
             if (!((INamespaceSymbol)containingSymbol).IsGlobalNamespace)
+            {
                 fullName = $"{containingSymbol.ToString()}.{fullName}";
+            }
+
             if (addGlobal)
+            {
                 fullName = $"global::{fullName}";
+            }
+
             return fullName;
         }
 
@@ -147,8 +203,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 
         public static Accessibility GetMinimumCommonAccessibility(this Accessibility accessibility, Accessibility otherAccessibility)
         {
-            if (accessibility == otherAccessibility || otherAccessibility == Accessibility.Private) return accessibility;
-            if (otherAccessibility == Accessibility.Public) return Accessibility.Public;
+            if (accessibility == otherAccessibility || otherAccessibility == Accessibility.Private)
+            {
+                return accessibility;
+            }
+
+            if (otherAccessibility == Accessibility.Public)
+            {
+                return Accessibility.Public;
+            }
+
             switch (accessibility)
             {
                 case Accessibility.Private:

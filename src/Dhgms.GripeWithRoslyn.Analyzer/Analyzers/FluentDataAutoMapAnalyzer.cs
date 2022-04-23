@@ -1,4 +1,8 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
@@ -11,7 +15,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     /// <remarks>
     /// Based upon : https://raw.githubusercontent.com/code-cracker/code-cracker/master/src/CSharp/CodeCracker/Performance/UseStaticRegexIsMatchAnalyzer.cs
     /// </remarks>
-    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
+    [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class FluentDataAutoMapAnalyzer : BaseInvocationExpressionAnalyzer
     {
         private const string Title = "FluentData AutoMap should not be used.";
@@ -36,10 +40,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         protected override string MethodName => "AutoMap";
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         protected override string[] ContainingTypes => new[]
                 {
                     "FluentData.IInsertBuilder<T>",

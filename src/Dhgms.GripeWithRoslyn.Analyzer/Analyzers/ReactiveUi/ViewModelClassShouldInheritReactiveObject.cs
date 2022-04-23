@@ -1,10 +1,14 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
 {
-    using DiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
+    using DiagnosticSeverity = DiagnosticSeverity;
 
     /// <summary>
     /// Analyzer for checking that a class that has the ViewModel suffix inherits from ReactiveUI.ReactiveObject
@@ -34,10 +38,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         {
         }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         protected override string ClassNameSuffix => "ViewModel";
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         protected override string BaseClassFullName => "global::ReactiveUI.IReactiveObject";
     }
 }

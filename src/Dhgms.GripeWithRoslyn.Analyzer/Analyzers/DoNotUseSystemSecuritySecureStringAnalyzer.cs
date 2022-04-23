@@ -1,4 +1,8 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
@@ -19,9 +23,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "System.Console suggests code that may not be flexible, or carrying out unintended work such as not using a proper logging implementation.";
 
         /// <summary>
-        /// Creates an instance of DoNotUseSystemSecuritySecureStringAnalyzer
+        /// Initializes a new instance of the <see cref="DoNotUseSystemSecuritySecureStringAnalyzer"/> class.
         /// </summary>
-        public DoNotUseSystemSecuritySecureStringAnalyzer() : base(
+        public DoNotUseSystemSecuritySecureStringAnalyzer()
+            : base(
             DiagnosticIdsHelper.DoNotUseSystemSecuritySecureString,
             Title,
             MessageFormat,
@@ -31,7 +36,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         protected override string ClassName => "global::System.Security.SecureString";
     }
 }

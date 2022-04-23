@@ -1,4 +1,8 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
@@ -21,7 +25,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <summary>
         /// Creates an instance of UseDateTimeUtcNowInsteadofNowAnalyzer
         /// </summary>
-        public UseDateTimeUtcNowInsteadofNowAnalyzer() : base(
+        public UseDateTimeUtcNowInsteadofNowAnalyzer()
+            : base(
             DiagnosticIdsHelper.UseDateTimeUtcNowInsteadofNow,
             Title,
             MessageFormat,
@@ -31,10 +36,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         protected override string ClassName => "global::System.DateTime";
 
-        /// <inhertitdoc />
+        /// <inheritdoc />
         protected override string MemberName => "Now";
     }
 }

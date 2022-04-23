@@ -28,11 +28,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "System.Type.GetType may be a misuse of establishling type information. typeof(x) allows for compile time verification of the type.";
 
         /// <summary>
-        /// Creates an instance of UseTypeofInsteadOfTypeGetTypeAnalyzer
+        /// Initializes a new instance of the <see cref="UseTypeofInsteadOfTypeGetTypeAnalyzer"/> class.
         /// </summary>
         public UseTypeofInsteadOfTypeGetTypeAnalyzer()
             : base(
-            DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfASCII,
+            DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
             Title,
             MessageFormat,
             Category,

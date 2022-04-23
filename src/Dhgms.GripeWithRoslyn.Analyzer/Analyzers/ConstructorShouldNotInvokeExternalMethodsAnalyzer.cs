@@ -42,7 +42,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
             (
                 GlobalSystemStringNamespace,
-                new []
+                new[]
                 {
                     "Contains",
                     "EndsWith",
@@ -54,7 +54,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         };
 
         /// <summary>
-        /// Creates an instance of ConstructorShouldNotInvokeExternalMethodsAnalyzer
+        /// Creates an instance of ConstructorShouldNotInvokeExternalMethodsAnalyzer.
         /// </summary>
         public ConstructorShouldNotInvokeExternalMethodsAnalyzer()
         {

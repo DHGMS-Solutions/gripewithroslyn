@@ -46,7 +46,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Test.Analyzers
             var expected = new DiagnosticResult
             {
                 Id = "DhgmsGripeWithRoslynAnalyzer",
-                Message = String.Format("Type name '{0}' contains lowercase letters", "TypeName"),
+                Message = string.Format("Type name '{0}' contains lowercase letters", "TypeName"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {

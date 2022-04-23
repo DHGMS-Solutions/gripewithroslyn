@@ -24,14 +24,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     public abstract class BaseInvocationWithArgumentsAnalzyer : DiagnosticAnalyzer
     {
         /// <summary>
-        /// Creates an instance of BaseInvocationWithArgumentsAnalzyer
+        /// Creates an instance of BaseInvocationWithArgumentsAnalzyer.
         /// </summary>
-        /// <param name="diagnosticId">The Diagnostic Id</param>
-        /// <param name="title">The title of the analyzer</param>
+        /// <param name="diagnosticId">The Diagnostic Id.</param>
+        /// <param name="title">The title of the analyzer.</param>
         /// <param name="message">The message to display detailing the issue with the analyzer.</param>
         /// <param name="category">The category the analyzer belongs to.</param>
-        /// <param name="description">The description of the analyzer</param>
-        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
+        /// <param name="description">The description of the analyzer.</param>
+        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer.</param>
         protected BaseInvocationWithArgumentsAnalzyer(
             [NotNull] string diagnosticId,
             [NotNull] string title,
@@ -42,7 +42,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
             Rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
         }
-
 
         /// <summary>
         /// Description of the Diagnostic Rule. Used when passing details to Roslyn.
@@ -98,9 +97,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         }
 
         /// <summary>
-        /// Event for validating the arguments passed
+        /// Event for validating the arguments passed.
         /// </summary>
-        /// <param name="context">The context for the Roslyn syntax analysis</param>
+        /// <param name="context">The context for the Roslyn syntax analysis.</param>
         /// <param name="argumentList">Syntax representation of the argument list.</param>
         protected abstract void OnValidateArguments(SyntaxNodeAnalysisContext context, ArgumentListSyntax argumentList);
     }

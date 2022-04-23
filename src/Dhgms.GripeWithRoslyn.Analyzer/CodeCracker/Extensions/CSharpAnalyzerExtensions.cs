@@ -16,7 +16,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
     public static class CSharpAnalyzerExtensions
     {
         public static void RegisterSyntaxNodeAction<TLanguageKindEnum>(this AnalysisContext context, LanguageVersion greaterOrEqualThanLanguageVersion,
-        Action<SyntaxNodeAnalysisContext> action, params TLanguageKindEnum[] syntaxKinds) where TLanguageKindEnum : struct =>
+        Action<SyntaxNodeAnalysisContext> action, params TLanguageKindEnum[] syntaxKinds)
+            where TLanguageKindEnum : struct
+            =>
             context.RegisterCompilationStartAction(greaterOrEqualThanLanguageVersion, compilationContext => compilationContext.RegisterSyntaxNodeAction(action, syntaxKinds));
 
         public static void RegisterCompilationStartAction(this AnalysisContext context, LanguageVersion greaterOrEqualThanLanguageVersion, Action<CompilationStartAnalysisContext> registrationAction) =>
@@ -42,7 +44,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
         }
 
         public static void RegisterSyntaxNodeActionForVersionLower<TLanguageKindEnum>(this AnalysisContext context, LanguageVersion lowerThanLanguageVersion,
-        Action<SyntaxNodeAnalysisContext> action, params TLanguageKindEnum[] syntaxKinds) where TLanguageKindEnum : struct =>
+        Action<SyntaxNodeAnalysisContext> action, params TLanguageKindEnum[] syntaxKinds)
+            where TLanguageKindEnum : struct
+            =>
             context.RegisterCompilationStartActionForVersionLower(lowerThanLanguageVersion, compilationContext => compilationContext.RegisterSyntaxNodeAction(action, syntaxKinds));
 
         public static void RegisterCompilationStartActionForVersionLower(this AnalysisContext context, LanguageVersion lowerThanLanguageVersion, Action<CompilationStartAnalysisContext> registrationAction) =>
@@ -99,7 +103,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
         public static IEnumerable<TypeDeclarationSyntax> DescendantTypes(this SyntaxNode root)
         {
             return root
-                .DescendantNodes(n => !(n.IsKind(
+                .DescendantNodes(n => !n.IsKind(
                     SyntaxKind.MethodDeclaration,
                     SyntaxKind.ConstructorDeclaration,
                     SyntaxKind.DelegateDeclaration,
@@ -109,7 +113,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                     SyntaxKind.FieldDeclaration,
                     SyntaxKind.InterfaceDeclaration,
                     SyntaxKind.PropertyDeclaration,
-                    SyntaxKind.EventDeclaration)))
+                    SyntaxKind.EventDeclaration))
                 .OfType<TypeDeclarationSyntax>();
         }
 
@@ -231,7 +235,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             }
 
             return null;
-
         }
 
         public static StatementSyntax FirstAncestorOrSelfThatIsAStatement(this SyntaxNode node)
@@ -244,18 +247,31 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                     break;
                 }
 
-                if (currentNode.IsAnyKind(SyntaxKind.Block, SyntaxKind.BreakStatement,
-                    SyntaxKind.CheckedStatement, SyntaxKind.ContinueStatement,
-                    SyntaxKind.DoStatement, SyntaxKind.EmptyStatement,
-                    SyntaxKind.ExpressionStatement, SyntaxKind.FixedKeyword,
-                    SyntaxKind.ForEachKeyword, SyntaxKind.ForStatement,
-                    SyntaxKind.GotoStatement, SyntaxKind.IfStatement,
-                    SyntaxKind.LabeledStatement, SyntaxKind.LocalDeclarationStatement,
-                    SyntaxKind.LockStatement, SyntaxKind.ReturnStatement,
-                    SyntaxKind.SwitchStatement, SyntaxKind.ThrowStatement,
-                    SyntaxKind.TryStatement, SyntaxKind.UnsafeStatement,
-                    SyntaxKind.UsingStatement, SyntaxKind.WhileStatement,
-                    SyntaxKind.YieldBreakStatement, SyntaxKind.YieldReturnStatement))
+                if (currentNode.IsAnyKind(
+                        SyntaxKind.Block,
+                        SyntaxKind.BreakStatement,
+                        SyntaxKind.CheckedStatement,
+                        SyntaxKind.ContinueStatement,
+                        SyntaxKind.DoStatement,
+                        SyntaxKind.EmptyStatement,
+                        SyntaxKind.ExpressionStatement,
+                        SyntaxKind.FixedKeyword,
+                        SyntaxKind.ForEachKeyword,
+                        SyntaxKind.ForStatement,
+                        SyntaxKind.GotoStatement,
+                        SyntaxKind.IfStatement,
+                        SyntaxKind.LabeledStatement,
+                        SyntaxKind.LocalDeclarationStatement,
+                        SyntaxKind.LockStatement,
+                        SyntaxKind.ReturnStatement,
+                        SyntaxKind.SwitchStatement,
+                        SyntaxKind.ThrowStatement,
+                        SyntaxKind.TryStatement,
+                        SyntaxKind.UnsafeStatement,
+                        SyntaxKind.UsingStatement,
+                        SyntaxKind.WhileStatement,
+                        SyntaxKind.YieldBreakStatement,
+                        SyntaxKind.YieldReturnStatement))
                 {
                     return (StatementSyntax)currentNode;
                 }
@@ -393,8 +409,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 
             return SyntaxFactory.QualifiedName(
                 ToNameSyntax(names.Take(count - 1)),
-                ToNameSyntax(names.Skip(count - 1)) as IdentifierNameSyntax
-            );
+                ToNameSyntax(names.Skip(count - 1)) as IdentifierNameSyntax);
         }
 
         public static TypeSyntax FindTypeInParametersList(this SeparatedSyntaxList<ParameterSyntax> parameterList, string typeName)
@@ -430,7 +445,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                     result = GetLastIdentifierValueText(((QualifiedNameSyntax)node).Right);
                     break;
                 case SyntaxKind.GenericName:
-                    var genericNameSyntax = ((GenericNameSyntax)node);
+                    var genericNameSyntax = (GenericNameSyntax)node;
                     result = $"{genericNameSyntax.Identifier.ValueText}{genericNameSyntax.TypeArgumentList.ToString()}";
                     break;
                 case SyntaxKind.AliasQualifiedName:
@@ -601,10 +616,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return null;
         }
 
-        public static TNode FirstAncestorOfKind<TNode>(this SyntaxNode node, params SyntaxKind[] kinds) where TNode : SyntaxNode =>
+        public static TNode FirstAncestorOfKind<TNode>(this SyntaxNode node, params SyntaxKind[] kinds)
+            where TNode : SyntaxNode
+            =>
             (TNode)FirstAncestorOfKind(node, kinds);
 
-        public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<SyntaxNode> nodes, SyntaxKind kind) where TNode : SyntaxNode
+        public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<SyntaxNode> nodes, SyntaxKind kind)
+            where TNode : SyntaxNode
         {
             foreach (var node in nodes)
                 if (node.IsKind(kind))
@@ -613,7 +631,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                 }
         }
 
-        public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<SyntaxNode> nodes, params SyntaxKind[] kinds) where TNode : SyntaxNode
+        public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<SyntaxNode> nodes, params SyntaxKind[] kinds)
+            where TNode : SyntaxNode
         {
             foreach (var node in nodes)
                 if (node.IsAnyKind(kinds))
@@ -622,7 +641,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                 }
         }
 
-        public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<TNode> nodes, SyntaxKind kind) where TNode : SyntaxNode
+        public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<TNode> nodes, SyntaxKind kind)
+            where TNode : SyntaxNode
         {
             foreach (var node in nodes)
                 if (node.IsKind(kind))
@@ -631,7 +651,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                 }
         }
 
-        public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<TNode> nodes, params SyntaxKind[] kinds) where TNode : SyntaxNode
+        public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<TNode> nodes, params SyntaxKind[] kinds)
+            where TNode : SyntaxNode
         {
             foreach (var node in nodes)
                 if (node.IsAnyKind(kinds))
@@ -676,7 +697,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return null;
         }
 
-
         /// <summary>
         /// Determines whether the specified symbol is a read only field and initialized in the specified context.
         /// </summary>
@@ -687,7 +707,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
         /// </returns>
         /// <remarks>
         /// If the symbol is initialized in a block of code of the constructor that might not always be called, the symbol is considered to
-        /// not be initialized for certain. For more information <seealso cref="DoesBlockContainDefiniteInitializer(SyntaxNodeAnalysisContext, ISymbol, IEnumerable{StatementSyntax})"/>
+        /// not be initialized for certain. For more information. <seealso cref="DoesBlockContainDefiniteInitializer(SyntaxNodeAnalysisContext, ISymbol, IEnumerable{StatementSyntax})"/>
         /// </remarks>
         public static bool IsReadOnlyAndInitializedForCertain(this ISymbol symbol, SyntaxNodeAnalysisContext context)
         {
@@ -737,7 +757,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
         /// <param name="symbol">The symbol.</param>
         /// <param name="statements">The statements.</param>
         /// <returns>
-        /// The initializer state found
+        /// The initializer state found.
         /// </returns>
         /// <remarks>
         /// Code blocks that might not always be called are:
@@ -931,8 +951,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
         /// According to the C# Language Spec, item 6.4
         /// See <a href="https://github.com/ljw1004/csharpspec/blob/master/csharp/conversions.md#implicit-numeric-conversions">online</a>.
         /// </summary>
-        /// <param name="from">The type to convert from</param>
-        /// <param name="to">The type to convert to</param>
+        /// <param name="from">The type to convert from.</param>
+        /// <param name="to">The type to convert to.</param>
         public static bool HasImplicitNumericConversion(this ITypeSymbol from, ITypeSymbol to)
         {
             if (from == null || to == null)

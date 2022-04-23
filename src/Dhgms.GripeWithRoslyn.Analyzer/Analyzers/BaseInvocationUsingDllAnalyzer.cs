@@ -25,14 +25,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Creates an instance of BaseInvocationUsingDllAnalyzer
+        /// Creates an instance of BaseInvocationUsingDllAnalyzer.
         /// </summary>
-        /// <param name="diagnosticId">The Diagnostic Id</param>
-        /// <param name="title">The title of the analyzer</param>
+        /// <param name="diagnosticId">The Diagnostic Id.</param>
+        /// <param name="title">The title of the analyzer.</param>
         /// <param name="message">The message to display detailing the issue with the analyzer.</param>
         /// <param name="category">The category the analyzer belongs to.</param>
-        /// <param name="description">The description of the analyzer</param>
-        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
+        /// <param name="description">The description of the analyzer.</param>
+        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer.</param>
         protected BaseInvocationUsingDllAnalyzer(
             [NotNull] string diagnosticId,
             [NotNull] string title,

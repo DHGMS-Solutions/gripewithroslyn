@@ -14,7 +14,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
     /// <summary>
-    /// Base class for checking that a suffixed group of classes inherit from expected types
+    /// Base class for checking that a suffixed group of classes inherit from expected types.
     /// </summary>
     public abstract class BaseInterfaceDeclarationSuffixShouldInheritTypes : DiagnosticAnalyzer
     {
@@ -43,11 +43,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <inheritdoc />
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
-        /// <inheritdoc />
         [NotNull]
         protected abstract string ClassNameSuffix { get; }
 
-        /// <inheritdoc />
         [NotNull]
         protected abstract string BaseInterfaceFullName { get; }
 

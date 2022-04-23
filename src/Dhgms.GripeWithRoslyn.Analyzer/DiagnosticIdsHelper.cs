@@ -2,12 +2,6 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Dhgms.GripeWithRoslyn.Analyzer
 {
     internal static class DiagnosticIdsHelper
@@ -24,7 +18,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
 
         internal static string TreatWarningsAsErrorsShouldBeEnabled => "GR0006";
 
-        internal static string UseEncodingUnicodeInsteadOfASCII => "GR0007";
+        internal static string UseEncodingUnicodeInsteadOfAscii => "GR0007";
 
         internal static string StructureMapShouldNotBeUsed => "GR0008";
 

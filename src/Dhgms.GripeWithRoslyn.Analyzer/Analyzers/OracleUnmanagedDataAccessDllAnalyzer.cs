@@ -24,7 +24,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "Oracle ODP.NET should be replaced with Oracle Managed Data Access as it makes ongoing maintenance easier and doesn't require a full install of oracle on a machine.";
 
         /// <summary>
-        /// Creates an instance of OracleUnmanagedDataAccessDllAnalyzer
+        /// Creates an instance of OracleUnmanagedDataAccessDllAnalyzer.
         /// </summary>
         public OracleUnmanagedDataAccessDllAnalyzer()
             : base(DiagnosticIdsHelper.OracleUnmanagedDllDataAccessDllAnalyzer,

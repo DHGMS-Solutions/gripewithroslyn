@@ -11,7 +11,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
     using DiagnosticSeverity = DiagnosticSeverity;
 
     /// <summary>
-    /// Analyzer for checking that a class that has the ViewModel suffix inherits from ReactiveUI.ReactiveObject
+    /// Analyzer for checking that a class that has the ViewModel suffix inherits from ReactiveUI.ReactiveObject.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ViewModelInterfaceShouldInheritReactiveObject : BaseInterfaceDeclarationSuffixShouldInheritTypes
@@ -26,7 +26,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
             "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
 
         /// <summary>
-        /// Creates an instance of ViewModelShouldInheritReactiveObject
+        /// Creates an instance of ViewModelShouldInheritReactiveObject.
         /// </summary>
         public ViewModelInterfaceShouldInheritReactiveObject()
             : base(DiagnosticIdsHelper.ViewModelInterfaceShouldInheritReactiveObject,

@@ -15,8 +15,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer : DiagnosticAnalyzer
     {
-        private readonly DiagnosticDescriptor _rule;
-
         internal const string Title = "ViewModel classes should inherit from a ViewModel interface.";
 
         private const string MessageFormat = Title;
@@ -27,6 +25,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
             "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
 
         private const string ClassNameSuffix = "ViewModel";
+
+        private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer"/> class.

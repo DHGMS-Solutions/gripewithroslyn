@@ -33,7 +33,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Test.Analyzers
     }";
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfASCII,
+                Id = DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
                 Message = "Consider usage of Unicode Encoding instead of ASCII.",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =

@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis;
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
     /// <summary>
-    /// Analyzer for usages for System.DateTime.Now
+    /// Analyzer for usages for System.DateTime.Now.
     /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class UseDateTimeUtcNowInsteadofNowAnalyzer : BaseSimpleMemberAccessOnTypeAnalyzer
@@ -23,7 +23,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "DateTime.Now may cause issues in timezone \\ daylight saving time sensitive scenarios. Elect for DateTime.UtcNow and convert on the front end UI as required.";
 
         /// <summary>
-        /// Creates an instance of UseDateTimeUtcNowInsteadofNowAnalyzer
+        /// Creates an instance of UseDateTimeUtcNowInsteadofNowAnalyzer.
         /// </summary>
         public UseDateTimeUtcNowInsteadofNowAnalyzer()
             : base(

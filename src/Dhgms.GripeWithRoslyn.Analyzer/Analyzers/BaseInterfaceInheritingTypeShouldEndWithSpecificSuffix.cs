@@ -21,14 +21,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Creates an instance of BaseInvocationExpressionAnalyzer
+        /// Initializes a new instance of the <see cref="BaseInterfaceInheritingTypeShouldEndWithSpecificSuffix"/> class.
         /// </summary>
-        /// <param name="diagnosticId">The Diagnostic Id</param>
-        /// <param name="title">The title of the analyzer</param>
+        /// <param name="diagnosticId">The Diagnostic Id.</param>
+        /// <param name="title">The title of the analyzer.</param>
         /// <param name="message">The message to display detailing the issue with the analyzer.</param>
         /// <param name="category">The category the analyzer belongs to.</param>
-        /// <param name="description">The description of the analyzer</param>
-        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
+        /// <param name="description">The description of the analyzer.</param>
+        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer.</param>
         protected BaseInterfaceInheritingTypeShouldEndWithSpecificSuffix(
             [NotNull] string diagnosticId,
             [NotNull] string title,
@@ -43,16 +43,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <inheritdoc />
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
-        /// <inheritdoc />
-        public sealed override void Initialize(AnalysisContext context)
-        {
-            context.EnableConcurrentExecution();
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-            context.RegisterSyntaxNodeAction(AnalyzeInterfaceDeclarationExpression, SyntaxKind.InterfaceDeclaration);
-        }
-
         /// <summary>
-        /// Gets the name suffix for the name
+        /// Gets the name suffix for the name.
         /// </summary>
         protected abstract string NameSuffix { get; }
 
@@ -60,6 +52,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// Gets the full name of the base class this rule applies to.
         /// </summary>
         protected abstract string BaseClassFullName { get; }
+
+        /// <inheritdoc />
+        public sealed override void Initialize(AnalysisContext context)
+        {
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+            context.RegisterSyntaxNodeAction(AnalyzeInterfaceDeclarationExpression, SyntaxKind.InterfaceDeclaration);
+        }
 
         private void AnalyzeInterfaceDeclarationExpression(SyntaxNodeAnalysisContext context)
         {

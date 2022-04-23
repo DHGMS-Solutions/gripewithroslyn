@@ -10,10 +10,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     using Microsoft.CodeAnalysis.Diagnostics;
 
     /// <summary>
-    /// Roslyn Analyzer to check for uses of FluentData's AutoMap method
+    /// Roslyn Analyzer to check for uses of FluentData's AutoMap method.
     /// </summary>
     /// <remarks>
-    /// Based upon : https://raw.githubusercontent.com/code-cracker/code-cracker/master/src/CSharp/CodeCracker/Performance/UseStaticRegexIsMatchAnalyzer.cs
+    /// Based upon : https://raw.githubusercontent.com/code-cracker/code-cracker/master/src/CSharp/CodeCracker/Performance/UseStaticRegexIsMatchAnalyzer.cs.
     /// </remarks>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class FluentDataAutoMapAnalyzer : BaseInvocationExpressionAnalyzer
@@ -28,7 +28,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "AutoMap produces potential technical debt where if you are preparing the database schema for new content the old POCO objects won't map due to not having the corresponding property. This risks taking down your platform\\service. Please use a mapper.";
 
         /// <summary>
-        /// Creates an instance of FluentDataAutoMapAnalyzer
+        /// Creates an instance of FluentDataAutoMapAnalyzer.
         /// </summary>
         public FluentDataAutoMapAnalyzer()
             : base(DiagnosticIdsHelper.FluentDataAutoMapAnalyzer,

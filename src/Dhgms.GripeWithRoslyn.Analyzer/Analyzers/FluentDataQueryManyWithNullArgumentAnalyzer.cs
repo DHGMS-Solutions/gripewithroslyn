@@ -12,10 +12,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     using Microsoft.CodeAnalysis.Diagnostics;
 
     /// <summary>
-    /// Roslyn Analyzer to check for uses of FluentData's AutoMap method
+    /// Roslyn Analyzer to check for uses of FluentData's AutoMap method.
     /// </summary>
     /// <remarks>
-    /// Based upon : https://raw.githubusercontent.com/Wintellect/Wintellect.Analyzers/master/Source/Wintellect.Analyzers/Wintellect.Analyzers/Usage/CallAssertMethodsWithMessageParameterAnalyzer.cs
+    /// Based upon : https://raw.githubusercontent.com/Wintellect/Wintellect.Analyzers/master/Source/Wintellect.Analyzers/Wintellect.Analyzers/Usage/CallAssertMethodsWithMessageParameterAnalyzer.cs.
     /// </remarks>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class FluentDataQueryManyWithNullArgument : BaseInvocationWithArgumentsAnalzyer
@@ -30,7 +30,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "QueryMany without a mapper produces potential technical debt where if you are preparing the database schema for new content the old POCO objects won't map due to not having the corresponding property. This risks taking down your platform\\service. Please use a mapper.";
 
         /// <summary>
-        /// Creates an instance of FluentDataQueryManyWithNullArgument
+        /// Creates an instance of FluentDataQueryManyWithNullArgument.
         /// </summary>
         public FluentDataQueryManyWithNullArgument()
             : base(

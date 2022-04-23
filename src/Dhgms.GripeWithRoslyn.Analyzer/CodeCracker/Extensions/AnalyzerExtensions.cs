@@ -44,7 +44,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return false;
         }
 
-        public static T FirstAncestorOrSelfOfType<T>(this SyntaxNode node) where T : SyntaxNode =>
+        public static T FirstAncestorOrSelfOfType<T>(this SyntaxNode node)
+            where T : SyntaxNode
+            =>
             (T)node.FirstAncestorOrSelfOfType(typeof(T));
 
         public static SyntaxNode FirstAncestorOrSelfOfType(this SyntaxNode node, params Type[] types)
@@ -71,7 +73,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return null;
         }
 
-        public static T FirstAncestorOfType<T>(this SyntaxNode node) where T : SyntaxNode
+        public static T FirstAncestorOfType<T>(this SyntaxNode node)
+            where T : SyntaxNode
         {
             var currentNode = node;
             while (true)

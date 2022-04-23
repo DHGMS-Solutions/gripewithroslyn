@@ -21,14 +21,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Creates an instance of BaseInvocationUsingClassAnalyzer
+        /// Creates an instance of BaseInvocationUsingClassAnalyzer.
         /// </summary>
-        /// <param name="diagnosticId">The Diagnostic Id</param>
-        /// <param name="title">The title of the analyzer</param>
+        /// <param name="diagnosticId">The Diagnostic Id.</param>
+        /// <param name="title">The title of the analyzer.</param>
         /// <param name="message">The message to display detailing the issue with the analyzer.</param>
         /// <param name="category">The category the analyzer belongs to.</param>
-        /// <param name="description">The description of the analyzer</param>
-        /// <param name="diagnosticSeverity">The severity associated with breaches of the analyzer</param>
+        /// <param name="description">The description of the analyzer.</param>
+        /// <param name="diagnosticSeverity">The severity associated with breaches of the analyzer.</param>
         protected BaseSimpleMemberAccessOnTypeAnalyzer(
             [NotNull] string diagnosticId,
             [NotNull] string title,
@@ -92,7 +92,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             {
                 return;
             }
-
 
             context.ReportDiagnostic(Diagnostic.Create(_rule, memberAccessExpressionSyntax.GetLocation()));
         }

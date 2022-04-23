@@ -23,11 +23,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "MethodBase.GetCurrentMethod().DeclaringType may be a misuse of establishling type information. typeof(x) allows for compile time verification of the type and avoids reflection.";
 
         /// <summary>
-        /// Creates an instance of UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer
+        /// Initializes a new instance of the <see cref="UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer"/> class.
         /// </summary>
         public UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer()
             : base(
-            DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfASCII,
+            DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
             Title,
             MessageFormat,
             Category,

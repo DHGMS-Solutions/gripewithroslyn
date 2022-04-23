@@ -30,7 +30,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "TryParse should be used inside an If Statement with a unary operation. This allows mitigating errors with parsing.";
 
         /// <summary>
-        /// Creates an instance of TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer
+        /// Creates an instance of TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer.
         /// </summary>
         public TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer()
         {

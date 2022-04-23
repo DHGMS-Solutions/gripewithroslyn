@@ -24,7 +24,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             ".NET remoting is legacy technology and should not be used. You should be using a newer technology.";
 
         /// <summary>
-        /// Creates an instance of RemotingServicesAnalyzer
+        /// Creates an instance of RemotingServicesAnalyzer.
         /// </summary>
         public RemotingServicesAnalyzer()
             : base(DiagnosticIdsHelper.RemotingServicesAnalyzer,

@@ -23,11 +23,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "ASCII encoding may cause loss of information if Unicode characters are in use. Consider using System.Text.UnicodeEncoding";
 
         /// <summary>
-        /// Creates an instance of UseEncodingUnicodeInsteadOfASCIIAnalyzer
+        /// Creates an instance of UseEncodingUnicodeInsteadOfASCIIAnalyzer.
         /// </summary>
         public UseEncodingUnicodeInsteadOfASCIIAnalyzer()
             : base(
-                DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfASCII,
+                DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
                 Title,
                 MessageFormat,
                 Category,

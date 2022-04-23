@@ -38,7 +38,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfASCII,
+                Id = DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
                 Message = "Consider usage of typeof(x) instead of MethodBase.GetCurrentMethod().DeclaringType.",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =

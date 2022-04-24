@@ -23,7 +23,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "GDI+ usage needs to be considered as it is not suitable for web development etc.";
 
         /// <summary>
-        /// Creates an instance of DoNotUseGdiPlusAnalyzer.
+        /// Initializes a new instance of the <see cref="DoNotUseGdiPlusAnalyzer"/> class.
         /// </summary>
         public DoNotUseGdiPlusAnalyzer()
             : base(

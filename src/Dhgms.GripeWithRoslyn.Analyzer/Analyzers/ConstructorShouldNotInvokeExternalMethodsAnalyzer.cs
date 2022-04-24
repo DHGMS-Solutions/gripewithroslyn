@@ -54,7 +54,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         };
 
         /// <summary>
-        /// Creates an instance of ConstructorShouldNotInvokeExternalMethodsAnalyzer.
+        /// Initializes a new instance of the <see cref="ConstructorShouldNotInvokeExternalMethodsAnalyzer"/> class.
         /// </summary>
         public ConstructorShouldNotInvokeExternalMethodsAnalyzer()
         {

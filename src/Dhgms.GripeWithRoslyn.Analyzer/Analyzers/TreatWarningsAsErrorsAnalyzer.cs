@@ -21,7 +21,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Creates an instance of TreatWarningsAsErrorsAnalyzer.
+        /// Initializes a new instance of the <see cref="TreatWarningsAsErrorsAnalyzer"/> class.
         /// </summary>
         /// <param name="diagnosticId">The Diagnostic Id.</param>
         /// <param name="title">The title of the analyzer.</param>

@@ -23,7 +23,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "The StructureMap project has been retired. This means there are no gurantees of fixes. This codebase should not be used.";
 
         /// <summary>
-        /// Creates an instance of StructureMapShouldNotBeUsedAnalyzer.
+        /// Initializes a new instance of the <see cref="StructureMapShouldNotBeUsedAnalyzer"/> class.
         /// </summary>
         public StructureMapShouldNotBeUsedAnalyzer()
             : base(

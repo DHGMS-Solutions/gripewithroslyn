@@ -23,7 +23,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "DateTime.Now may cause issues in timezone \\ daylight saving time sensitive scenarios. Elect for DateTime.UtcNow and convert on the front end UI as required.";
 
         /// <summary>
-        /// Creates an instance of UseDateTimeUtcNowInsteadofNowAnalyzer.
+        /// Initializes a new instance of the <see cref="UseDateTimeUtcNowInsteadofNowAnalyzer"/> class.
         /// </summary>
         public UseDateTimeUtcNowInsteadofNowAnalyzer()
             : base(

@@ -23,7 +23,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "System.Text.Json brings improvements from JSON.NET.";
 
         /// <summary>
-        /// Creates an instance of UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer.
+        /// Initializes a new instance of the <see cref="UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer"/> class.
         /// </summary>
         public UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer()
             : base(

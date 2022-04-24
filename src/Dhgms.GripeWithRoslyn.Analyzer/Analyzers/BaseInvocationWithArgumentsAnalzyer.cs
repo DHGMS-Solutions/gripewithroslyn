@@ -21,7 +21,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     public abstract class BaseInvocationWithArgumentsAnalzyer : DiagnosticAnalyzer
     {
         /// <summary>
-        /// Creates an instance of BaseInvocationWithArgumentsAnalzyer.
+        /// Initializes a new instance of the <see cref="BaseInvocationWithArgumentsAnalzyer"/> class.
         /// </summary>
         /// <param name="diagnosticId">The Diagnostic Id.</param>
         /// <param name="title">The title of the analyzer.</param>

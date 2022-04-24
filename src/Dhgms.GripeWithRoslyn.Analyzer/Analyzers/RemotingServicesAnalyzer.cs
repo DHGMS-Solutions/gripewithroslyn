@@ -3,11 +3,10 @@
 // See the LICENSE file in the project root for full license information.
 
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    using Microsoft.CodeAnalysis;
-
     /// <summary>
     /// Roslyn Analyzer for detecting the use of methods in the .NET remoting services namespace.
     /// </summary>
@@ -24,15 +23,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             ".NET remoting is legacy technology and should not be used. You should be using a newer technology.";
 
         /// <summary>
-        /// Creates an instance of RemotingServicesAnalyzer.
+        /// Initializes a new instance of the <see cref="RemotingServicesAnalyzer"/> class.
         /// </summary>
         public RemotingServicesAnalyzer()
-            : base(DiagnosticIdsHelper.RemotingServicesAnalyzer,
-                  Title,
-                  MessageFormat,
-                  Category,
-                  Description,
-                  DiagnosticSeverity.Warning)
+            : base(
+                DiagnosticIdsHelper.RemotingServicesAnalyzer,
+                Title,
+                MessageFormat,
+                Category,
+                Description,
+                DiagnosticSeverity.Warning)
         {
         }
 

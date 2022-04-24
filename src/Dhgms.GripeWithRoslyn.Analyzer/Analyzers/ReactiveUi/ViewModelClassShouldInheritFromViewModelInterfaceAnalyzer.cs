@@ -12,6 +12,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
 {
+    /// <summary>
+    /// Analyzer for checking that a view model class implements a viewmodel interface.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer : DiagnosticAnalyzer
     {

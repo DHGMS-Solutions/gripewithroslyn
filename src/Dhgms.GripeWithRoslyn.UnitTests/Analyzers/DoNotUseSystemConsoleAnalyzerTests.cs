@@ -46,7 +46,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
                 Message = DoNotUseSystemConsoleAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] {
+                    new[]
+                    {
                         new DiagnosticResultLocation("Test0.cs", 18, 17)
                     }
             };

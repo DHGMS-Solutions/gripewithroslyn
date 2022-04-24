@@ -2,15 +2,14 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    using System;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
     /// <summary>
     /// Roslyn Analyzer to check for uses of FluentData's AutoMap method.
     /// </summary>
@@ -18,7 +17,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     /// Based upon : https://raw.githubusercontent.com/Wintellect/Wintellect.Analyzers/master/Source/Wintellect.Analyzers/Wintellect.Analyzers/Usage/CallAssertMethodsWithMessageParameterAnalyzer.cs.
     /// </remarks>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-    public sealed class FluentDataQueryManyWithNullArgument : BaseInvocationWithArgumentsAnalzyer
+    public sealed class FluentDataQueryManyWithNullArgumentAnalyzer : BaseInvocationWithArgumentsAnalzyer
     {
         private const string Title = "FluentData QueryMany should not be used with a null value for the mapper.";
 
@@ -30,9 +29,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "QueryMany without a mapper produces potential technical debt where if you are preparing the database schema for new content the old POCO objects won't map due to not having the corresponding property. This risks taking down your platform\\service. Please use a mapper.";
 
         /// <summary>
-        /// Creates an instance of FluentDataQueryManyWithNullArgument.
+        /// Initializes a new instance of the <see cref="FluentDataQueryManyWithNullArgumentAnalyzer"/> class.
         /// </summary>
-        public FluentDataQueryManyWithNullArgument()
+        public FluentDataQueryManyWithNullArgumentAnalyzer()
             : base(
                   DiagnosticIdsHelper.FluentDataQueryManyWithNullArgumentAnalyzer,
                   Title,

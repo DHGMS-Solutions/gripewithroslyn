@@ -47,11 +47,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers.ReactiveUi
             VerifyCSharpDiagnostic(test, expected);
         }
 
-        //protected override CodeFixProvider GetCSharpCodeFixProvider()
-        //{
-        //    return new DhgmsGripeWithRoslynAnalyzerCodeFixProvider();
-        //}
-
+        /// <inheritdoc/>
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer();

@@ -51,7 +51,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
                 Message = DoNotUseGdiPlusAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] {
+                    new[]
+                    {
                         new DiagnosticResultLocation("Test0.cs", 22, 30)
                     }
             };
@@ -62,7 +63,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
                 Message = DoNotUseGdiPlusAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] {
+                    new[]
+                    {
                         new DiagnosticResultLocation("Test0.cs", 23, 17)
                     }
             };

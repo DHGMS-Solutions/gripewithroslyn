@@ -28,7 +28,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <param name="message">The message to display detailing the issue with the analyzer.</param>
         /// <param name="category">The category the analyzer belongs to.</param>
         /// <param name="description">The description of the analyzer.</param>
-        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer.</param>
+        /// <param name="diagnosticSeverity">The severity associated with breaches of the analyzer.</param>
         public TreatWarningsAsErrorsAnalyzer(
             [NotNull] string diagnosticId,
             [NotNull] string title,

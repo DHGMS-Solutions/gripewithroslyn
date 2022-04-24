@@ -3,12 +3,11 @@
 // See the LICENSE file in the project root for full license information.
 
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
     /// <summary>
     /// Roslyn Analyzer to check for uses of FluentData's AutoMap method.
     /// </summary>
@@ -28,15 +27,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "AutoMap produces potential technical debt where if you are preparing the database schema for new content the old POCO objects won't map due to not having the corresponding property. This risks taking down your platform\\service. Please use a mapper.";
 
         /// <summary>
-        /// Creates an instance of FluentDataAutoMapAnalyzer.
+        /// Initializes a new instance of the <see cref="FluentDataAutoMapAnalyzer"/> class.
         /// </summary>
         public FluentDataAutoMapAnalyzer()
-            : base(DiagnosticIdsHelper.FluentDataAutoMapAnalyzer,
-                  Title,
-                  MessageFormat,
-                  Category,
-                  Description,
-                  DiagnosticSeverity.Warning)
+            : base(
+                DiagnosticIdsHelper.FluentDataAutoMapAnalyzer,
+                Title,
+                MessageFormat,
+                Category,
+                Description,
+                DiagnosticSeverity.Warning)
         {
         }
 

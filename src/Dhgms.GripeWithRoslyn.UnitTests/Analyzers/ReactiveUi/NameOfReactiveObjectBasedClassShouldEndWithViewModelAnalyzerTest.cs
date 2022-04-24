@@ -37,7 +37,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers.ReactiveUi
                 Message = NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] {
+                    new[]
+                    {
                         new DiagnosticResultLocation("Test0.cs", 8, 22)
                     }
             };
@@ -45,11 +46,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers.ReactiveUi
             VerifyCSharpDiagnostic(test, expected);
         }
 
-        //protected override CodeFixProvider GetCSharpCodeFixProvider()
-        //{
-        //    return new DhgmsGripeWithRoslynAnalyzerCodeFixProvider();
-        //}
-
+        /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer();

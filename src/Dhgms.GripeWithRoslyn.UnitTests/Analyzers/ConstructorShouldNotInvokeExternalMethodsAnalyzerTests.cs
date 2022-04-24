@@ -41,7 +41,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
                 Message = ConstructorShouldNotInvokeExternalMethodsAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] {
+                    new[]
+                    {
                         new DiagnosticResultLocation("Test0.cs", 8, 17)
                     }
             };

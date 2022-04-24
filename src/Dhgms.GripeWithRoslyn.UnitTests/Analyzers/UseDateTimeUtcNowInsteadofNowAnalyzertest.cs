@@ -38,7 +38,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
                 Message = UseDateTimeUtcNowInsteadofNowAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] {
+                    new[]
+                    {
                         new DiagnosticResultLocation("Test0.cs", 10, 24)
                     }
             };

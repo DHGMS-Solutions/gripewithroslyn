@@ -14,6 +14,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
     /// </summary>
     public static partial class AnalyzerExtensions
     {
+        /// <summary>
+        /// Copies the trivia from one syntax node to another.
+        /// </summary>
+        /// <param name="target">Target node to update.</param>
+        /// <param name="source">Source node to copy the trivia from.</param>
+        /// <returns>Updated node.</returns>
         public static SyntaxNode WithSameTriviaAs(this SyntaxNode target, SyntaxNode source)
         {
             if (target == null)
@@ -31,25 +37,31 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                 .WithTrailingTrivia(source.GetTrailingTrivia());
         }
 
+        /// <summary>
+        /// Checks to see if a display part is one of a number of different kinds.
+        /// </summary>
+        /// <param name="displayPart">The display part to check.</param>
+        /// <param name="kinds">Collection of Display Part Kinds to check for.</param>
+        /// <returns>Whether the display part matches any of the acceptable kinds.</returns>
         public static bool IsAnyKind(this SymbolDisplayPart displayPart, params SymbolDisplayPartKind[] kinds)
         {
-            foreach (var kind in kinds)
-            {
-                if (displayPart.Kind == kind)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return kinds.Any(kind => displayPart.Kind == kind);
         }
 
+        /// <summary>
+        /// Finds the first syntax node (including itself) that matches the required type.
+        /// </summary>
+        /// <typeparam name="T">The desired type.</typeparam>
+        /// <param name="node">The node to walk up.</param>
+        /// <returns>Matching syntax node.</returns>
         public static T FirstAncestorOrSelfOfType<T>(this SyntaxNode node)
             where T : SyntaxNode
             =>
             (T)node.FirstAncestorOrSelfOfType(typeof(T));
 
-        public static SyntaxNode FirstAncestorOrSelfOfType(this SyntaxNode node, params Type[] types)
+        public static SyntaxNode FirstAncestorOrSelfOfType(
+            this SyntaxNode node,
+            params Type[] types)
         {
             var currentNode = node;
             while (true)

@@ -20,14 +20,16 @@ namespace TestHelper
         /// <summary>
         /// Get the CSharp analyzer being tested - to be implemented in non-abstract class.
         /// </summary>
+        /// <returns>C# Analyzer being tested.</returns>
         protected virtual DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return null;
         }
 
         /// <summary>
-        /// Get the Visual Basic analyzer being tested (C#) - to be implemented in non-abstract class.
+        /// Get the Visual Basic analyzer being tested - to be implemented in non-abstract class.
         /// </summary>
+        /// <returns>VB Analyzer being tested.</returns>
         protected virtual DiagnosticAnalyzer GetBasicDiagnosticAnalyzer()
         {
             return null;
@@ -78,20 +80,6 @@ namespace TestHelper
         }
 
         /// <summary>
-        /// General method that gets a collection of actual diagnostics found in the source after the analyzer is run,
-        /// then verifies each of them.
-        /// </summary>
-        /// <param name="sources">An array of strings to create source documents from to run the analyzers on.</param>
-        /// <param name="language">The language of the classes represented by the source strings.</param>
-        /// <param name="analyzer">The analyzer to be run on the source code.</param>
-        /// <param name="expected">DiagnosticResults that should appear after the analyzer is run on the sources.</param>
-        private void VerifyDiagnostics(string[] sources, string language, DiagnosticAnalyzer analyzer, params DiagnosticResult[] expected)
-        {
-            var diagnostics = GetSortedDiagnostics(sources, language, analyzer);
-            VerifyDiagnosticResults(diagnostics, analyzer, expected);
-        }
-
-        /// <summary>
         /// Checks each of the actual Diagnostics found and compares them with the corresponding DiagnosticResult in the array of expected results.
         /// Diagnostics are considered equal only if the DiagnosticResultLocation, Id, Severity, and Message of the DiagnosticResult match the actual diagnostic.
         /// </summary>
@@ -125,7 +113,7 @@ namespace TestHelper
                             false,
                             string.Format(
                                 "Expected:\nA project diagnostic with No location\nActual:\n{0}",
-                            FormatDiagnostics(analyzer, actual)));
+                                FormatDiagnostics(analyzer, actual)));
                     }
                 }
                 else
@@ -139,7 +127,8 @@ namespace TestHelper
                             false,
                             string.Format(
                                 "Expected {0} additional locations but got {1} for Diagnostic:\r\n    {2}\r\n",
-                                expected.Locations.Length - 1, additionalLocations.Length,
+                                expected.Locations.Length - 1,
+                                additionalLocations.Length,
                                 FormatDiagnostics(analyzer, actual)));
                     }
 
@@ -155,7 +144,9 @@ namespace TestHelper
                         false,
                         string.Format(
                             "Expected diagnostic id to be \"{0}\" was \"{1}\"\r\n\r\nDiagnostic:\r\n    {2}\r\n",
-                            expected.Id, actual.Id, FormatDiagnostics(analyzer, actual)));
+                            expected.Id,
+                            actual.Id,
+                            FormatDiagnostics(analyzer, actual)));
                 }
 
                 if (actual.Severity != expected.Severity)
@@ -164,7 +155,9 @@ namespace TestHelper
                         false,
                         string.Format(
                             "Expected diagnostic severity to be \"{0}\" was \"{1}\"\r\n\r\nDiagnostic:\r\n    {2}\r\n",
-                            expected.Severity, actual.Severity, FormatDiagnostics(analyzer, actual)));
+                            expected.Severity,
+                            actual.Severity,
+                            FormatDiagnostics(analyzer, actual)));
                 }
 
                 if (actual.GetMessage() != expected.Message)
@@ -173,7 +166,9 @@ namespace TestHelper
                         false,
                         string.Format(
                             "Expected diagnostic message to be \"{0}\" was \"{1}\"\r\n\r\nDiagnostic:\r\n    {2}\r\n",
-                            expected.Message, actual.GetMessage(), FormatDiagnostics(analyzer, actual)));
+                            expected.Message,
+                            actual.GetMessage(),
+                            FormatDiagnostics(analyzer, actual)));
                 }
             }
         }
@@ -193,7 +188,9 @@ namespace TestHelper
                 actualSpan.Path == expected.Path || (actualSpan.Path != null && actualSpan.Path.Contains("Test0.") && expected.Path.Contains("Test.")),
                 string.Format(
                     "Expected diagnostic to be in file \"{0}\" was actually in file \"{1}\"\r\n\r\nDiagnostic:\r\n    {2}\r\n",
-                    expected.Path, actualSpan.Path, FormatDiagnostics(analyzer, diagnostic)));
+                    expected.Path,
+                    actualSpan.Path,
+                    FormatDiagnostics(analyzer, diagnostic)));
 
             var actualLinePosition = actualSpan.StartLinePosition;
 
@@ -206,7 +203,9 @@ namespace TestHelper
                         false,
                         string.Format(
                             "Expected diagnostic to be on line \"{0}\" was actually on line \"{1}\"\r\n\r\nDiagnostic:\r\n    {2}\r\n",
-                            expected.Line, actualLinePosition.Line + 1, FormatDiagnostics(analyzer, diagnostic)));
+                            expected.Line,
+                            actualLinePosition.Line + 1,
+                            FormatDiagnostics(analyzer, diagnostic)));
                 }
             }
 
@@ -219,7 +218,9 @@ namespace TestHelper
                         false,
                         string.Format(
                             "Expected diagnostic to start at column \"{0}\" was actually at column \"{1}\"\r\n\r\nDiagnostic:\r\n    {2}\r\n",
-                            expected.Column, actualLinePosition.Character + 1, FormatDiagnostics(analyzer, diagnostic)));
+                            expected.Column,
+                            actualLinePosition.Character + 1,
+                            FormatDiagnostics(analyzer, diagnostic)));
                 }
             }
         }
@@ -277,7 +278,22 @@ namespace TestHelper
                     }
                 }
             }
+
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// General method that gets a collection of actual diagnostics found in the source after the analyzer is run,
+        /// then verifies each of them.
+        /// </summary>
+        /// <param name="sources">An array of strings to create source documents from to run the analyzers on.</param>
+        /// <param name="language">The language of the classes represented by the source strings.</param>
+        /// <param name="analyzer">The analyzer to be run on the source code.</param>
+        /// <param name="expected">DiagnosticResults that should appear after the analyzer is run on the sources.</param>
+        private void VerifyDiagnostics(string[] sources, string language, DiagnosticAnalyzer analyzer, params DiagnosticResult[] expected)
+        {
+            var diagnostics = GetSortedDiagnostics(sources, language, analyzer);
+            VerifyDiagnosticResults(diagnostics, analyzer, expected);
         }
     }
 }

@@ -2,22 +2,19 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Immutable;
+using System.Linq;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using JetBrains.Annotations;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Immutable;
-    using JetBrains.Annotations;
-
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
-    using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
-
     /// <summary>
     /// Base class for a Roslyn Analayzer for Method Invocation where you need to validate the arguments passed.
     /// </summary>
@@ -31,7 +28,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <param name="message">The message to display detailing the issue with the analyzer.</param>
         /// <param name="category">The category the analyzer belongs to.</param>
         /// <param name="description">The description of the analyzer.</param>
-        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer.</param>
+        /// <param name="diagnosticSeverity">The severity associated with breaches of the analyzer.</param>
         protected BaseInvocationWithArgumentsAnalzyer(
             [NotNull] string diagnosticId,
             [NotNull] string title,

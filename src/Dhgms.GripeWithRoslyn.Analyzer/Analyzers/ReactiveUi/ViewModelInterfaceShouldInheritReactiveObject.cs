@@ -5,11 +5,10 @@
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using DiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
 {
-    using DiagnosticSeverity = DiagnosticSeverity;
-
     /// <summary>
     /// Analyzer for checking that a class that has the ViewModel suffix inherits from ReactiveUI.ReactiveObject.
     /// </summary>
@@ -26,15 +25,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
             "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
 
         /// <summary>
-        /// Creates an instance of ViewModelShouldInheritReactiveObject.
+        /// Initializes a new instance of the <see cref="ViewModelInterfaceShouldInheritReactiveObject"/> class.
         /// </summary>
         public ViewModelInterfaceShouldInheritReactiveObject()
-            : base(DiagnosticIdsHelper.ViewModelInterfaceShouldInheritReactiveObject,
-                  Title,
-                  MessageFormat,
-                  Category,
-                  Description,
-                  DiagnosticSeverity.Warning)
+            : base(
+                DiagnosticIdsHelper.ViewModelInterfaceShouldInheritReactiveObject,
+                Title,
+                MessageFormat,
+                Category,
+                Description,
+                DiagnosticSeverity.Warning)
         {
         }
 

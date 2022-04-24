@@ -43,9 +43,15 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <inheritdoc />
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
+        /// <summary>
+        /// Gets the suffix for the class name.
+        /// </summary>
         [NotNull]
         protected abstract string ClassNameSuffix { get; }
 
+        /// <summary>
+        /// Gets the full name of the base interface, if any.
+        /// </summary>
         [NotNull]
         protected abstract string BaseInterfaceFullName { get; }
 

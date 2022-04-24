@@ -53,7 +53,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
                 Message = UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] {
+                    new[]
+                    {
                         new DiagnosticResultLocation("Test0.cs", 21, 17)
                     }
             };
@@ -71,5 +72,4 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
             return new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer();
         }
     }
-
 }

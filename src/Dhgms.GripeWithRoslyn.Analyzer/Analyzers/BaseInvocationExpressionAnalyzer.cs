@@ -45,13 +45,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
         /// <summary>
-        /// The name of the method to check for.
+        /// Gets the name of the method to check for.
         /// </summary>
         [NotNull]
         protected abstract string MethodName { get; }
 
         /// <summary>
-        /// The containing types the method may belong to.
+        /// Gets the containing types the method may belong to.
         /// </summary>
         [NotNull]
         protected abstract string[] ContainingTypes { get; }

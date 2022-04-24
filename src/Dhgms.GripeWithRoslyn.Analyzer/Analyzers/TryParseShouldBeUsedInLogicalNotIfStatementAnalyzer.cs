@@ -18,8 +18,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer : DiagnosticAnalyzer
     {
-        private readonly DiagnosticDescriptor _rule;
-
         internal const string Title = "TryParse should be used inside an If Statement with a unary operation";
 
         private const string MessageFormat = Title;
@@ -28,6 +26,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
         private const string Description =
             "TryParse should be used inside an If Statement with a unary operation. This allows mitigating errors with parsing.";
+
+        private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer"/> class.
@@ -53,6 +53,23 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
             context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
+        }
+
+        private static T GetParentNodeOfType<T>(SyntaxNode syntaxNode)
+            where T : SyntaxNode
+        {
+            var currentNode = syntaxNode.Parent;
+            while (currentNode != null)
+            {
+                if (currentNode is T parent)
+                {
+                    return parent;
+                }
+
+                currentNode = currentNode.Parent;
+            }
+
+            return null;
         }
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
@@ -103,23 +120,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             var ifStatementSyntax = GetParentNodeOfType<PrefixUnaryExpressionSyntax>(prefixUnaryExpressionSyntax);
 
             return ifStatementSyntax != null;
-        }
-
-        private static T GetParentNodeOfType<T>(SyntaxNode syntaxNode)
-            where T : SyntaxNode
-        {
-            var currentNode = syntaxNode.Parent;
-            while (currentNode != null)
-            {
-                if (currentNode is T parent)
-                {
-                    return parent;
-                }
-
-                currentNode = currentNode.Parent;
-            }
-
-            return null;
         }
     }
 }

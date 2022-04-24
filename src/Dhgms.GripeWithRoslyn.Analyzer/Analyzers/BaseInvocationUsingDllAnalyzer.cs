@@ -53,7 +53,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             => ImmutableArray.Create(_rule);
 
         /// <summary>
-        /// The name of the assembly to check for.
+        /// Gets the name of the assembly to check for.
         /// </summary>
         [NotNull]
         protected abstract string AssemblyName { get; }

@@ -43,14 +43,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <inheritdoc />
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
-        /// <inheritdoc />
-        public sealed override void Initialize(AnalysisContext context)
-        {
-            context.EnableConcurrentExecution();
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-            context.RegisterSyntaxNodeAction(AnalyzeClassDeclarationExpression, SyntaxKind.ClassDeclaration);
-        }
-
         /// <summary>
         /// Gets the name suffix that classes should end by.
         /// </summary>
@@ -60,6 +52,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// Gets the full name of the base class that mean inheriting classes should use this rule.
         /// </summary>
         protected abstract string BaseClassFullName { get; }
+
+        /// <inheritdoc />
+        public sealed override void Initialize(AnalysisContext context)
+        {
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+            context.RegisterSyntaxNodeAction(AnalyzeClassDeclarationExpression, SyntaxKind.ClassDeclaration);
+        }
 
         private void AnalyzeClassDeclarationExpression(SyntaxNodeAnalysisContext context)
         {

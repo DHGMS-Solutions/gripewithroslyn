@@ -37,8 +37,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            _rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity,
-                isEnabledByDefault: true, description: description);
+            _rule = new DiagnosticDescriptor(
+                diagnosticId,
+                title,
+                message,
+                category,
+                diagnosticSeverity,
+                isEnabledByDefault: true,
+                description: description);
         }
 
         /// <inheritdoc />

@@ -54,7 +54,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             => ImmutableArray.Create(_rule);
 
         /// <summary>
-        /// The namespace to check for.
+        /// Gets the namespace to check for.
         /// </summary>
         [NotNull]
         protected abstract string Namespace { get; }

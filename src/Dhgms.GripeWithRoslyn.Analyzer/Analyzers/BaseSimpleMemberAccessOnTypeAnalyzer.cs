@@ -51,6 +51,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(_rule);
 
+        /// <summary>
+        /// Gets the fully qualified class name to check for.
+        /// </summary>
+        protected abstract string ClassName { get; }
+
+        /// <summary>
+        /// Gets the Member name to check for.
+        /// </summary>
+        protected abstract string MemberName { get; }
+
         /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
@@ -95,15 +105,5 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             context.ReportDiagnostic(Diagnostic.Create(_rule, memberAccessExpressionSyntax.GetLocation()));
         }
-
-        /// <summary>
-        /// Gets the fully qualified class name to check for.
-        /// </summary>
-        protected abstract string ClassName { get; }
-
-        /// <summary>
-        /// Gets the Member name to check for.
-        /// </summary>
-        protected abstract string MemberName { get; }
     }
 }

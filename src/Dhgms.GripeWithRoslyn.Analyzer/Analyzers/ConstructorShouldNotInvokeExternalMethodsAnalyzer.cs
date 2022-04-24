@@ -19,8 +19,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ConstructorShouldNotInvokeExternalMethodsAnalyzer : DiagnosticAnalyzer
     {
-        private readonly DiagnosticDescriptor _rule;
-
         internal const string Title = "Constructors should minimise work and not execute methods";
 
         private const string MessageFormat = Title;
@@ -32,7 +30,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
         private const string GlobalSystemStringNamespace = "global::System.String";
 
-        private readonly string[] operatorsWhiteList =
+        private readonly DiagnosticDescriptor _rule;
+
+        private readonly string[] _operatorsWhiteList =
         {
             "nameof",
             "typeof"
@@ -79,6 +79,31 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
         }
 
+        private static ConstructorDeclarationSyntax GetConstructorDeclarationSyntax(SyntaxNode syntaxNode)
+        {
+            var currentNode = syntaxNode.Parent;
+            while (currentNode != null)
+            {
+                if (currentNode is ConstructorDeclarationSyntax constructorDeclarationSyntax)
+                {
+                    return constructorDeclarationSyntax;
+                }
+
+                if (currentNode is MethodDeclarationSyntax
+                    || currentNode is PropertyDeclarationSyntax
+                    || currentNode is FieldDeclarationSyntax
+                    || currentNode is ClassDeclarationSyntax)
+                {
+                    // short circuit out
+                    break;
+                }
+
+                currentNode = currentNode.Parent;
+            }
+
+            return null;
+        }
+
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
             if (context.IsGenerated())
@@ -116,7 +141,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 case IdentifierNameSyntax identifierNameSyntax:
                     {
                         var methodName = identifierNameSyntax.Identifier.ToFullString();
-                        return operatorsWhiteList.Any(operatorName => operatorName.Equals(methodName, StringComparison.Ordinal));
+                        return _operatorsWhiteList.Any(operatorName => operatorName.Equals(methodName, StringComparison.Ordinal));
                     }
 
                 default:
@@ -138,31 +163,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             return _methodWhiteList
                 .Any(tuple => tuple.Namespace.Equals(typeFullName)
                               && tuple.Methods.Any(tupleMethod => methodName.Equals(tupleMethod, StringComparison.Ordinal)));
-        }
-
-        private static ConstructorDeclarationSyntax GetConstructorDeclarationSyntax(SyntaxNode syntaxNode)
-        {
-            var currentNode = syntaxNode.Parent;
-            while (currentNode != null)
-            {
-                if (currentNode is ConstructorDeclarationSyntax constructorDeclarationSyntax)
-                {
-                    return constructorDeclarationSyntax;
-                }
-
-                if (currentNode is MethodDeclarationSyntax
-                    || currentNode is PropertyDeclarationSyntax
-                    || currentNode is FieldDeclarationSyntax
-                    || currentNode is ClassDeclarationSyntax)
-                {
-                    // short circuit out
-                    break;
-                }
-
-                currentNode = currentNode.Parent;
-            }
-
-            return null;
         }
     }
 }

@@ -40,22 +40,22 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             Rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
         }
 
-        /// <summary>
-        /// Description of the Diagnostic Rule. Used when passing details to Roslyn.
-        /// </summary>
-        protected DiagnosticDescriptor Rule { get; }
-
         /// <inheritdoc />
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         /// <summary>
-        /// The name of the method to check for.
+        /// Gets the description of the Diagnostic Rule. Used when passing details to Roslyn.
+        /// </summary>
+        protected DiagnosticDescriptor Rule { get; }
+
+        /// <summary>
+        /// Gets the name of the method to check for.
         /// </summary>
         [NotNull]
         protected abstract string MethodName { get; }
 
         /// <summary>
-        /// The classes the method may belong to.
+        /// Gets the classes the method may belong to.
         /// </summary>
         [NotNull]
         protected abstract string[] ContainingTypes { get; }
@@ -67,6 +67,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
             context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
         }
+
+        /// <summary>
+        /// Event for validating the arguments passed.
+        /// </summary>
+        /// <param name="context">The context for the Roslyn syntax analysis.</param>
+        /// <param name="argumentList">Syntax representation of the argument list.</param>
+        protected abstract void OnValidateArguments(SyntaxNodeAnalysisContext context, ArgumentListSyntax argumentList);
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
@@ -92,12 +99,5 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             OnValidateArguments(context, invocationExpression.ArgumentList);
         }
-
-        /// <summary>
-        /// Event for validating the arguments passed.
-        /// </summary>
-        /// <param name="context">The context for the Roslyn syntax analysis.</param>
-        /// <param name="argumentList">Syntax representation of the argument list.</param>
-        protected abstract void OnValidateArguments(SyntaxNodeAnalysisContext context, ArgumentListSyntax argumentList);
     }
 }

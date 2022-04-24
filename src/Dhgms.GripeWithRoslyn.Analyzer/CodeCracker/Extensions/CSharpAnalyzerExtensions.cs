@@ -13,26 +13,57 @@ using Microsoft.CodeAnalysis.Formatting;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 {
+    /// <summary>
+    /// Extension methods for working with C# analyzers.
+    /// </summary>
     public static class CSharpAnalyzerExtensions
     {
-        public static void RegisterSyntaxNodeAction<TLanguageKindEnum>(this AnalysisContext context, LanguageVersion greaterOrEqualThanLanguageVersion,
-        Action<SyntaxNodeAnalysisContext> action, params TLanguageKindEnum[] syntaxKinds)
+        private static readonly SyntaxTokenList publicToken = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+        private static readonly SyntaxTokenList privateToken = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword));
+        private static readonly SyntaxTokenList protectedToken = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword));
+        private static readonly SyntaxTokenList protectedInternalToken = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword), SyntaxFactory.Token(SyntaxKind.InternalKeyword));
+        private static readonly SyntaxTokenList internalToken = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.InternalKeyword));
+
+        public static void RegisterSyntaxNodeAction<TLanguageKindEnum>(
+            this AnalysisContext context,
+            LanguageVersion greaterOrEqualThanLanguageVersion,
+            Action<SyntaxNodeAnalysisContext> action,
+            params TLanguageKindEnum[] syntaxKinds)
             where TLanguageKindEnum : struct
             =>
             context.RegisterCompilationStartAction(greaterOrEqualThanLanguageVersion, compilationContext => compilationContext.RegisterSyntaxNodeAction(action, syntaxKinds));
 
-        public static void RegisterCompilationStartAction(this AnalysisContext context, LanguageVersion greaterOrEqualThanLanguageVersion, Action<CompilationStartAnalysisContext> registrationAction) =>
+        public static void RegisterCompilationStartAction(
+            this AnalysisContext context,
+            LanguageVersion greaterOrEqualThanLanguageVersion,
+            Action<CompilationStartAnalysisContext> registrationAction) =>
             context.RegisterCompilationStartAction(compilationContext => compilationContext.RunIfCSharpVersionOrGreater(greaterOrEqualThanLanguageVersion, () => registrationAction?.Invoke(compilationContext)));
 
-        public static void RegisterSymbolAction(this AnalysisContext context, LanguageVersion greaterOrEqualThanLanguageVersion, Action<SymbolAnalysisContext> registrationAction, params SymbolKind[] symbolKinds) =>
+        public static void RegisterSymbolAction(
+            this AnalysisContext context,
+            LanguageVersion greaterOrEqualThanLanguageVersion,
+            Action<SymbolAnalysisContext> registrationAction,
+            params SymbolKind[] symbolKinds) =>
             context.RegisterSymbolAction(compilationContext => compilationContext.RunIfCSharpVersionOrGreater(greaterOrEqualThanLanguageVersion, () => registrationAction?.Invoke(compilationContext)), symbolKinds);
+
 #pragma warning disable RS1012
-        private static void RunIfCSharpVersionOrGreater(this CompilationStartAnalysisContext context, LanguageVersion greaterOrEqualThanLanguageVersion, Action action) =>
+        private static void RunIfCSharpVersionOrGreater(
+            this CompilationStartAnalysisContext context,
+            LanguageVersion greaterOrEqualThanLanguageVersion,
+            Action action) =>
             context.Compilation.RunIfCSharpVersionOrGreater(action, greaterOrEqualThanLanguageVersion);
 #pragma warning restore RS1012
-        private static void RunIfCSharpVersionOrGreater(this Compilation compilation, Action action, LanguageVersion greaterOrEqualThanLanguageVersion) =>
+
+        private static void RunIfCSharpVersionOrGreater(
+            this Compilation compilation,
+            Action action,
+            LanguageVersion greaterOrEqualThanLanguageVersion) =>
             (compilation as CSharpCompilation)?.LanguageVersion.RunIfCSharpVersionGreater(action, greaterOrEqualThanLanguageVersion);
-        private static void RunIfCSharpVersionOrGreater(this SymbolAnalysisContext context, LanguageVersion greaterOrEqualThanLanguageVersion, Action action) =>
+
+        private static void RunIfCSharpVersionOrGreater(
+            this SymbolAnalysisContext context,
+            LanguageVersion greaterOrEqualThanLanguageVersion,
+            Action action) =>
             context.Compilation.RunIfCSharpVersionOrGreater(action, greaterOrEqualThanLanguageVersion);
 
         private static void RunIfCSharpVersionGreater(this LanguageVersion languageVersion, Action action, LanguageVersion greaterOrEqualThanLanguageVersion)
@@ -43,36 +74,27 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             }
         }
 
-        public static void RegisterSyntaxNodeActionForVersionLower<TLanguageKindEnum>(this AnalysisContext context, LanguageVersion lowerThanLanguageVersion,
-        Action<SyntaxNodeAnalysisContext> action, params TLanguageKindEnum[] syntaxKinds)
+        public static void RegisterSyntaxNodeActionForVersionLower<TLanguageKindEnum>(
+            this AnalysisContext context,
+            LanguageVersion lowerThanLanguageVersion,
+            Action<SyntaxNodeAnalysisContext> action,
+            params TLanguageKindEnum[] syntaxKinds)
             where TLanguageKindEnum : struct
             =>
             context.RegisterCompilationStartActionForVersionLower(lowerThanLanguageVersion, compilationContext => compilationContext.RegisterSyntaxNodeAction(action, syntaxKinds));
 
-        public static void RegisterCompilationStartActionForVersionLower(this AnalysisContext context, LanguageVersion lowerThanLanguageVersion, Action<CompilationStartAnalysisContext> registrationAction) =>
+        public static void RegisterCompilationStartActionForVersionLower(
+            this AnalysisContext context,
+            LanguageVersion lowerThanLanguageVersion,
+            Action<CompilationStartAnalysisContext> registrationAction) =>
             context.RegisterCompilationStartAction(compilationContext => compilationContext.RunIfCSharpVersionLower(lowerThanLanguageVersion, () => registrationAction?.Invoke(compilationContext)));
-#pragma warning disable RS1012
-        private static void RunIfCSharpVersionLower(this CompilationStartAnalysisContext context, LanguageVersion lowerThanLanguageVersion, Action action) =>
-            context.Compilation.RunIfCSharpVersionLower(action, lowerThanLanguageVersion);
-#pragma warning restore RS1012
-        private static void RunIfCSharpVersionLower(this Compilation compilation, Action action, LanguageVersion lowerThanLanguageVersion) =>
-            (compilation as CSharpCompilation)?.LanguageVersion.RunIfCSharpVersionLower(action, lowerThanLanguageVersion);
-
-        private static void RunIfCSharpVersionLower(this LanguageVersion languageVersion, Action action, LanguageVersion lowerThanLanguageVersion)
-        {
-            if (languageVersion < lowerThanLanguageVersion)
-            {
-                action?.Invoke();
-            }
-        }
 
         public static ConditionalAccessExpressionSyntax ToConditionalAccessExpression(this MemberAccessExpressionSyntax memberAccess) =>
             SyntaxFactory.ConditionalAccessExpression(memberAccess.Expression, SyntaxFactory.MemberBindingExpression(memberAccess.Name));
 
         public static StatementSyntax GetSingleStatementFromPossibleBlock(this StatementSyntax statement)
         {
-            var block = statement as BlockSyntax;
-            if (block != null)
+            if (statement is BlockSyntax block)
             {
                 if (block.Statements.Count != 1)
                 {
@@ -122,54 +144,22 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 
         public static bool IsKind(this SyntaxToken token, params SyntaxKind[] kinds)
         {
-            foreach (var kind in kinds)
-            {
-                if (Microsoft.CodeAnalysis.CSharpExtensions.IsKind(token, kind))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return kinds.Any(kind => Microsoft.CodeAnalysis.CSharpExtensions.IsKind(token, kind));
         }
 
         public static bool IsKind(this SyntaxTrivia trivia, params SyntaxKind[] kinds)
         {
-            foreach (var kind in kinds)
-            {
-                if (Microsoft.CodeAnalysis.CSharpExtensions.IsKind(trivia, kind))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return kinds.Any(kind => Microsoft.CodeAnalysis.CSharpExtensions.IsKind(trivia, kind));
         }
 
         public static bool IsKind(this SyntaxNode node, params SyntaxKind[] kinds)
         {
-            foreach (var kind in kinds)
-            {
-                if (Microsoft.CodeAnalysis.CSharpExtensions.IsKind(node, kind))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return kinds.Any(kind => Microsoft.CodeAnalysis.CSharpExtensions.IsKind(node, kind));
         }
 
         public static bool IsKind(this SyntaxNodeOrToken nodeOrToken, params SyntaxKind[] kinds)
         {
-            foreach (var kind in kinds)
-            {
-                if (Microsoft.CodeAnalysis.CSharpExtensions.IsKind(nodeOrToken, kind))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return kinds.Any(kind => Microsoft.CodeAnalysis.CSharpExtensions.IsKind(nodeOrToken, kind));
         }
 
         public static bool IsNotKind(this SyntaxNode node, params SyntaxKind[] kinds) => !node.IsKind(kinds);
@@ -197,15 +187,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 
         public static bool IsAnyKind(this SyntaxNode node, params SyntaxKind[] kinds)
         {
-            foreach (var kind in kinds)
-            {
-                if (node.IsKind(kind))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return kinds.Any(kind => node.IsKind(kind));
         }
 
         public static MemberDeclarationSyntax FirstAncestorOrSelfThatIsAMember(this SyntaxNode node)
@@ -219,14 +201,22 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                 }
 
                 if (currentNode.IsAnyKind(
-                    SyntaxKind.EnumDeclaration, SyntaxKind.ClassDeclaration,
-                    SyntaxKind.InterfaceDeclaration, SyntaxKind.StructDeclaration,
-                    SyntaxKind.ConstructorDeclaration, SyntaxKind.DestructorDeclaration,
-                    SyntaxKind.MethodDeclaration, SyntaxKind.PropertyDeclaration,
-                    SyntaxKind.EventDeclaration, SyntaxKind.DelegateDeclaration,
-                    SyntaxKind.EventFieldDeclaration, SyntaxKind.FieldDeclaration,
-                    SyntaxKind.ConversionOperatorDeclaration, SyntaxKind.OperatorDeclaration,
-                    SyntaxKind.IndexerDeclaration, SyntaxKind.NamespaceDeclaration))
+                    SyntaxKind.EnumDeclaration,
+                    SyntaxKind.ClassDeclaration,
+                    SyntaxKind.InterfaceDeclaration,
+                    SyntaxKind.StructDeclaration,
+                    SyntaxKind.ConstructorDeclaration,
+                    SyntaxKind.DestructorDeclaration,
+                    SyntaxKind.MethodDeclaration,
+                    SyntaxKind.PropertyDeclaration,
+                    SyntaxKind.EventDeclaration,
+                    SyntaxKind.DelegateDeclaration,
+                    SyntaxKind.EventFieldDeclaration,
+                    SyntaxKind.FieldDeclaration,
+                    SyntaxKind.ConversionOperatorDeclaration,
+                    SyntaxKind.OperatorDeclaration,
+                    SyntaxKind.IndexerDeclaration,
+                    SyntaxKind.NamespaceDeclaration))
                 {
                     return (MemberDeclarationSyntax)currentNode;
                 }
@@ -284,8 +274,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 
         public static bool HasAttributeOnAncestorOrSelf(this SyntaxNode node, string attributeName)
         {
-            var csharpNode = node as CSharpSyntaxNode;
-            if (csharpNode == null)
+            if (!(node is CSharpSyntaxNode csharpNode))
             {
                 throw new Exception("Node is not a C# node");
             }
@@ -295,21 +284,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
 
         public static bool HasAttributeOnAncestorOrSelf(this SyntaxNode node, params string[] attributeNames)
         {
-            var csharpNode = node as CSharpSyntaxNode;
-            if (csharpNode == null)
+            if (!(node is CSharpSyntaxNode csharpNode))
             {
                 throw new Exception("Node is not a C# node");
             }
 
-            foreach (var attributeName in attributeNames)
-            {
-                if (csharpNode.HasAttributeOnAncestorOrSelf(attributeName))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return attributeNames.Any(attributeName => csharpNode.HasAttributeOnAncestorOrSelf(attributeName));
         }
 
         public static bool HasAttributeOnAncestorOrSelf(this CSharpSyntaxNode node, string attributeName)
@@ -399,23 +379,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
         public static NameSyntax ToNameSyntax(this INamespaceSymbol namespaceSymbol) =>
             ToNameSyntax(namespaceSymbol.ToDisplayString().Split('.'));
 
-        private static NameSyntax ToNameSyntax(IEnumerable<string> names)
-        {
-            var count = names.Count();
-            if (count == 1)
-            {
-                return SyntaxFactory.IdentifierName(names.First());
-            }
-
-            return SyntaxFactory.QualifiedName(
-                ToNameSyntax(names.Take(count - 1)),
-                ToNameSyntax(names.Skip(count - 1)) as IdentifierNameSyntax);
-        }
-
         public static TypeSyntax FindTypeInParametersList(this SeparatedSyntaxList<ParameterSyntax> parameterList, string typeName)
         {
             TypeSyntax result = null;
-            var lastIdentifierOfTypeName = typeName.GetLastIdentifierIfQualiedTypeName();
+            var lastIdentifierOfTypeName = typeName.GetLastIdentifierIfQualifiedTypeName();
             foreach (var parameter in parameterList)
             {
                 var valueText = GetLastIdentifierValueText(parameter.Type);
@@ -428,31 +395,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
                         break;
                     }
                 }
-            }
-
-            return result;
-        }
-
-        private static string GetLastIdentifierValueText(CSharpSyntaxNode node)
-        {
-            var result = string.Empty;
-            switch (node.Kind())
-            {
-                case SyntaxKind.IdentifierName:
-                    result = ((IdentifierNameSyntax)node).Identifier.ValueText;
-                    break;
-                case SyntaxKind.QualifiedName:
-                    result = GetLastIdentifierValueText(((QualifiedNameSyntax)node).Right);
-                    break;
-                case SyntaxKind.GenericName:
-                    var genericNameSyntax = (GenericNameSyntax)node;
-                    result = $"{genericNameSyntax.Identifier.ValueText}{genericNameSyntax.TypeArgumentList.ToString()}";
-                    break;
-                case SyntaxKind.AliasQualifiedName:
-                    result = ((AliasQualifiedNameSyntax)node).Name.Identifier.ValueText;
-                    break;
-                default:
-                    break;
             }
 
             return result;
@@ -625,40 +567,48 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             where TNode : SyntaxNode
         {
             foreach (var node in nodes)
+            {
                 if (node.IsKind(kind))
                 {
                     yield return (TNode)node;
                 }
+            }
         }
 
         public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<SyntaxNode> nodes, params SyntaxKind[] kinds)
             where TNode : SyntaxNode
         {
             foreach (var node in nodes)
+            {
                 if (node.IsAnyKind(kinds))
                 {
                     yield return (TNode)node;
                 }
+            }
         }
 
         public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<TNode> nodes, SyntaxKind kind)
             where TNode : SyntaxNode
         {
             foreach (var node in nodes)
+            {
                 if (node.IsKind(kind))
                 {
                     yield return node;
                 }
+            }
         }
 
         public static IEnumerable<TNode> OfKind<TNode>(this IEnumerable<TNode> nodes, params SyntaxKind[] kinds)
             where TNode : SyntaxNode
         {
             foreach (var node in nodes)
+            {
                 if (node.IsAnyKind(kinds))
                 {
                     yield return node;
                 }
+            }
         }
 
         public static StatementSyntax GetPreviousStatement(this StatementSyntax statement)
@@ -719,9 +669,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             var field = (IFieldSymbol)symbol;
             foreach (var declaringSyntaxReference in symbol.DeclaringSyntaxReferences)
             {
-                var variableDeclarator = declaringSyntaxReference.GetSyntax(context.CancellationToken) as VariableDeclaratorSyntax;
-
-                if (variableDeclarator != null && variableDeclarator.Initializer != null && field.IsReadOnly &&
+                if (declaringSyntaxReference.GetSyntax(context.CancellationToken) is VariableDeclaratorSyntax variableDeclarator && variableDeclarator.Initializer != null && field.IsReadOnly &&
                     !variableDeclarator.Initializer.Value.IsKind(SyntaxKind.NullLiteralExpression))
                 {
                     return true;
@@ -732,12 +680,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             {
                 foreach (var declaringSyntaxReference in constructor.DeclaringSyntaxReferences)
                 {
-                    var constructorSyntax = declaringSyntaxReference.GetSyntax(context.CancellationToken) as ConstructorDeclarationSyntax;
-                    if (constructorSyntax != null)
+                    if (declaringSyntaxReference.GetSyntax(context.CancellationToken) is ConstructorDeclarationSyntax constructorSyntax)
+                    {
                         if (field.IsReadOnly && constructorSyntax.Body.Statements.DoesBlockContainCertainInitializer(context, symbol) == InitializerState.Initializer)
                         {
                             return true;
                         }
+                    }
                 }
             }
 
@@ -753,9 +702,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
         /// This method can be used to determine if the specified block of
         /// statements contains an initializer for the specified symbol.
         /// </summary>
+        /// <param name="statements">The statements.</param>
         /// <param name="context">The context.</param>
         /// <param name="symbol">The symbol.</param>
-        /// <param name="statements">The statements.</param>
         /// <returns>
         /// The initializer state found.
         /// </returns>
@@ -906,12 +855,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return newToken;
         }
 
-        private static readonly SyntaxTokenList publicToken = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-        private static readonly SyntaxTokenList privateToken = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword));
-        private static readonly SyntaxTokenList protectedToken = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword));
-        private static readonly SyntaxTokenList protectedInternalToken = SyntaxFactory.TokenList(
-            SyntaxFactory.Token(SyntaxKind.ProtectedKeyword), SyntaxFactory.Token(SyntaxKind.InternalKeyword));
-        private static readonly SyntaxTokenList internalToken = SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.InternalKeyword));
         public static SyntaxTokenList GetTokens(this Accessibility accessibility)
         {
             switch (accessibility)
@@ -1175,6 +1118,69 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             }
 
             return false;
+        }
+
+#pragma warning disable RS1012
+        private static void RunIfCSharpVersionLower(
+            this CompilationStartAnalysisContext context,
+            LanguageVersion lowerThanLanguageVersion,
+            Action action) =>
+            context.Compilation.RunIfCSharpVersionLower(action, lowerThanLanguageVersion);
+#pragma warning restore RS1012
+
+        private static void RunIfCSharpVersionLower(
+            this Compilation compilation,
+            Action action,
+            LanguageVersion lowerThanLanguageVersion) =>
+            (compilation as CSharpCompilation)?.LanguageVersion.RunIfCSharpVersionLower(action, lowerThanLanguageVersion);
+
+        private static void RunIfCSharpVersionLower(
+            this LanguageVersion languageVersion,
+            Action action,
+            LanguageVersion lowerThanLanguageVersion)
+        {
+            if (languageVersion < lowerThanLanguageVersion)
+            {
+                action?.Invoke();
+            }
+        }
+
+        private static NameSyntax ToNameSyntax(IEnumerable<string> names)
+        {
+            var count = names.Count();
+            if (count == 1)
+            {
+                return SyntaxFactory.IdentifierName(names.First());
+            }
+
+            return SyntaxFactory.QualifiedName(
+                ToNameSyntax(names.Take(count - 1)),
+                ToNameSyntax(names.Skip(count - 1)) as IdentifierNameSyntax);
+        }
+
+        private static string GetLastIdentifierValueText(CSharpSyntaxNode node)
+        {
+            var result = string.Empty;
+            switch (node.Kind())
+            {
+                case SyntaxKind.IdentifierName:
+                    result = ((IdentifierNameSyntax)node).Identifier.ValueText;
+                    break;
+                case SyntaxKind.QualifiedName:
+                    result = GetLastIdentifierValueText(((QualifiedNameSyntax)node).Right);
+                    break;
+                case SyntaxKind.GenericName:
+                    var genericNameSyntax = (GenericNameSyntax)node;
+                    result = $"{genericNameSyntax.Identifier.ValueText}{genericNameSyntax.TypeArgumentList.ToString()}";
+                    break;
+                case SyntaxKind.AliasQualifiedName:
+                    result = ((AliasQualifiedNameSyntax)node).Name.Identifier.ValueText;
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
         }
     }
 }

@@ -59,6 +59,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             =>
             (T)node.FirstAncestorOrSelfOfType(typeof(T));
 
+        /// <summary>
+        /// Finds the first syntax node (including itself) that matches any of the required types.
+        /// </summary>
+        /// <param name="node">The node to walk up.</param>
+        /// <param name="types">Collection of types to check against.</param>
+        /// <returns>Matching syntax node.</returns>
         public static SyntaxNode FirstAncestorOrSelfOfType(
             this SyntaxNode node,
             params Type[] types)
@@ -85,6 +91,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return null;
         }
 
+        /// <summary>
+        /// Finds the first ancestor syntax node that matches the required type.
+        /// </summary>
+        /// <typeparam name="T">The desired type.</typeparam>
+        /// <param name="node">The node to walk up.</param>
+        /// <returns>Matching syntax node.</returns>
         public static T FirstAncestorOfType<T>(this SyntaxNode node)
             where T : SyntaxNode
         {
@@ -109,6 +121,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return null;
         }
 
+        /// <summary>
+        /// Finds the first ancestor syntax node that matches the required type.
+        /// </summary>
+        /// <param name="node">The node to walk up.</param>
+        /// <param name="types">Collection of types to check for.</param>
+        /// <returns>Matching syntax node.</returns>
         public static SyntaxNode FirstAncestorOfType(this SyntaxNode node, params Type[] types)
         {
             var currentNode = node;
@@ -134,6 +152,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return null;
         }
 
+        /// <summary>
+        /// Gets method symbols for all the type and implemented types.
+        /// </summary>
+        /// <param name="typeSymbol">The type symbol to retrieve the methods from.</param>
+        /// <returns>Collection of method symbols.</returns>
         public static IList<IMethodSymbol> GetAllMethodsIncludingFromInnerTypes(this INamedTypeSymbol typeSymbol)
         {
             var methods = typeSymbol.GetMembers().OfType<IMethodSymbol>().ToList();
@@ -146,6 +169,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return methods;
         }
 
+        /// <summary>
+        /// Gets all base types and the implementing type (i.e. itself).
+        /// </summary>
+        /// <param name="typeSymbol">The type to check.</param>
+        /// <returns>Collection of Named Types.</returns>
         public static IEnumerable<INamedTypeSymbol> AllBaseTypesAndSelf(this INamedTypeSymbol typeSymbol)
         {
             yield return typeSymbol;
@@ -155,6 +183,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             }
         }
 
+        /// <summary>
+        /// Gets all base types for a type.
+        /// </summary>
+        /// <param name="typeSymbol">The type to check.</param>
+        /// <returns>Collection of Named Types.</returns>
         public static IEnumerable<INamedTypeSymbol> AllBaseTypes(this INamedTypeSymbol typeSymbol)
         {
             while (typeSymbol.BaseType != null)
@@ -164,7 +197,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             }
         }
 
-        public static string GetLastIdentifierIfQualiedTypeName(this string typeName)
+        /// <summary>
+        /// Gets the last identifying segment of a type, if it is qualified.
+        /// </summary>
+        /// <param name="typeName">The type to check.</param>
+        /// <returns>Last segment of name.</returns>
+        public static string GetLastIdentifierIfQualifiedTypeName(this string typeName)
         {
             var result = typeName;
 
@@ -177,8 +215,19 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return result;
         }
 
+        /// <summary>
+        /// Order symbol syntax tokens.
+        /// </summary>
+        /// <param name="modifiers">Access modifiers to order.</param>
+        /// <returns>Ordered modifiers.</returns>
         public static IEnumerable<SyntaxToken> EnsureProtectedBeforeInternal(this IEnumerable<SyntaxToken> modifiers) => modifiers.OrderByDescending(token => token.RawKind);
 
+        /// <summary>
+        /// Gets the full name of a symbol.
+        /// </summary>
+        /// <param name="symbol">The symbol to check.</param>
+        /// <param name="addGlobal">Whether to add the global prefix.</param>
+        /// <returns>Full name for the type.</returns>
         public static string GetFullName(this ISymbol symbol, bool addGlobal = true)
         {
             if (symbol.Kind == SymbolKind.TypeParameter)
@@ -207,6 +256,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             return fullName;
         }
 
+        /// <summary>
+        /// Gets all the containing types in a symbol.
+        /// </summary>
+        /// <param name="symbol">The symbol to check.</param>
+        /// <returns>Collection of contained types.</returns>
         public static IEnumerable<INamedTypeSymbol> GetAllContainingTypes(this ISymbol symbol)
         {
             while (symbol.ContainingType != null)
@@ -216,6 +270,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             }
         }
 
+        /// <summary>
+        /// Checks the minimum common accessibility between 2 accessibility declarations.
+        /// </summary>
+        /// <param name="accessibility">The first accessibility to check.</param>
+        /// <param name="otherAccessibility">The other accessibility to compare.</param>
+        /// <returns>The minimum Accessibility declaration.</returns>
         public static Accessibility GetMinimumCommonAccessibility(this Accessibility accessibility, Accessibility otherAccessibility)
         {
             if (accessibility == otherAccessibility || otherAccessibility == Accessibility.Private)
@@ -243,6 +303,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions
             }
         }
 
+        /// <summary>
+        /// Checks if the type is a .net primitive type.
+        /// </summary>
+        /// <param name="typeSymbol">The type symbol to check.</param>
+        /// <returns>Whether the type is a .NET primitive type.</returns>
         public static bool IsPrimitive(this ITypeSymbol typeSymbol)
         {
             switch (typeSymbol.SpecialType)

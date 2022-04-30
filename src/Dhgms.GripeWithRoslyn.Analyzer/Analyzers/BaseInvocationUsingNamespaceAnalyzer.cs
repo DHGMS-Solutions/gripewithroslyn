@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -82,7 +83,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
             if (containingNamespace == null
-                || !containingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).StartsWith(Namespace, StringComparison.Ordinal))
+                || !containingNamespace.GetFullName().StartsWith(Namespace, StringComparison.Ordinal))
             {
                 return;
             }
@@ -98,7 +99,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
             if (containingNamespace == null
-                || !containingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).StartsWith(Namespace, StringComparison.Ordinal))
+                || !containingNamespace.GetFullName().StartsWith(Namespace, StringComparison.Ordinal))
             {
                 return;
             }

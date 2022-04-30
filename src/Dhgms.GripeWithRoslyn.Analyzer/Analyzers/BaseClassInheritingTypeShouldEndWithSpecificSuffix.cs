@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -99,11 +100,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                     return;
                 }
 
-                var typeFullName = typeInfo.Type.ToDisplayString(NullableFlowState.NotNull, SymbolDisplayFormat.FullyQualifiedFormat);
-                if (!typeFullName.StartsWith("global::"))
-                {
-                    typeFullName = $"global::{typeFullName}";
-                }
+                var typeFullName = typeInfo.Type.GetFullName();
 
                 if (typeFullName.Equals(BaseClassFullName, StringComparison.Ordinal))
                 {

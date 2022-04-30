@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -91,7 +92,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return;
             }
 
-            var typeFullName = typeInfo.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            var typeFullName = typeInfo.Type.GetFullName();
 
             if (!typeFullName.Equals(ClassName, StringComparison.Ordinal))
             {

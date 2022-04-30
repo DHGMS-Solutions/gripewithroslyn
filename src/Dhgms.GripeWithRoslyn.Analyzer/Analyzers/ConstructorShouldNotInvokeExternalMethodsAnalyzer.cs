@@ -6,6 +6,7 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -152,7 +153,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return false;
             }
 
-            var typeFullName = typeInfo.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            var typeFullName = typeInfo.Type.GetFullName();
+
             var methodName = memberAccessExpression.Name.ToString();
 
             return _methodWhiteList

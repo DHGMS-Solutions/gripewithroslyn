@@ -33,15 +33,10 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         {
             public void MethodName()
             {
-            if (int.TryParse(""x"", out var result))
-            {
-                throw new ArgumentException(""test"");
-            }
+                int.TryParse(""x"", out var result);
             }
         }
     }";
-
-            var a = MethodBase.GetCurrentMethod().DeclaringType;
 
             var expected = new DiagnosticResult
             {

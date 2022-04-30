@@ -49,7 +49,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
             {
                 Id = DiagnosticIdsHelper.DoNotUseSystemSecuritySecureString,
                 Message = DoNotUseSystemSecuritySecureStringAnalyzer.Title,
-                Severity = DiagnosticSeverity.Warning,
+                Severity = DiagnosticSeverity.Error,
                 Locations =
                     new[]
                     {

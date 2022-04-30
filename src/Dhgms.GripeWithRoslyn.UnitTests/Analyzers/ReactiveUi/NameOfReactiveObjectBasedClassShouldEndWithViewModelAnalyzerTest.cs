@@ -30,7 +30,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.ReactiveUi
         {
         }
 
-        public class Test : ReactiveUi.ReactiveObject
+        public class Test : ReactiveUI.ReactiveObject
         {
         }
     }";

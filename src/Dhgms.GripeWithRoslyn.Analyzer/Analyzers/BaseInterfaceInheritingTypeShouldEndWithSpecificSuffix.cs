@@ -103,6 +103,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
                 var typeFullName = typeInfo.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
+                if (!typeFullName.StartsWith("global::"))
+                {
+                    typeFullName = $"global::{typeFullName}";
+                }
+
                 if (typeFullName.Equals(BaseClassFullName, StringComparison.Ordinal))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(_rule, identifier.GetLocation()));

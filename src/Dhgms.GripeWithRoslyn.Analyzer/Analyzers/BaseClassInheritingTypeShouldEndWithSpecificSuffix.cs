@@ -99,7 +99,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                     return;
                 }
 
-                var typeFullName = typeInfo.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var typeFullName = typeInfo.Type.ToDisplayString(NullableFlowState.NotNull, SymbolDisplayFormat.FullyQualifiedFormat);
+                if (!typeFullName.StartsWith("global::"))
+                {
+                    typeFullName = $"global::{typeFullName}";
+                }
 
                 if (typeFullName.Equals(BaseClassFullName, StringComparison.Ordinal))
                 {

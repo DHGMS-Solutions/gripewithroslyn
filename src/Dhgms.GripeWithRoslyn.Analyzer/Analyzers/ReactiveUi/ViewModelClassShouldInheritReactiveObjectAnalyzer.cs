@@ -13,9 +13,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
     /// Analyzer for checking that a class that has the ViewModel suffix inherits from ReactiveUI.ReactiveObject.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-    public sealed class ViewModelInterfaceShouldInheritReactiveObject : BaseInterfaceDeclarationSuffixShouldInheritTypes
+    public sealed class ViewModelClassShouldInheritReactiveObjectAnalyzer : BaseClassDeclarationSuffixShouldInheritTypes
     {
-        internal const string Title = "ViewModels should inherit from ReactiveUI's ReactiveObject.";
+        internal const string Title = "ViewModel classes should inherit from ReactiveUI.ReactiveObject.";
 
         private const string MessageFormat = Title;
 
@@ -25,11 +25,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
             "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ViewModelInterfaceShouldInheritReactiveObject"/> class.
+        /// Initializes a new instance of the <see cref="ViewModelClassShouldInheritReactiveObjectAnalyzer"/> class.
         /// </summary>
-        public ViewModelInterfaceShouldInheritReactiveObject()
+        public ViewModelClassShouldInheritReactiveObjectAnalyzer()
             : base(
-                DiagnosticIdsHelper.ViewModelInterfaceShouldInheritReactiveObject,
+                DiagnosticIdsHelper.ViewModelClassShouldInheritReactiveObject,
                 Title,
                 MessageFormat,
                 Category,
@@ -42,6 +42,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         protected override string ClassNameSuffix => "ViewModel";
 
         /// <inheritdoc />
-        protected override string BaseInterfaceFullName => "global::ReactiveUI.IReactiveObject";
+        protected override string BaseClassFullName => "global::ReactiveUI.IReactiveObject";
     }
 }

@@ -71,11 +71,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
         private void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             var memberAccessExpressionSyntax = (MemberAccessExpressionSyntax)context.Node;
 
             if (memberAccessExpressionSyntax == null
@@ -96,7 +91,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return;
             }
 
-            var typeFullName = typeInfo.Type.GetFullName();
+            var typeFullName = typeInfo.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
             if (!typeFullName.Equals(ClassName, StringComparison.Ordinal))
             {

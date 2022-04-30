@@ -63,11 +63,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
         private void AnalyzeClassDeclarationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             if (!(context.Node is ClassDeclarationSyntax classDeclarationSyntax))
             {
                 return;
@@ -104,7 +99,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                     return;
                 }
 
-                var typeFullName = typeInfo.Type.GetFullName();
+                var typeFullName = typeInfo.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
                 if (typeFullName.Equals(BaseClassFullName, StringComparison.Ordinal))
                 {

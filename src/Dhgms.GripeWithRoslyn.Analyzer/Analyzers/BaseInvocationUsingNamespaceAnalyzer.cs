@@ -70,11 +70,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
             var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;
@@ -87,7 +82,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
             if (containingNamespace == null
-                || !containingNamespace.GetFullName().StartsWith(Namespace, StringComparison.Ordinal))
+                || !containingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).StartsWith(Namespace, StringComparison.Ordinal))
             {
                 return;
             }
@@ -97,18 +92,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
         private void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             var invocationExpression = (ObjectCreationExpressionSyntax)context.Node;
 
             var methodSymbol = context.SemanticModel.GetSymbolInfo(invocationExpression).Symbol;
 
             var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
             if (containingNamespace == null
-                || !containingNamespace.GetFullName().StartsWith(Namespace, StringComparison.Ordinal))
+                || !containingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).StartsWith(Namespace, StringComparison.Ordinal))
             {
                 return;
             }

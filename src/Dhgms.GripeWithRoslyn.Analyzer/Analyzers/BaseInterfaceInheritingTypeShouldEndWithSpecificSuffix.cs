@@ -63,11 +63,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
         private void AnalyzeInterfaceDeclarationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             var interfaceDeclarationSyntax = context.Node as InterfaceDeclarationSyntax;
 
             if (interfaceDeclarationSyntax == null)
@@ -106,7 +101,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                     return;
                 }
 
-                var typeFullName = typeInfo.Type.GetFullName();
+                var typeFullName = typeInfo.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
                 if (typeFullName.Equals(BaseClassFullName, StringComparison.Ordinal))
                 {

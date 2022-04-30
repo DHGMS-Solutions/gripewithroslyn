@@ -2,27 +2,24 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
+using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.Test.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
 {
-    using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
-
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
-    using TestHelper;
-
+    /// <summary>
+    /// Unit Tests for <see cref="FluentDataAutoMapAnalyzer"/>.
+    /// </summary>
     public class FluentDataAutoMapAnalyzerTests : CodeFixVerifier
     {
-        //Diagnostic and CodeFix both triggered and checked for
-        //[Fact]
+        /// <summary>
+        /// Test to ensure bad code returns a warning.
+        /// </summary>
+        [Fact]
         public void TestMethod2()
         {
             var test = @"
@@ -48,20 +45,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Test.Analyzers
                 Id = "DhgmsGripeWithRoslynAnalyzer",
                 Message = string.Format("Type name '{0}' contains lowercase letters", "TypeName"),
                 Severity = DiagnosticSeverity.Warning,
-                Locations =
-                    new[] {
-                            new DiagnosticResultLocation("Test0.cs", 11, 15)
-                        }
+                Locations = new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 11, 15)
+                    }
             };
 
             VerifyCSharpDiagnostic(test, expected);
         }
 
-        //protected override CodeFixProvider GetCSharpCodeFixProvider()
-        //{
-        //    return new DhgmsGripeWithRoslynAnalyzerCodeFixProvider();
-        //}
-
+        /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new FluentDataAutoMapAnalyzer();

@@ -5,67 +5,54 @@
 using System;
 using Microsoft.CodeAnalysis;
 
-namespace TestHelper
+namespace Dhgms.GripeWithRoslyn.UnitTests.Helpers
 {
-    /// <summary>
-    /// Location where the diagnostic appears, as determined by path, line number, and column number.
-    /// </summary>
-    public struct DiagnosticResultLocation
-    {
-        public DiagnosticResultLocation(string path, int line, int column)
-        {
-            if (line < -1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(line), "line must be >= -1");
-            }
-
-            if (column < -1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(column), "column must be >= -1");
-            }
-
-            Path = path;
-            Line = line;
-            Column = column;
-        }
-
-        public string Path { get; }
-
-        public int Line { get; }
-
-        public int Column { get; }
-    }
-
     /// <summary>
     /// Struct that stores information about a Diagnostic appearing in a source.
     /// </summary>
     public struct DiagnosticResult
     {
-        private DiagnosticResultLocation[] locations;
+        private DiagnosticResultLocation[] _locations;
 
+        /// <summary>
+        /// Gets or sets the locations that have been reported for a Diagnostic Result.
+        /// </summary>
         public DiagnosticResultLocation[] Locations
         {
             get
             {
-                if (locations == null)
+                if (_locations == null)
                 {
-                    locations = new DiagnosticResultLocation[] { };
+                    _locations = new DiagnosticResultLocation[] { };
                 }
-                return locations;
+
+                return _locations;
             }
 
             set
             {
-                locations = value;
+                _locations = value;
             }
         }
 
+        /// <summary>
+        /// Gets or sets the severity of the diagnostic result.
+        /// </summary>
         public DiagnosticSeverity Severity { get; set; }
 
+        /// <summary>
+        /// Gets or sets the id of the diagnostic result.
+        /// </summary>
         public string Id { get; set; }
 
+        /// <summary>
+        /// Gets or sets the message for the diagnostic result.
+        /// </summary>
         public string Message { get; set; }
 
+        /// <summary>
+        /// Gets the path from the first location.
+        /// </summary>
         public string Path
         {
             get
@@ -74,6 +61,9 @@ namespace TestHelper
             }
         }
 
+        /// <summary>
+        /// Gets the line from the first location.
+        /// </summary>
         public int Line
         {
             get
@@ -82,6 +72,9 @@ namespace TestHelper
             }
         }
 
+        /// <summary>
+        /// Gets the column from the first location.
+        /// </summary>
         public int Column
         {
             get

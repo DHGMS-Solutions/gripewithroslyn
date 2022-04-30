@@ -74,11 +74,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             var node = context.Node;
 
             var invocationExpression = (InvocationExpressionSyntax)context.Node;

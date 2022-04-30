@@ -2,21 +2,25 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using Dhgms.GripeWithRoslyn.Analyzer;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using TestHelper;
 using Xunit;
+using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
 {
-    public sealed class UseSystemTextJsonInsteadOfNewtonsoftJsonTests : CodeFixVerifier
+    /// <summary>
+    /// Unit Tests for <see cref="UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer"/>.
+    /// </summary>
+    public sealed class UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzerTests : CodeFixVerifier
     {
-        //Diagnostic and CodeFix both triggered and checked for
+        /// <summary>
+        /// Test to ensure bad code returns a warning.
+        /// </summary>
         [Fact]
         public void ReturnsWarning()
         {
@@ -62,11 +66,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
             VerifyCSharpDiagnostic(test, expected);
         }
 
-        //protected override CodeFixProvider GetCSharpCodeFixProvider()
-        //{
-        //    return new DhgmsGripeWithRoslynAnalyzerCodeFixProvider();
-        //}
-
+        /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer();

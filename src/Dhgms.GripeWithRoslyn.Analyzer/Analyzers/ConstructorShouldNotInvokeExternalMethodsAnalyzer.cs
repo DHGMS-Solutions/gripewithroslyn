@@ -106,11 +106,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             var node = context.Node;
 
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
@@ -157,7 +152,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return false;
             }
 
-            var typeFullName = typeInfo.Type.GetFullName();
+            var typeFullName = typeInfo.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             var methodName = memberAccessExpression.Name.ToString();
 
             return _methodWhiteList

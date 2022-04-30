@@ -2,20 +2,24 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Dhgms.GripeWithRoslyn.Analyzer;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using TestHelper;
 using Xunit;
+using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
 {
+    /// <summary>
+    /// Unit Tests for checking if a Constructor invokes external methods.
+    /// </summary>
     public sealed class ConstructorShouldNotInvokeExternalMethodsAnalyzerTests : CodeFixVerifier
     {
+        /// <summary>
+        /// Test to ensure bad code returns a warning.
+        /// </summary>
         [Fact]
         public void ReturnsWarning()
         {
@@ -50,6 +54,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
             VerifyCSharpDiagnostic(test, expected);
         }
 
+        /// <summary>
+        /// Test to ensure good code doesn't return a warning.
+        /// </summary>
         [Fact]
         public void ReturnsNoWarning()
         {
@@ -91,11 +98,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.UnitTests.Analyzers
 
             VerifyCSharpDiagnostic(test);
         }
-
-        //protected override CodeFixProvider GetCSharpCodeFixProvider()
-        //{
-        //    return new DhgmsGripeWithRoslynAnalyzerCodeFixProvider();
-        //}
 
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()

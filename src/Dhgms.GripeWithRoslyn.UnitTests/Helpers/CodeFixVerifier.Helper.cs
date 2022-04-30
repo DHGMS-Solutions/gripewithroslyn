@@ -10,13 +10,13 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Simplification;
 
-namespace TestHelper
+namespace Dhgms.GripeWithRoslyn.UnitTests.Helpers
 {
     /// <summary>
     /// Diagnostic Producer class with extra methods dealing with applying codefixes
     /// All methods are static.
     /// </summary>
-    public abstract partial class CodeFixVerifier : DiagnosticVerifier
+    public abstract partial class CodeFixVerifier : Verifiers.DiagnosticVerifier
     {
         /// <summary>
         /// Apply the inputted CodeAction to the inputted document.
@@ -25,7 +25,7 @@ namespace TestHelper
         /// <param name="document">The Document to apply the fix on.</param>
         /// <param name="codeAction">A CodeAction that will be applied to the Document.</param>
         /// <returns>A Document with the changes from the CodeAction.</returns>
-        private static Document ApplyFix(Document document, CodeAction codeAction)
+        public static Document ApplyFix(Document document, CodeAction codeAction)
         {
             var operations = codeAction.GetOperationsAsync(CancellationToken.None).Result;
             var solution = operations.OfType<ApplyChangesOperation>().Single().ChangedSolution;
@@ -40,7 +40,7 @@ namespace TestHelper
         /// <param name="diagnostics">The Diagnostics that existed in the code before the CodeFix was applied.</param>
         /// <param name="newDiagnostics">The Diagnostics that exist in the code after the CodeFix was applied.</param>
         /// <returns>A list of Diagnostics that only surfaced in the code after the CodeFix was applied.</returns>
-        private static IEnumerable<Diagnostic> GetNewDiagnostics(IEnumerable<Diagnostic> diagnostics, IEnumerable<Diagnostic> newDiagnostics)
+        public static IEnumerable<Diagnostic> GetNewDiagnostics(IEnumerable<Diagnostic> diagnostics, IEnumerable<Diagnostic> newDiagnostics)
         {
             var oldArray = diagnostics.OrderBy(d => d.Location.SourceSpan.Start).ToArray();
             var newArray = newDiagnostics.OrderBy(d => d.Location.SourceSpan.Start).ToArray();
@@ -67,7 +67,7 @@ namespace TestHelper
         /// </summary>
         /// <param name="document">The Document to run the compiler diagnostic analyzers on.</param>
         /// <returns>The compiler diagnostics that were found in the code.</returns>
-        private static IEnumerable<Diagnostic> GetCompilerDiagnostics(Document document)
+        public static IEnumerable<Diagnostic> GetCompilerDiagnostics(Document document)
         {
             return document.GetSemanticModelAsync().Result.GetDiagnostics();
         }
@@ -77,7 +77,7 @@ namespace TestHelper
         /// </summary>
         /// <param name="document">The Document to be converted to a string.</param>
         /// <returns>A string containing the syntax of the Document after formatting.</returns>
-        private static string GetStringFromDocument(Document document)
+        public static string GetStringFromDocument(Document document)
         {
             var simplifiedDoc = Simplifier.ReduceAsync(document, Simplifier.Annotation).Result;
             var root = simplifiedDoc.GetSyntaxRootAsync().Result;
@@ -86,4 +86,3 @@ namespace TestHelper
         }
     }
 }
-

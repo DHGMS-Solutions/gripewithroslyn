@@ -1,8 +1,16 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to suggest the use of <see cref="N:System.Text.Json"/> instead of <see cref="N:Newtonsoft.Json"/>.
+    /// </summary>
+    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer : BaseInvocationUsingNamespaceAnalyzer
     {
         internal const string Title = "Consider use of System.Text.Json instead of Newtonsoft.Json (JSON.NET).";
@@ -14,7 +22,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "System.Text.Json brings improvements from JSON.NET.";
 
-        public UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer() : base(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer"/> class.
+        /// </summary>
+        public UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer()
+            : base(
             DiagnosticIdsHelper.UseSystemTextJsonInsteadOfNewtonsoftJson,
             Title,
             MessageFormat,
@@ -24,6 +36,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
+        /// <inheritdoc />
         protected override string Namespace => "global::Newtonsoft.Json";
     }
 }

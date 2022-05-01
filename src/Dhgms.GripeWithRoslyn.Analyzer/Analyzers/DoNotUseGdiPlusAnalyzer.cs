@@ -1,8 +1,15 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to ensure GDI+ is not used.
+    /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class DoNotUseGdiPlusAnalyzer : BaseInvocationUsingNamespaceAnalyzer
     {
@@ -15,7 +22,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "GDI+ usage needs to be considered as it is not suitable for web development etc.";
 
-        public DoNotUseGdiPlusAnalyzer() : base(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DoNotUseGdiPlusAnalyzer"/> class.
+        /// </summary>
+        public DoNotUseGdiPlusAnalyzer()
+            : base(
             DiagnosticIdsHelper.DoNotUseGdiPlus,
             Title,
             MessageFormat,
@@ -25,6 +36,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
+        /// <inheritdoc />
         protected override string Namespace => "global::System.Drawing";
     }
 }

@@ -1,9 +1,12 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    using Microsoft.CodeAnalysis;
-
     /// <summary>
     /// Roslyn Analyzer for detecting usage of methods in the old Oracle.DataAccess dll.
     /// </summary>
@@ -20,21 +23,20 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             "Oracle ODP.NET should be replaced with Oracle Managed Data Access as it makes ongoing maintenance easier and doesn't require a full install of oracle on a machine.";
 
         /// <summary>
-        /// Creates an instance of OracleUnmanagedDataAccessDllAnalyzer
+        /// Initializes a new instance of the <see cref="OracleUnmanagedDataAccessDllAnalyzer"/> class.
         /// </summary>
         public OracleUnmanagedDataAccessDllAnalyzer()
-            : base(DiagnosticIdsHelper.OracleUnmanagedDllDataAccessDllAnalyzer,
-                  Title,
-                  MessageFormat,
-                  Category,
-                  Description,
-                  DiagnosticSeverity.Warning)
+            : base(
+                DiagnosticIdsHelper.OracleUnmanagedDllDataAccessDllAnalyzer,
+                Title,
+                MessageFormat,
+                Category,
+                Description,
+                DiagnosticSeverity.Warning)
         {
         }
 
-        /// <summary>
-        /// The name of the assembly to check for.
-        /// </summary>
+        /// <inheritdoc />
         protected override string AssemblyName => "Oracle.DataAccess";
     }
 }

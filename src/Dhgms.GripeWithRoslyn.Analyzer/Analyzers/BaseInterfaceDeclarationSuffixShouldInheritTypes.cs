@@ -1,6 +1,11 @@
-﻿using System;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -10,21 +15,21 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
     /// <summary>
-    /// Base class for checking that a suffixed group of classes inherit from expected types
+    /// Base class for checking that a suffixed group of classes inherit from expected types.
     /// </summary>
     public abstract class BaseInterfaceDeclarationSuffixShouldInheritTypes : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Creates an instance of BaseInterfaceDeclarationSuffixShouldInheritTypes
+        /// Initializes a new instance of the <see cref="BaseInterfaceDeclarationSuffixShouldInheritTypes"/> class.
         /// </summary>
-        /// <param name="diagnosticId">The Diagnostic Id</param>
-        /// <param name="title">The title of the analyzer</param>
+        /// <param name="diagnosticId">The Diagnostic Id.</param>
+        /// <param name="title">The title of the analyzer.</param>
         /// <param name="message">The message to display detailing the issue with the analyzer.</param>
         /// <param name="category">The category the analyzer belongs to.</param>
-        /// <param name="description">The description of the analyzer</param>
-        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
+        /// <param name="description">The description of the analyzer.</param>
+        /// <param name="diagnosticSeverity">The severity associated with breaches of the analyzer.</param>
         protected BaseInterfaceDeclarationSuffixShouldInheritTypes(
             [NotNull] string diagnosticId,
             [NotNull] string title,
@@ -33,54 +38,41 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            this._rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
+            _rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
         }
 
-        /// <summary>
-        /// Returns a set of descriptors for the diagnostics that this analyzer is capable of producing.
-        /// </summary>
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
+        /// <inheritdoc />
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
         /// <summary>
-        /// The suffix of the class to check for.
+        /// Gets the suffix for the class name.
         /// </summary>
         [NotNull]
         protected abstract string ClassNameSuffix { get; }
 
         /// <summary>
-        /// The containing types the method may belong to.
+        /// Gets the full name of the base interface, if any.
         /// </summary>
         [NotNull]
         protected abstract string BaseInterfaceFullName { get; }
 
-        /// <summary>
-        /// Called once at session start to register actions in the analysis context.
-        /// </summary>
-        /// <remarks>
-        /// https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Analyzer%20Actions%20Semantics.md for more information
-        /// </remarks>
-        /// <param name="context">
-        /// Roslyn context.
-        /// </param>
+        /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeInterfaceDeclarationExpression, SyntaxKind.InterfaceDeclaration);
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+            context.RegisterSyntaxNodeAction(AnalyzeInterfaceDeclarationExpression, SyntaxKind.InterfaceDeclaration);
         }
 
         private void AnalyzeInterfaceDeclarationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             if (!(context.Node is InterfaceDeclarationSyntax interfaceDeclarationSyntax))
             {
                 return;
             }
 
             var identifier = interfaceDeclarationSyntax.Identifier;
-            if (!identifier.Text.EndsWith(this.ClassNameSuffix, StringComparison.OrdinalIgnoreCase))
+            if (!identifier.Text.EndsWith(ClassNameSuffix, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -101,15 +93,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                     }
 
                     var typeFullName = typeInfo.Type.GetFullName();
-
-                    if (typeFullName.Equals(this.BaseInterfaceFullName, StringComparison.Ordinal))
-                    {
-                        return;
-                    }
                 }
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, identifier.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, identifier.GetLocation()));
         }
     }
 }

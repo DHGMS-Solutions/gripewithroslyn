@@ -1,8 +1,16 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to suggest using <see cref="T:System.Text.UnicodeEncoding"/> instead of <see cref="T:System.Text.ASCIIEncoding"/>.
+    /// </summary>
+    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class UseEncodingUnicodeInsteadOfASCIIAnalyzer : BaseInvocationUsingClassAnalyzer
     {
         private const string Title = "Consider usage of Unicode Encoding instead of ASCII.";
@@ -14,8 +22,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "ASCII encoding may cause loss of information if Unicode characters are in use. Consider using System.Text.UnicodeEncoding";
 
-        public UseEncodingUnicodeInsteadOfASCIIAnalyzer() : base(
-                DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfASCII,
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UseEncodingUnicodeInsteadOfASCIIAnalyzer"/> class.
+        /// </summary>
+        public UseEncodingUnicodeInsteadOfASCIIAnalyzer()
+            : base(
+                DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
                 Title,
                 MessageFormat,
                 Category,
@@ -24,6 +36,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
         }
 
+        /// <inheritdoc />
         protected override string ClassName => "global::System.Text.ASCIIEncoding";
     }
 }

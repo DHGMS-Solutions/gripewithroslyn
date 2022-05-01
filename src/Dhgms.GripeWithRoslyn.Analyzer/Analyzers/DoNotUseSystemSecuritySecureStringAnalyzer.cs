@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
+    /// <summary>
+    /// Analyzer to ensure System.Security.SecureString is not used.
+    /// </summary>
+    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class DoNotUseSystemSecuritySecureStringAnalyzer : BaseInvocationUsingClassAnalyzer
     {
         internal const string Title = "Do not use System.Security.SecureString.";
@@ -19,16 +22,21 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Description =
             "System.Console suggests code that may not be flexible, or carrying out unintended work such as not using a proper logging implementation.";
 
-        public DoNotUseSystemSecuritySecureStringAnalyzer() : base(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DoNotUseSystemSecuritySecureStringAnalyzer"/> class.
+        /// </summary>
+        public DoNotUseSystemSecuritySecureStringAnalyzer()
+            : base(
             DiagnosticIdsHelper.DoNotUseSystemSecuritySecureString,
             Title,
             MessageFormat,
             Category,
             Description,
-            DiagnosticSeverity.Warning)
+            DiagnosticSeverity.Error)
         {
         }
 
+        /// <inheritdoc />
         protected override string ClassName => "global::System.Security.SecureString";
     }
 }

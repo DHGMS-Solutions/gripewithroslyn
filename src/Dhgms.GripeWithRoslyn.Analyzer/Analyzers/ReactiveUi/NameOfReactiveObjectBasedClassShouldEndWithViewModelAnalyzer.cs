@@ -1,9 +1,16 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
 {
+    /// <summary>
+    /// Analyzer to ensure a class inheriting from ReactiveUI.ReactiveObject has the suffix ViewModel.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer : BaseClassInheritingTypeShouldEndWithSpecificSuffix
     {
@@ -16,8 +23,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         private const string Description =
             "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer"/> class.
+        /// </summary>
         public NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer()
-            : base(DiagnosticIdsHelper.ReactiveObjectClassShouldHaveViewModelSuffix,
+            : base(
+                DiagnosticIdsHelper.ReactiveObjectClassShouldHaveViewModelSuffix,
                 Title,
                 MessageFormat,
                 Category,
@@ -25,8 +36,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
                 DiagnosticSeverity.Warning)
         {
         }
+
+        /// <inheritdoc />
         protected override string NameSuffix => "ViewModel";
 
-        protected override string BaseClassFullName => "global::ReactiveUi.ReactiveObject";
+        /// <inheritdoc />
+        protected override string BaseClassFullName => "global::ReactiveUI.ReactiveObject";
     }
 }

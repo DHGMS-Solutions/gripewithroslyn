@@ -1,35 +1,37 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
+using System.Collections.Immutable;
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
+using JetBrains.Annotations;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    using System;
-    using System.Collections.Immutable;
-    using JetBrains.Annotations;
-
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
-    using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
-
     /// <summary>
     /// These analyzers are for where you don't care about the actual method but more the namespace it is inside.
     /// Useful when you associate an old namespace with legacy code you don't want being used.
-    /// For example .NET remoting
+    /// For example .NET remoting.
     /// </summary>
     public abstract class BaseInvocationUsingNamespaceAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Creates an instance of BaseInvocationUsingNamespaceAnalyzer
+        /// Initializes a new instance of the <see cref="BaseInvocationUsingNamespaceAnalyzer"/> class.
         /// </summary>
-        /// <param name="diagnosticId">The Diagnostic Id</param>
-        /// <param name="title">The title of the analyzer</param>
+        /// <param name="diagnosticId">The Diagnostic Id.</param>
+        /// <param name="title">The title of the analyzer.</param>
         /// <param name="message">The message to display detailing the issue with the analyzer.</param>
         /// <param name="category">The category the analyzer belongs to.</param>
-        /// <param name="description">The description of the analyzer</param>
-        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
+        /// <param name="description">The description of the analyzer.</param>
+        /// <param name="diagnosticSeverity">The severity associated with breaches of the analyzer.</param>
         protected BaseInvocationUsingNamespaceAnalyzer(
             [NotNull] string diagnosticId,
             [NotNull] string title,
@@ -38,7 +40,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            this._rule = new DiagnosticDescriptor(
+            _rule = new DiagnosticDescriptor(
                 diagnosticId,
                 title,
                 message,
@@ -48,40 +50,27 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 description: description);
         }
 
-        /// <summary>
-        /// Returns a set of descriptors for the diagnostics that this analyzer is capable of producing.
-        /// </summary>
+        /// <inheritdoc />
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-            => ImmutableArray.Create(this._rule);
+            => ImmutableArray.Create(_rule);
 
         /// <summary>
-        /// The namespace to check for.
+        /// Gets the namespace to check for.
         /// </summary>
         [NotNull]
         protected abstract string Namespace { get; }
 
-        /// <summary>
-        /// Called once at session start to register actions in the analysis context.
-        /// </summary>
-        /// <remarks>
-        /// https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Analyzer%20Actions%20Semantics.md for more information
-        /// </remarks>
-        /// <param name="context">
-        /// Roslyn context.
-        /// </param>
+        /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
-            context.RegisterSyntaxNodeAction(this.AnalyzeObjectCreationExpression, SyntaxKind.ObjectCreationExpression);
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+            context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeObjectCreationExpression, SyntaxKind.ObjectCreationExpression);
         }
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
             var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;
@@ -94,33 +83,28 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
             if (containingNamespace == null
-                || !containingNamespace.GetFullName().StartsWith(this.Namespace, StringComparison.Ordinal))
+                || !containingNamespace.GetFullName().StartsWith(Namespace, StringComparison.Ordinal))
             {
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, invocationExpression.GetLocation()));
         }
 
         private void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             var invocationExpression = (ObjectCreationExpressionSyntax)context.Node;
 
             var methodSymbol = context.SemanticModel.GetSymbolInfo(invocationExpression).Symbol;
 
             var containingNamespace = methodSymbol?.OriginalDefinition.ContainingNamespace;
             if (containingNamespace == null
-                || !containingNamespace.GetFullName().StartsWith(this.Namespace, StringComparison.Ordinal))
+                || !containingNamespace.GetFullName().StartsWith(Namespace, StringComparison.Ordinal))
             {
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, invocationExpression.GetLocation()));
         }
     }
 }

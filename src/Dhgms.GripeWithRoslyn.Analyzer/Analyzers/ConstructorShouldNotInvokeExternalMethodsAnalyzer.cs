@@ -1,7 +1,12 @@
-﻿using System;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,11 +14,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
+    /// <summary>
+    /// Analyzer for checking a constructor does not invoke external methods.
+    /// </summary>
+    [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ConstructorShouldNotInvokeExternalMethodsAnalyzer : DiagnosticAnalyzer
     {
-        private readonly DiagnosticDescriptor _rule;
-
         internal const string Title = "Constructors should minimise work and not execute methods";
 
         private const string MessageFormat = Title;
@@ -21,11 +27,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private const string Category = SupportedCategories.Maintainability;
 
         private const string Description =
-            "Constructors should minimise work and not execute methods. This is due make code easier to test, poor performance, race conditions and quirks of IDE designer.";
+            "Constructors should minimise work and not execute methods. This is to make code easier to test, avoid performance risks, race conditions and quirks of the IDE designer.";
 
         private const string GlobalSystemStringNamespace = "global::System.String";
 
-        private readonly string[] operatorsWhiteList =
+        private readonly DiagnosticDescriptor _rule;
+
+        private readonly string[] _operatorsWhiteList =
         {
             "nameof",
             "typeof"
@@ -35,7 +43,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
             (
                 GlobalSystemStringNamespace,
-                new []
+                new[]
                 {
                     "Contains",
                     "EndsWith",
@@ -47,11 +55,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         };
 
         /// <summary>
-        /// Creates an instance of ConstructorShouldNotInvokeExternalMethodsAnalyzer
+        /// Initializes a new instance of the <see cref="ConstructorShouldNotInvokeExternalMethodsAnalyzer"/> class.
         /// </summary>
         public ConstructorShouldNotInvokeExternalMethodsAnalyzer()
         {
-            this._rule = new DiagnosticDescriptor(
+            _rule = new DiagnosticDescriptor(
                 DiagnosticIdsHelper.ConstructorShouldNotInvokeExternalMethods,
                 Title,
                 MessageFormat,
@@ -61,84 +69,15 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 description: Description);
         }
 
-        /// <summary>
-        /// Returns a set of descriptors for the diagnostics that this analyzer is capable of producing.
-        /// </summary>
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
+        /// <inheritdoc />
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
-        /// <summary>
-        /// Called once at session start to register actions in the analysis context.
-        /// </summary>
-        /// <remarks>
-        /// https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Analyzer%20Actions%20Semantics.md for more information
-        /// </remarks>
-        /// <param name="context">
-        /// Roslyn context.
-        /// </param>
+        /// <inheritdoc />
         public override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
-        }
-
-        private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
-        {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
-            var node = context.Node;
-
-            var invocationExpression = (InvocationExpressionSyntax)context.Node;
-
-            if (GetIsWhitelistedMethod(context, invocationExpression))
-            {
-                return;
-            }
-
-            var parentMethodDeclaration = GetConstructorDeclarationSyntax(invocationExpression);
-
-            if (parentMethodDeclaration == null)
-            {
-                return;
-            }
-
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, node.GetLocation()));
-        }
-
-        private bool GetIsWhitelistedMethod(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
-        {
-            switch (invocationExpression.Expression)
-            {
-                case MemberAccessExpressionSyntax memberAccessExpression:
-                    return GetIsWhiteListedMemberAccessMethod(
-                        context,
-                        memberAccessExpression);
-                case IdentifierNameSyntax identifierNameSyntax:
-                {
-                    var methodName = identifierNameSyntax.Identifier.ToFullString();
-                    return operatorsWhiteList.Any(operatorName => operatorName.Equals(methodName, StringComparison.Ordinal));
-                }
-
-                default:
-                    return false;
-            }
-        }
-
-        private bool GetIsWhiteListedMemberAccessMethod(SyntaxNodeAnalysisContext context, MemberAccessExpressionSyntax memberAccessExpression)
-        {
-            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberAccessExpression.Expression);
-            if (typeInfo.Type == null)
-            {
-                return false;
-            }
-
-            var typeFullName = typeInfo.Type.GetFullName();
-            var methodName = memberAccessExpression.Name.ToString();
-
-            return _methodWhiteList
-                .Any(tuple => tuple.Namespace.Equals(typeFullName)
-                              && tuple.Methods.Any(tupleMethod => methodName.Equals(tupleMethod, StringComparison.Ordinal)));
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+            context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
         }
 
         private static ConstructorDeclarationSyntax GetConstructorDeclarationSyntax(SyntaxNode syntaxNode)
@@ -164,6 +103,63 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             }
 
             return null;
+        }
+
+        private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
+        {
+            var node = context.Node;
+
+            var invocationExpression = (InvocationExpressionSyntax)context.Node;
+
+            if (GetIsWhitelistedMethod(context, invocationExpression))
+            {
+                return;
+            }
+
+            var parentMethodDeclaration = GetConstructorDeclarationSyntax(invocationExpression);
+
+            if (parentMethodDeclaration == null)
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(_rule, node.GetLocation()));
+        }
+
+        private bool GetIsWhitelistedMethod(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
+        {
+            switch (invocationExpression.Expression)
+            {
+                case MemberAccessExpressionSyntax memberAccessExpression:
+                    return GetIsWhiteListedMemberAccessMethod(
+                        context,
+                        memberAccessExpression);
+                case IdentifierNameSyntax identifierNameSyntax:
+                    {
+                        var methodName = identifierNameSyntax.Identifier.ToFullString();
+                        return _operatorsWhiteList.Any(operatorName => operatorName.Equals(methodName, StringComparison.Ordinal));
+                    }
+
+                default:
+                    return false;
+            }
+        }
+
+        private bool GetIsWhiteListedMemberAccessMethod(SyntaxNodeAnalysisContext context, MemberAccessExpressionSyntax memberAccessExpression)
+        {
+            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberAccessExpression.Expression);
+            if (typeInfo.Type == null)
+            {
+                return false;
+            }
+
+            var typeFullName = typeInfo.Type.GetFullName();
+
+            var methodName = memberAccessExpression.Name.ToString();
+
+            return _methodWhiteList
+                .Any(tuple => tuple.Namespace.Equals(typeFullName)
+                              && tuple.Methods.Any(tupleMethod => methodName.Equals(tupleMethod, StringComparison.Ordinal)));
         }
     }
 }

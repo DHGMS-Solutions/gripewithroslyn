@@ -1,6 +1,11 @@
-﻿using System;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -8,10 +13,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
 {
+    /// <summary>
+    /// Analyzer for checking that a view model class implements a viewmodel interface.
+    /// </summary>
+    [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer : DiagnosticAnalyzer
     {
-        private readonly DiagnosticDescriptor _rule;
-
         internal const string Title = "ViewModel classes should inherit from a ViewModel interface.";
 
         private const string MessageFormat = Title;
@@ -21,19 +28,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         private const string Description =
             "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
 
-        private string ClassNameSuffix = "ViewModel";
+        private const string ClassNameSuffix = "ViewModel";
+
+        private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Returns a set of descriptors for the diagnostics that this analyzer is capable of producing.
-        /// </summary>
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
-
-        /// <summary>
-        /// Creates an instance of ViewModelShouldInheritReactiveObject
+        /// Initializes a new instance of the <see cref="ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer"/> class.
         /// </summary>
         public ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer()
         {
-            this._rule = new DiagnosticDescriptor(
+            _rule = new DiagnosticDescriptor(
                 DiagnosticIdsHelper.ViewModelClassShouldInheritReactiveObject,
                 Title,
                 MessageFormat,
@@ -43,25 +47,26 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
                 Description);
         }
 
+        /// <inheritdoc />
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+
+        /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeClassDeclarationExpression, SyntaxKind.ClassDeclaration);
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+            context.RegisterSyntaxNodeAction(AnalyzeClassDeclarationExpression, SyntaxKind.ClassDeclaration);
         }
 
         private void AnalyzeClassDeclarationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             if (!(context.Node is ClassDeclarationSyntax classDeclarationSyntax))
             {
                 return;
             }
 
             var identifier = classDeclarationSyntax.Identifier;
-            if (!identifier.Text.EndsWith(this.ClassNameSuffix, StringComparison.OrdinalIgnoreCase))
+            if (!identifier.Text.EndsWith(ClassNameSuffix, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -91,7 +96,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
                 }
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, identifier.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, identifier.GetLocation()));
         }
     }
 }

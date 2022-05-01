@@ -1,17 +1,20 @@
-﻿using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
+using System.Collections.Immutable;
+using System.Linq;
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
+using JetBrains.Annotations;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Immutable;
-    using JetBrains.Annotations;
-
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
     /// <summary>
     /// Base class for a Roslyn Analyzer that checks a method invocation based on the name and class of the method.
     /// </summary>
@@ -20,14 +23,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Creates an instance of BaseInvocationExpressionAnalyzer
+        /// Initializes a new instance of the <see cref="BaseInvocationExpressionAnalyzer"/> class.
         /// </summary>
-        /// <param name="diagnosticId">The Diagnostic Id</param>
-        /// <param name="title">The title of the analyzer</param>
+        /// <param name="diagnosticId">The Diagnostic Id.</param>
+        /// <param name="title">The title of the analyzer.</param>
         /// <param name="message">The message to display detailing the issue with the analyzer.</param>
         /// <param name="category">The category the analyzer belongs to.</param>
-        /// <param name="description">The description of the analyzer</param>
-        /// <param name="diagnosticSeverity">The severity assocatiated with breaches of the analyzer</param>
+        /// <param name="description">The description of the analyzer.</param>
+        /// <param name="diagnosticSeverity">The severity associated with breaches of the analyzer.</param>
         protected BaseInvocationExpressionAnalyzer(
             [NotNull] string diagnosticId,
             [NotNull] string title,
@@ -36,47 +39,34 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             [NotNull] string description,
             DiagnosticSeverity diagnosticSeverity)
         {
-            this._rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
+            _rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
         }
 
-        /// <summary>
-        /// Returns a set of descriptors for the diagnostics that this analyzer is capable of producing.
-        /// </summary>
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(this._rule);
+        /// <inheritdoc />
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
 
         /// <summary>
-        /// The name of the method to check for.
+        /// Gets the name of the method to check for.
         /// </summary>
         [NotNull]
         protected abstract string MethodName { get; }
 
         /// <summary>
-        /// The containing types the method may belong to.
+        /// Gets the containing types the method may belong to.
         /// </summary>
         [NotNull]
         protected abstract string[] ContainingTypes { get; }
 
-        /// <summary>
-        /// Called once at session start to register actions in the analysis context.
-        /// </summary>
-        /// <remarks>
-        /// https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Analyzer%20Actions%20Semantics.md for more information
-        /// </remarks>
-        /// <param name="context">
-        /// Roslyn context.
-        /// </param>
+        /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(this.AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
+            context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+            context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
         }
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsGenerated())
-            {
-                return;
-            }
-
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
             var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;
@@ -94,12 +84,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var typeFullName = typeInfo.Type.GetFullName();
 
-            if (ContainingTypes.All(x => !typeFullName.Equals(x, StringComparison.Ordinal)))
-            {
-                return;
-            }
-
-            context.ReportDiagnostic(Diagnostic.Create(this._rule, invocationExpression.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, invocationExpression.GetLocation()));
         }
     }
 }

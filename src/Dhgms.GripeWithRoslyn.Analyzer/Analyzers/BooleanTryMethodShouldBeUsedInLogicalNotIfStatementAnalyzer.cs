@@ -16,7 +16,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     /// Analyzer to check if TryParse is used in a logical if statement.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-    public sealed class TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer : DiagnosticAnalyzer
+    public sealed class BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzer : DiagnosticAnalyzer
     {
         internal const string Title = "TryParse should be used inside an If Statement with a unary operation";
 
@@ -30,9 +30,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzer"/> class.
         /// </summary>
-        public TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer()
+        public BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzer()
         {
             _rule = new DiagnosticDescriptor(
                 DiagnosticIdsHelper.TryParseShouldBeUsedInLogicalNotIfStatement,
@@ -83,14 +83,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
                 return;
             }
 
-            if (!memberAccessExpressionSyntax.Name.Identifier.Text.Equals("TryParse", StringComparison.Ordinal))
+            if (!memberAccessExpressionSyntax.Name.Identifier.Text.StartsWith("Try", StringComparison.Ordinal))
             {
                 return;
             }
 
-            var type = invocationExpression.GetType();
+            var invocationExpressionTypeInfo = context.SemanticModel.GetTypeInfo(invocationExpression);
 
-            if (type != typeof(bool))
+            var type = invocationExpressionTypeInfo.Type;
+
+            if (type?.SpecialType != SpecialType.System_Boolean)
             {
                 return;
             }

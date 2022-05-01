@@ -14,9 +14,9 @@ using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifie
 namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
 {
     /// <summary>
-    /// Unit Tests for <see cref="TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer"/>.
+    /// Unit Tests for <see cref="BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzer"/>.
     /// </summary>
-    public sealed class TryParseShouldBeUsedInLogicalNotIfStatementAnalyzerTests : CodeFixVerifier
+    public sealed class BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzerTests : CodeFixVerifier
     {
         /// <summary>
         /// Test to ensure bad code returns a warning.
@@ -41,7 +41,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
             var expected = new DiagnosticResult
             {
                 Id = DiagnosticIdsHelper.TryParseShouldBeUsedInLogicalNotIfStatement,
-                Message = TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer.Title,
+                Message = BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
@@ -56,7 +56,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new TryParseShouldBeUsedInLogicalNotIfStatementAnalyzer();
+            return new BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzer();
         }
     }
 }

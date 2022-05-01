@@ -1,6 +1,8 @@
 <Project>
   <PropertyGroup>
-    <Copyright>DPVreony and Contributors</Copyright>
+    <Company>DPVreony and Contributors</Company>
+    <StartYear>2015</StartYear>
+    <Copyright>© $(StartYear)-$([System.DateTime]::Now.Year) $(Company)</Copyright>
     <Product>Gripe With Roslyn</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>dpvreony</Authors>
@@ -29,7 +31,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(IsTestProject)">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
     <PackageReference Include="Xunit.StaFact" Version="1.0.37" />

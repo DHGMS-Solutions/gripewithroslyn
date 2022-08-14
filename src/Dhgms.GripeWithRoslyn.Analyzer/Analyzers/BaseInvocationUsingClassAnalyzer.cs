@@ -62,21 +62,20 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         {
             context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-            context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeSimpleMemberAccessExpression, SyntaxKind.SimpleMemberAccessExpression);
         }
 
-        private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
+        private void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
         {
-            var invocationExpression = (InvocationExpressionSyntax)context.Node;
+            var memberAccessExpressionSyntax = (MemberAccessExpressionSyntax)context.Node;
 
-            var memberExpression = invocationExpression.Expression as MemberAccessExpressionSyntax;
-            if (memberExpression == null
-                || memberExpression.Expression == null)
+            if (memberAccessExpressionSyntax == null
+                || memberAccessExpressionSyntax.Expression == null)
             {
                 return;
             }
 
-            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberExpression.Expression);
+            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, memberAccessExpressionSyntax.Expression);
 
             if (typeInfo.Type == null)
             {
@@ -85,7 +84,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
             var typeFullName = typeInfo.Type.GetFullName();
 
-            context.ReportDiagnostic(Diagnostic.Create(_rule, invocationExpression.GetLocation()));
+            if (!typeFullName.Equals(ClassName, StringComparison.Ordinal))
+            {
+                // need to look at if it's a static member access if we get here.
+                return;
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(_rule, memberAccessExpressionSyntax.GetLocation()));
         }
     }
 }

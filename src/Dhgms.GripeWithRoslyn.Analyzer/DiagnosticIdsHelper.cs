@@ -45,5 +45,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseEntityFrameworkCoreDatabaseEnsureCreated => "GR0019";
 
         internal static string DoNotUseEntityFrameworkCoreDatabaseEnsureCreatedAsync => "GR0020";
+
+        internal static string DoNotUseSystemNetServicePointManager => "GR0021";
     }
 }

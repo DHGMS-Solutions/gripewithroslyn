@@ -80,15 +80,19 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
             var test = @"
     namespace System.Net
     {
+        namespace Security
+        {
+            public sealed class RemoteCertificateValidationCallback
+            {
+            }
+        }
+
         public sealed class ServicePoint
         {
         }
 
-        public sealed class System.Net.Security.RemoteCertificateValidationCallback
-        {
-        }
 
-        public sealed class ServicePointManager
+        public static class ServicePointManager
         {
             public static ServicePoint FindServicePoint()
             {
@@ -116,7 +120,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 19, 17)
+                        new DiagnosticResultLocation("Test0.cs", 32, 59)
                     }
             };
 

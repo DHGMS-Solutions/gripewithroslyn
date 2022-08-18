@@ -38,7 +38,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         }
 
         /// <inheritdoc />
-        protected override string NameSuffix => "ViewModel";
+        protected override string[] NameSuffixes => new[]
+        {
+            "ViewModel"
+        };
 
         /// <inheritdoc />
         protected override string BaseClassFullName => "global::ReactiveUI.ReactiveObject";

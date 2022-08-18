@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using JetBrains.Annotations;
@@ -47,7 +48,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         /// <summary>
         /// Gets the name suffix that classes should end by.
         /// </summary>
-        protected abstract string NameSuffix { get; }
+        protected abstract string[] NameSuffixes { get; }
 
         /// <summary>
         /// Gets the full name of the base class that mean inheriting classes should use this rule.
@@ -70,11 +71,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
             }
 
             var identifier = classDeclarationSyntax.Identifier;
-            if (identifier.Text.EndsWith(NameSuffix, StringComparison.OrdinalIgnoreCase))
+            if (NameSuffixes.Any(nameSuffix => identifier.Text.EndsWith(nameSuffix, StringComparison.OrdinalIgnoreCase)))
             {
                 // it does end with the desired suffix
-                // no point checking to warn if it should or not.
-                // that's not the point of this validator.
                 return;
             }
 

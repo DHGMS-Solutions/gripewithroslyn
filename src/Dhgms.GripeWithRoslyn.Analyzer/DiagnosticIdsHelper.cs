@@ -47,5 +47,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseEntityFrameworkCoreDatabaseEnsureCreatedAsync => "GR0020";
 
         internal static string DoNotUseSystemNetServicePointManager => "GR0021";
+
+        internal static string MediatRRequestHandlerShouldHaveCommandHandlerOrQueryHandlerSuffix => "GR0022";
     }
 }

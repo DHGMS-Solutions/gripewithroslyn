@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.MediatR
 {
     /// <summary>
-    /// Analyzer to ensure a class inheriting from ReactiveUI.ReactiveObject has the suffix ViewModel.
+    /// Analyzer to ensure a class inheriting from MediatR.RequestHandler has the suffix ViewModel.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class NameOfRequestHandlerShouldEndWithCommandHandlerOrQueryHandlerAnalyzer : BaseClassInheritingTypeShouldEndWithSpecificSuffix

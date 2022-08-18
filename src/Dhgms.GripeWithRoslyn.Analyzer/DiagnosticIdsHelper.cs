@@ -49,5 +49,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseSystemNetServicePointManager => "GR0021";
 
         internal static string MediatRRequestHandlerShouldHaveCommandHandlerOrQueryHandlerSuffix => "GR0022";
+
+        internal static string MediatRRequestShouldHaveCommandOrQuerySuffix => "GR0023";
     }
 }

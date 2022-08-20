@@ -2,10 +2,11 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.EfCore
 {
     /// <summary>
     /// Analyzer to ensure the EF Core EnsureCreated method is not used in an Application.

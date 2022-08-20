@@ -4,15 +4,13 @@
 
 using System;
 using System.Collections.Immutable;
-using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
-using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
 {
     /// <summary>
     /// Abstract Implementation for an analyzer that ensures a type ends with a specific suffix.

@@ -4,16 +4,13 @@
 
 using System;
 using System.Collections.Immutable;
-using System.Linq;
-using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
-using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
 {
     /// <summary>
     /// Base class for a Roslyn Analyzer that checks a method invocation based on the name and class of the method.

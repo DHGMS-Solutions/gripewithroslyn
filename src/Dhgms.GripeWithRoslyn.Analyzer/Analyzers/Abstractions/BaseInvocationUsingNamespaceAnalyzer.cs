@@ -4,15 +4,13 @@
 
 using System;
 using System.Collections.Immutable;
-using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
-using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
 {
     /// <summary>
     /// These analyzers are for where you don't care about the actual method but more the namespace it is inside.

@@ -5,15 +5,13 @@
 using System;
 using System.Collections.Immutable;
 using System.Linq;
-using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
-using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
 {
     /// <summary>
     /// Analyzer for ensuring that an inheriting type has a naming convention that ends with a specific suffix.

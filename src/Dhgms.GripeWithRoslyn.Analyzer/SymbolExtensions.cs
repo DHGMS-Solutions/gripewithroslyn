@@ -4,7 +4,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Helpers
+namespace Dhgms.GripeWithRoslyn.Analyzer
 {
     /// <summary>
     /// Extensions Roslyn Symbols.

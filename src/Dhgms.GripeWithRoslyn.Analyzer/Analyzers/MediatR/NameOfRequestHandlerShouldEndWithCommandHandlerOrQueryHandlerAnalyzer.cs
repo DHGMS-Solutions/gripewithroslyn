@@ -46,6 +46,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.MediatR
         };
 
         /// <inheritdoc />
-        protected override string BaseClassFullName => "global::MediatR.RequestHandler";
+        protected override string BaseClassFullName => "global::MediatR.IRequestHandler";
     }
 }

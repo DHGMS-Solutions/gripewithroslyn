@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using Dhgms.GripeWithRoslyn.Analyzer;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
@@ -11,12 +10,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Runtime
 {
     /// <summary>
-    /// Unit Tests for <see cref="UseEncodingUnicodeInsteadOfASCIIAnalyzer"/>.
+    /// Unit Tests for <see cref="UseDateTimeUtcNowInsteadofNowAnalyzer"/>.
     /// </summary>
-    public class UseEncodingUnicodeInsteadOfASCIIAnalyzerTest : CodeFixVerifier
+    public sealed class UseDateTimeUtcNowInsteadofNowAnalyzerTest : CodeFixVerifier
     {
         /// <summary>
         /// Test to ensure bad code returns a warning.
@@ -31,22 +30,21 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
 
         class TypeName
         {
-            public void MethodName()
+            public System.DateTime Get()
             {
-                char[] testValue = null;
-                ASCIIEncoding.GetBytes(testValue, 0, 0);
+                return System.DateTime.Now;
             }
         }
     }";
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
-                Message = "Consider usage of Unicode Encoding instead of ASCII.",
+                Id = DiagnosticIdsHelper.UseDateTimeUtcNowInsteadofNow,
+                Message = UseDateTimeUtcNowInsteadofNowAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 11, 17)
+                        new DiagnosticResultLocation("Test0.cs", 10, 24)
                     }
             };
 
@@ -56,7 +54,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new UseEncodingUnicodeInsteadOfASCIIAnalyzer();
+            return new UseDateTimeUtcNowInsteadofNowAnalyzer();
         }
     }
 }

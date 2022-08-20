@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using Dhgms.GripeWithRoslyn.Analyzer;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language;
 using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
@@ -11,7 +10,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Language
 {
     /// <summary>
     /// Unit Tests for checking if a Constructor invokes external methods.

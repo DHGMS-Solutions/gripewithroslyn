@@ -2,9 +2,7 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Reflection;
 using Dhgms.GripeWithRoslyn.Analyzer;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
@@ -12,12 +10,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Runtime
 {
     /// <summary>
-    /// Unit Tests for <see cref="UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer"/>.
+    /// Unit Tests for <see cref="UseEncodingUnicodeInsteadOfASCIIAnalyzer"/>.
     /// </summary>
-    public sealed class UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzerTests : CodeFixVerifier
+    public class UseEncodingUnicodeInsteadOfASCIIAnalyzerTest : CodeFixVerifier
     {
         /// <summary>
         /// Test to ensure bad code returns a warning.
@@ -26,17 +24,6 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         public void ReturnsWarning()
         {
             var test = @"
-    namespace Newtonsoft.Json
-    {
-        public static class JsonConvert
-        {
-            public static object DeserializeObject(string value)
-            {
-                return value;
-            }
-        }
-    }
-
     namespace ConsoleApplication1
     {
         using System.Text;
@@ -45,22 +32,20 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         {
             public void MethodName()
             {
-                global::Newtonsoft.Json.JsonConvert.DeserializeObject(""{}"");
+                char[] testValue = null;
+                ASCIIEncoding.GetBytes(testValue, 0, 0);
             }
         }
     }";
-
-            var a = MethodBase.GetCurrentMethod().DeclaringType;
-
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.UseSystemTextJsonInsteadOfNewtonsoftJson,
-                Message = UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer.Title,
+                Id = DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
+                Message = "Consider usage of Unicode Encoding instead of ASCII.",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 21, 17)
+                        new DiagnosticResultLocation("Test0.cs", 11, 17)
                     }
             };
 
@@ -70,7 +55,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer();
+            return new UseEncodingUnicodeInsteadOfASCIIAnalyzer();
         }
     }
 }

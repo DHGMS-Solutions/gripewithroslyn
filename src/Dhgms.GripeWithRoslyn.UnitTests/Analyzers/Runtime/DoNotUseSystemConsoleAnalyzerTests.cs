@@ -2,22 +2,21 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Reflection;
 using Dhgms.GripeWithRoslyn.Analyzer;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Runtime
 {
     /// <summary>
-    /// Unit Tests for <see cref="UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer"/>.
+    /// Unit Tests for <see cref="DoNotUseSystemConsoleAnalyzer"/>.
     /// </summary>
-    public sealed class UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzerTest : CodeFixVerifier
+    public sealed class DoNotUseSystemConsoleAnalyzerTests : CodeFixVerifier
     {
         /// <summary>
         /// Test to ensure bad code returns a warning.
@@ -26,40 +25,47 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         public void ReturnsWarning()
         {
             var test = @"
+    namespace System
+    {
+        public sealed class Console
+        {
+            public static void Write(string value)
+            {
+            }
+        }
+    }
+
     namespace ConsoleApplication1
     {
-        using System.Text;
-
         class TypeName
         {
             public void MethodName()
             {
-                global::System.Reflection.MethodBase.GetCurrentMethod().DeclaringType;
+                System.Console.Write(""sometext"");
             }
         }
     }";
-
-            var a = MethodBase.GetCurrentMethod().DeclaringType;
-
-            var expected = new DiagnosticResult
+            var methodInvoke = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
-                Message = "Consider usage of typeof(x) instead of MethodBase.GetCurrentMethod().DeclaringType.",
+                Id = DiagnosticIdsHelper.DoNotUseSystemConsole,
+                Message = DoNotUseSystemConsoleAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 10, 17)
+                        new DiagnosticResultLocation("Test0.cs", 18, 17)
                     }
             };
 
-            VerifyCSharpDiagnostic(test, expected);
+            VerifyCSharpDiagnostic(
+                test,
+                methodInvoke);
         }
 
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer();
+            return new DoNotUseSystemConsoleAnalyzer();
         }
     }
 }

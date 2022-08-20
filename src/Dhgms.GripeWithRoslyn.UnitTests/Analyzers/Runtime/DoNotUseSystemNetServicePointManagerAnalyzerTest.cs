@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Runtime
 {
     /// <summary>
     /// Unit Tests for <see cref="DoNotUseSystemNetServicePointManagerAnalyzer"/>.

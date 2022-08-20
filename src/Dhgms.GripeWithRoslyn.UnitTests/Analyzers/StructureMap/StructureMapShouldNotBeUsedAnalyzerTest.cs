@@ -3,20 +3,19 @@
 // See the LICENSE file in the project root for full license information.
 
 using Dhgms.GripeWithRoslyn.Analyzer;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.StructureMap;
 using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.StructureMap
 {
     /// <summary>
-    /// Unit Tests for the GDI+ analyzer.
+    /// Unit Tests for <see cref="StructureMapShouldNotBeUsedAnalyzer"/>.
     /// </summary>
-    public sealed class DoNotUseGdiPlusAnalyzerTest : CodeFixVerifier
+    public class StructureMapShouldNotBeUsedAnalyzerTest : CodeFixVerifier
     {
         /// <summary>
         /// Test to ensure bad code returns a warning.
@@ -25,15 +24,11 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         public void ReturnsWarning()
         {
             var test = @"
-    namespace System.Drawing
+    namespace StructureMap
     {
-        public sealed class Bitmap
+        public class Test
         {
-            public Bitmap(string filename)
-            {
-            }
-
-            public void Bleh()
+            public void Method()
             {
             }
         }
@@ -41,31 +36,36 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
 
     namespace ConsoleApplication1
     {
+        using System.Text;
+
+
+
         class TypeName
         {
             public void MethodName()
             {
-                var bitmap = new System.Drawing.Bitmap(""somefile"");
-                bitmap.Bleh();
+                var instance = new StructureMap.Test();
+                instance.Method();
             }
         }
     }";
+
             var ctor = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.DoNotUseGdiPlus,
-                Message = DoNotUseGdiPlusAnalyzer.Title,
+                Id = DiagnosticIdsHelper.StructureMapShouldNotBeUsed,
+                Message = "StructureMap is end of life so should not be used.",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 22, 30)
+                        new DiagnosticResultLocation("Test0.cs", 22, 32)
                     }
             };
 
             var methodInvoke = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.DoNotUseGdiPlus,
-                Message = DoNotUseGdiPlusAnalyzer.Title,
+                Id = DiagnosticIdsHelper.StructureMapShouldNotBeUsed,
+                Message = "StructureMap is end of life so should not be used.",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
@@ -83,7 +83,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new DoNotUseGdiPlusAnalyzer();
+            return new StructureMapShouldNotBeUsedAnalyzer();
         }
     }
 }

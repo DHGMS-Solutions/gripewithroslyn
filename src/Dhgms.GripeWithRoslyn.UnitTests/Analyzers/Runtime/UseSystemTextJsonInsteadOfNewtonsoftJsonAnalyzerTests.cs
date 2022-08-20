@@ -2,8 +2,8 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Reflection;
 using Dhgms.GripeWithRoslyn.Analyzer;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
@@ -11,12 +11,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Runtime
 {
     /// <summary>
-    /// Unit Tests for <see cref="DoNotUseSystemSecuritySecureStringAnalyzer"/>.
+    /// Unit Tests for <see cref="UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer"/>.
     /// </summary>
-    public sealed class DoNotUseSystemSecuritySecureStringAnalyzerTest : CodeFixVerifier
+    public sealed class UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzerTests : CodeFixVerifier
     {
         /// <summary>
         /// Test to ensure bad code returns a warning.
@@ -25,48 +25,51 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         public void ReturnsWarning()
         {
             var test = @"
-    namespace System.Security
+    namespace Newtonsoft.Json
     {
-        public sealed class SecureString
+        public static class JsonConvert
         {
-            public void Clear()
+            public static object DeserializeObject(string value)
             {
+                return value;
             }
         }
     }
 
     namespace ConsoleApplication1
     {
+        using System.Text;
+
         class TypeName
         {
             public void MethodName()
             {
-                var secureString = new System.Security.SecureString();
-                secureString.Clear();
+                global::Newtonsoft.Json.JsonConvert.DeserializeObject(""{}"");
             }
         }
     }";
-            var methodInvoke = new DiagnosticResult
+
+            var a = MethodBase.GetCurrentMethod().DeclaringType;
+
+            var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.DoNotUseSystemSecuritySecureString,
-                Message = DoNotUseSystemSecuritySecureStringAnalyzer.Title,
-                Severity = DiagnosticSeverity.Error,
+                Id = DiagnosticIdsHelper.UseSystemTextJsonInsteadOfNewtonsoftJson,
+                Message = UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer.Title,
+                Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 19, 17)
+                        new DiagnosticResultLocation("Test0.cs", 21, 17)
                     }
             };
 
-            VerifyCSharpDiagnostic(
-                test,
-                methodInvoke);
+            VerifyCSharpDiagnostic(test, expected);
         }
 
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new DoNotUseSystemSecuritySecureStringAnalyzer();
+            return new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer();
         }
     }
 }

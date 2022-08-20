@@ -11,12 +11,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Runtime
 {
     /// <summary>
-    /// Unit Tests for <see cref="DoNotUseSystemConsoleAnalyzer"/>.
+    /// Unit Tests for the GDI+ analyzer.
     /// </summary>
-    public sealed class DoNotUseSystemConsoleAnalyzerTests : CodeFixVerifier
+    public sealed class DoNotUseGdiPlusAnalyzerTest : CodeFixVerifier
     {
         /// <summary>
         /// Test to ensure bad code returns a warning.
@@ -25,11 +25,15 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         public void ReturnsWarning()
         {
             var test = @"
-    namespace System
+    namespace System.Drawing
     {
-        public sealed class Console
+        public sealed class Bitmap
         {
-            public static void Write(string value)
+            public Bitmap(string filename)
+            {
+            }
+
+            public void Bleh()
             {
             }
         }
@@ -41,31 +45,45 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         {
             public void MethodName()
             {
-                System.Console.Write(""sometext"");
+                var bitmap = new System.Drawing.Bitmap(""somefile"");
+                bitmap.Bleh();
             }
         }
     }";
-            var methodInvoke = new DiagnosticResult
+            var ctor = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.DoNotUseSystemConsole,
-                Message = DoNotUseSystemConsoleAnalyzer.Title,
+                Id = DiagnosticIdsHelper.DoNotUseGdiPlus,
+                Message = DoNotUseGdiPlusAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 18, 17)
+                        new DiagnosticResultLocation("Test0.cs", 22, 30)
+                    }
+            };
+
+            var methodInvoke = new DiagnosticResult
+            {
+                Id = DiagnosticIdsHelper.DoNotUseGdiPlus,
+                Message = DoNotUseGdiPlusAnalyzer.Title,
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 23, 17)
                     }
             };
 
             VerifyCSharpDiagnostic(
                 test,
+                ctor,
                 methodInvoke);
         }
 
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new DoNotUseSystemConsoleAnalyzer();
+            return new DoNotUseGdiPlusAnalyzer();
         }
     }
 }

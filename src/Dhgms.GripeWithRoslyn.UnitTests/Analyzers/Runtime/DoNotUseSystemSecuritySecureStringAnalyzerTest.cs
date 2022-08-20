@@ -11,12 +11,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Xunit;
 using CodeFixVerifier = Dhgms.GripeWithRoslyn.UnitTests.Verifiers.CodeFixVerifier;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Runtime
 {
     /// <summary>
-    /// Unit Tests for <see cref="UseDateTimeUtcNowInsteadofNowAnalyzer"/>.
+    /// Unit Tests for <see cref="DoNotUseSystemSecuritySecureStringAnalyzer"/>.
     /// </summary>
-    public sealed class UseDateTimeUtcNowInsteadofNowAnalyzerTest : CodeFixVerifier
+    public sealed class DoNotUseSystemSecuritySecureStringAnalyzerTest : CodeFixVerifier
     {
         /// <summary>
         /// Test to ensure bad code returns a warning.
@@ -25,37 +25,48 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers
         public void ReturnsWarning()
         {
             var test = @"
+    namespace System.Security
+    {
+        public sealed class SecureString
+        {
+            public void Clear()
+            {
+            }
+        }
+    }
+
     namespace ConsoleApplication1
     {
-        using System.Text;
-
         class TypeName
         {
-            public System.DateTime Get()
+            public void MethodName()
             {
-                return System.DateTime.Now;
+                var secureString = new System.Security.SecureString();
+                secureString.Clear();
             }
         }
     }";
-            var expected = new DiagnosticResult
+            var methodInvoke = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.UseDateTimeUtcNowInsteadofNow,
-                Message = UseDateTimeUtcNowInsteadofNowAnalyzer.Title,
-                Severity = DiagnosticSeverity.Warning,
+                Id = DiagnosticIdsHelper.DoNotUseSystemSecuritySecureString,
+                Message = DoNotUseSystemSecuritySecureStringAnalyzer.Title,
+                Severity = DiagnosticSeverity.Error,
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 10, 24)
+                        new DiagnosticResultLocation("Test0.cs", 19, 17)
                     }
             };
 
-            VerifyCSharpDiagnostic(test, expected);
+            VerifyCSharpDiagnostic(
+                test,
+                methodInvoke);
         }
 
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new UseDateTimeUtcNowInsteadofNowAnalyzer();
+            return new DoNotUseSystemSecuritySecureStringAnalyzer();
         }
     }
 }

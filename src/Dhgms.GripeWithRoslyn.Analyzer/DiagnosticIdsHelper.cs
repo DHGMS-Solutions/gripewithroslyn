@@ -51,5 +51,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string MediatRRequestHandlerShouldHaveCommandHandlerOrQueryHandlerSuffix => "GR0022";
 
         internal static string MediatRRequestShouldHaveCommandOrQuerySuffix => "GR0023";
+
+        internal static string MediatRResponseShouldHaveCommandResponseOrQueryResponseSuffix => "GR0024";
     }
 }

@@ -1,7 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) 2019 DHGMS Solutions and Contributors. All rights reserved.
+// This file is licensed to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Immutable;
-using System.Text;
+using Dhgms.GripeWithRoslyn.Analyzer.Extensions;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -10,6 +13,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
 {
+    /// <summary>
+    /// Abstraction for an analyzer that checks the type argument for a generic inheritance should end with a specific suffix.
+    /// </summary>
     public abstract class AbstractTypeArgumentForClassShouldEndWithSpecificSuffixAnalyzer : DiagnosticAnalyzer
     {
         private readonly DiagnosticDescriptor _rule;
@@ -43,7 +49,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
         /// Gets the suffix of the class to check for.
         /// </summary>
         [NotNull]
-        protected abstract string ClassNameSuffix { get; }
+        protected abstract string[] ClassNameSuffixes { get; }
 
         /// <summary>
         /// Gets the containing types the method may belong to.
@@ -66,9 +72,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
                 return;
             }
 
-            var classDeclarationSyntax = typeArgumentListSyntax.GetBaseList();
-
-            var baseList = classDeclarationSyntax.BaseList;
+            var baseList = typeArgumentListSyntax.GetAncestor<BaseListSyntax>();
 
             if (baseList != null
                 && baseList.Types.Count > 0)
@@ -92,7 +96,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
                 }
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(_rule, identifier.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(_rule, typeArgumentListSyntax.GetLocation()));
         }
     }
 }

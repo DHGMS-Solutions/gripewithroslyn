@@ -4,50 +4,57 @@
 
 using System;
 using System.Collections.Immutable;
-using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
 {
     /// <summary>
-    /// Analyzer for checking that a view model class implements a viewmodel interface.
+    /// Base class for checking that a suffixed group of classes inherit from expected types.
     /// </summary>
-    [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-    public sealed class ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer : DiagnosticAnalyzer
+    public abstract class BaseClassDeclarationSuffixShouldInheritTypes : DiagnosticAnalyzer
     {
-        internal const string Title = "ViewModel classes should inherit from a ViewModel interface.";
-
-        private const string MessageFormat = Title;
-
-        private const string Category = SupportedCategories.Maintainability;
-
-        private const string Description =
-            "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
-
-        private const string ClassNameSuffix = "ViewModel";
-
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="BaseClassDeclarationSuffixShouldInheritTypes"/> class.
         /// </summary>
-        public ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer()
+        /// <param name="diagnosticId">The Diagnostic Id.</param>
+        /// <param name="title">The title of the analyzer.</param>
+        /// <param name="message">The message to display detailing the issue with the analyzer.</param>
+        /// <param name="category">The category the analyzer belongs to.</param>
+        /// <param name="description">The description of the analyzer.</param>
+        /// <param name="diagnosticSeverity">The severity associated with breaches of the analyzer.</param>
+        protected BaseClassDeclarationSuffixShouldInheritTypes(
+            [NotNull] string diagnosticId,
+            [NotNull] string title,
+            [NotNull] string message,
+            [NotNull] string category,
+            [NotNull] string description,
+            DiagnosticSeverity diagnosticSeverity)
         {
-            _rule = new DiagnosticDescriptor(
-                DiagnosticIdsHelper.ViewModelClassShouldInheritReactiveObject,
-                Title,
-                MessageFormat,
-                Category,
-                DiagnosticSeverity.Warning,
-                true,
-                Description);
+            _rule = new DiagnosticDescriptor(diagnosticId, title, message, category, diagnosticSeverity, isEnabledByDefault: true, description: description);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets a set of descriptors for the diagnostics that this analyzer is capable of producing.
+        /// </summary>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_rule);
+
+        /// <summary>
+        /// Gets the suffix of the class to check for.
+        /// </summary>
+        [NotNull]
+        protected abstract string ClassNameSuffix { get; }
+
+        /// <summary>
+        /// Gets the containing types the method may belong to.
+        /// </summary>
+        [NotNull]
+        protected abstract string BaseClassFullName { get; }
 
         /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
@@ -72,7 +79,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
 
             var baseList = classDeclarationSyntax.BaseList;
 
-            var viewModelInterfaceName = $".I{identifier.Text}";
             if (baseList != null
                 && baseList.Types.Count > 0)
             {
@@ -88,7 +94,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
 
                     var typeFullName = typeInfo.Type.GetFullName();
 
-                    if (typeFullName.EndsWith(viewModelInterfaceName, StringComparison.Ordinal))
+                    if (typeFullName.Equals(BaseClassFullName, StringComparison.Ordinal))
                     {
                         return;
                     }

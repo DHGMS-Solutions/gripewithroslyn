@@ -7,29 +7,29 @@ using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.MediatR
 {
     /// <summary>
-    /// Analyzer to ensure a class inheriting from ReactiveUI.ReactiveObject has the suffix ViewModel.
+    /// Analyzer to ensure a class inheriting from MediatR.RequestHandler has the suffix ViewModel.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-    public sealed class NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer : BaseClassInheritingTypeShouldEndWithSpecificSuffix
+    public sealed class NameOfRequestHandlerShouldEndWithCommandHandlerOrQueryHandlerAnalyzer : BaseClassInheritingTypeShouldEndWithSpecificSuffix
     {
-        internal const string Title = "Classes based on ReactiveUI.ReactiveObject should end with the suffix \"ViewModel\".";
+        internal const string Title = "Classes based on MediatR.RequestHandler should end with either the suffix \"CommandHandler\" or \"QueryHandler\".";
 
         private const string MessageFormat = Title;
 
         private const string Category = SupportedCategories.Maintainability;
 
         private const string Description =
-            "ViewModels should follow a consistent design of using ReactiveUI's ReactiveObject and an Interface";
+            "MediatR Request Handlers should follow a consistent naming convention indicating if it is for Commands or Queries.";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="NameOfRequestHandlerShouldEndWithCommandHandlerOrQueryHandlerAnalyzer"/> class.
         /// </summary>
-        public NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer()
+        public NameOfRequestHandlerShouldEndWithCommandHandlerOrQueryHandlerAnalyzer()
             : base(
-                DiagnosticIdsHelper.ReactiveObjectClassShouldHaveViewModelSuffix,
+                DiagnosticIdsHelper.MediatRRequestHandlerShouldHaveCommandHandlerOrQueryHandlerSuffix,
                 Title,
                 MessageFormat,
                 Category,
@@ -41,10 +41,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         /// <inheritdoc />
         protected override string[] NameSuffixes => new[]
         {
-            "ViewModel"
+            "CommandHandler",
+            "QueryHandler"
         };
 
         /// <inheritdoc />
-        protected override string BaseClassFullName => "global::ReactiveUI.ReactiveObject";
+        protected override string BaseClassFullName => "global::MediatR.IRequestHandler";
     }
 }

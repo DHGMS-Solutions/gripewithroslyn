@@ -47,7 +47,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.MediatR
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 12, 22)
+                        new DiagnosticResultLocation("Test0.cs", 12, 38)
                     }
             };
 

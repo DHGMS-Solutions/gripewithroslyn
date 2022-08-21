@@ -29,7 +29,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.MediatR
         /// </summary>
         public RequestResponseTypeShouldHaveSpecificNameAnalyzer()
             : base(
-                DiagnosticIdsHelper.MediatRRequestShouldHaveCommandOrQuerySuffix,
+                DiagnosticIdsHelper.MediatRResponseShouldHaveCommandResponseOrQueryResponseSuffix,
                 Title,
                 MessageFormat,
                 Category,
@@ -46,6 +46,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.MediatR
         };
 
         /// <inheritdoc/>
-        protected override string BaseClassFullName => "MediatR.IRequest";
+        protected override string BaseClassFullName => "global::MediatR.IRequest";
     }
 }

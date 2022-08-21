@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using Dhgms.GripeWithRoslyn.Analyzer.Extensions;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
@@ -74,6 +75,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
 
             var baseList = typeArgumentListSyntax.GetAncestor<BaseListSyntax>();
 
+            var hasMatch = false;
             if (baseList != null
                 && baseList.Types.Count > 0)
             {
@@ -91,12 +93,45 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
 
                     if (typeFullName.Equals(BaseClassFullName, StringComparison.Ordinal))
                     {
-                        return;
+                        hasMatch = true;
+                        break;
                     }
                 }
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(_rule, typeArgumentListSyntax.GetLocation()));
+            if (!hasMatch)
+            {
+                return;
+            }
+
+            var arguments = typeArgumentListSyntax.Arguments;
+            if (arguments.Count != 1)
+            {
+                // we may need to adjust this in future
+                // where another class could be hiding IRequest and have multiple arguments.
+                return;
+            }
+
+            var argument = arguments.First();
+            SyntaxToken? syntaxToken = null;
+            if (argument is IdentifierNameSyntax identifierNameSyntax)
+            {
+                syntaxToken = identifierNameSyntax.Identifier;
+            }
+            else if (argument is PredefinedTypeSyntax predefinedTypeSyntax)
+            {
+                syntaxToken = predefinedTypeSyntax.Keyword;
+            }
+
+            if (syntaxToken != null)
+            {
+                if (ClassNameSuffixes.Any(suffix => syntaxToken.Value.Text.EndsWith(suffix)))
+                {
+                    return;
+                }
+            }
+
+            context.ReportDiagnostic(Diagnostic.Create(_rule, argument.GetLocation()));
         }
     }
 }

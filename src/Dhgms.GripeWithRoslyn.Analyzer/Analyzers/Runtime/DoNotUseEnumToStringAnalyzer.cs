@@ -19,7 +19,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
 
         private const string MessageFormat = Title;
 
-        private const string Category = SupportedCategories.Design;
+        private const string Category = SupportedCategories.Performance;
 
         private const string Description =
             "nameof() operator can be used instead of ToString method on an enum value.";
@@ -29,7 +29,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
         /// </summary>
         public DoNotUseEnumToStringAnalyzer()
             : base(
-                DiagnosticIdsHelper.DoNotUseGdiPlus,
+                DiagnosticIdsHelper.DoNotUseEnumToString,
                 Title,
                 MessageFormat,
                 Category,
@@ -42,9 +42,22 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
         protected override string MethodName => "ToString";
 
         /// <inheritdoc/>
-        protected override bool GetIfShouldReport(InvocationExpressionSyntax invocationExpression)
+        protected override bool GetIfShouldReport(
+            SemanticModel semanticModel,
+            MemberAccessExpressionSyntax memberExpression)
         {
-            return false;
+            if (!(memberExpression.Expression is MemberAccessExpressionSyntax parentMemberExpressionExpression))
+            {
+                return false;
+            }
+
+            var typeInfo = ModelExtensions.GetTypeInfo(semanticModel, parentMemberExpressionExpression);
+            if (typeInfo.Type == null)
+            {
+                return false;
+            }
+
+            return typeInfo.Type.TypeKind == TypeKind.Enum;
         }
     }
 }

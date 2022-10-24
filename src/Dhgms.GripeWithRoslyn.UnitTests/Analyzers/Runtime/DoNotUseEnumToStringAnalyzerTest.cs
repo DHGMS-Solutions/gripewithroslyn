@@ -42,13 +42,13 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Runtime
     }";
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.DoNotUseGdiPlus,
-                Message = DoNotUseGdiPlusAnalyzer.Title,
+                Id = DiagnosticIdsHelper.DoNotUseEnumToString,
+                Message = DoNotUseEnumToStringAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 22, 30)
+                        new DiagnosticResultLocation("Test0.cs", 14, 28)
                     }
             };
 
@@ -60,7 +60,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Runtime
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new DoNotUseGdiPlusAnalyzer();
+            return new DoNotUseEnumToStringAnalyzer();
         }
     }
 }

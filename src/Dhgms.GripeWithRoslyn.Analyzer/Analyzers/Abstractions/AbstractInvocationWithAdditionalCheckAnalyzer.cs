@@ -57,9 +57,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
         /// <summary>
         /// Check if a diagnostic report should be created based on custom logic in the subclass.
         /// </summary>
-        /// <param name="invocationExpression">Invocation expression to do extended checks on.</param>
+        /// <param name="semanticModel">Roslyn semantic model for the code being analyzed.</param>
+        /// <param name="memberExpression">Member access expression to do extended checks on.</param>
         /// <returns>Whether a diagnostic report should be created.</returns>
-        protected abstract bool GetIfShouldReport(InvocationExpressionSyntax invocationExpression);
+        protected abstract bool GetIfShouldReport(
+            SemanticModel semanticModel,
+            MemberAccessExpressionSyntax memberExpression);
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
@@ -71,7 +74,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
                 return;
             }
 
-            if (!GetIfShouldReport(invocationExpression))
+            if (!GetIfShouldReport(context.SemanticModel, memberExpression))
             {
                 return;
             }

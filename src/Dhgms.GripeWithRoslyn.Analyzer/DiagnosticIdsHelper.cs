@@ -55,5 +55,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string MediatRResponseShouldHaveCommandResponseOrQueryResponseSuffix => "GR0024";
 
         internal static string DoNotUseEnumToString => "GR0025";
+
+        internal static string DoNotUseXUnitInlineDataAttribute => "GR0026";
     }
 }

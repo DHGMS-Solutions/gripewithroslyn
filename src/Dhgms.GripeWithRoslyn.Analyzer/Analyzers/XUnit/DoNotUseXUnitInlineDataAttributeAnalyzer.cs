@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq.Expressions;
 using System.Reflection;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
@@ -53,8 +54,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit
         {
             var attributeSyntax = (AttributeSyntax)syntaxNodeAnalysisContext.Node;
 
-            var name = attributeSyntax.Name.ToFullString();
-            if (!name.Equals("global::XUnit.InlineDataAttribute"))
+            var typeInfo = ModelExtensions.GetTypeInfo(syntaxNodeAnalysisContext.SemanticModel, attributeSyntax);
+
+            var fullName = typeInfo.Type.GetFullName(true);
+            if (fullName == null || !fullName.Equals("global::XUnit.InlineDataAttribute"))
             {
                 return;
             }

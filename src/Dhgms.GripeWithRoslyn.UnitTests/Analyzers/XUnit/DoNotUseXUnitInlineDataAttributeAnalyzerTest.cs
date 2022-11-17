@@ -52,7 +52,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.XUnit
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 10, 17)
+                        new DiagnosticResultLocation("Test0.cs", 16, 14)
                     }
             };
 

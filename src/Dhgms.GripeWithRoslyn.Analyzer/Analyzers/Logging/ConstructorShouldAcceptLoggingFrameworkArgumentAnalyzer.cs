@@ -2,9 +2,11 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.Analyzer.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -55,14 +57,58 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.ConstructorDeclaration);
         }
 
+        private static string GetFullName(ConstructorDeclarationSyntax constructorDeclarationSyntax)
+        {
+            var classDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<ClassDeclarationSyntax>();
+            var namespaceDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<NamespaceDeclarationSyntax>();
+
+            var namespaceName = namespaceDeclarationSyntax.Name.ToString();
+            return namespaceName + "." + classDeclarationSyntax.Identifier.ToString();
+        }
+
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
             var node = context.Node;
 
             var constructorDeclarationSyntax = (ConstructorDeclarationSyntax)context.Node;
+            var myType = GetFullName(constructorDeclarationSyntax);
 
             // check the parameters
-            var parameters = constructorDeclarationSyntax.ParameterList.Parameters;
+            var parametersList = constructorDeclarationSyntax.ParameterList.Parameters;
+
+            if (parametersList.Count == 0)
+            {
+                // no parameters, so no logging framework
+            }
+            else
+            {
+                var lastParameter = parametersList.Last();
+                var lastParameterType = lastParameter.Type;
+                if (lastParameterType == null)
+                {
+                    // no op, as still spiking this out
+                }
+                else
+                {
+                    var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, lastParameterType);
+
+                    if (typeInfo.Type == null)
+                    {
+                        // no op, as still spiking this out
+                    }
+                    else
+                    {
+                        // TODO: GetFullName doesn't handle generic arguments.
+                        var typeFullName = typeInfo.Type.GetFullName();
+                        if (typeFullName.Equals(
+                                $"global::Microsoft.Extensions.Logging.ILogger<{myType}>",
+                                StringComparison.Ordinal))
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
 
             // get those that are logging framework types
             // on a count of 0, report a diagnostic

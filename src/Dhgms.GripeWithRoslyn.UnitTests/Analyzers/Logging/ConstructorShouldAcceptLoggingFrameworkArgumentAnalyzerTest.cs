@@ -51,14 +51,14 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
 
         public class TypeWithWrongLoggerType
         {
-            public TypeWithWrongLoggerType(ILogger<string> logger)
+            public TypeWithWrongLoggerType(Microsoft.Extensions.Logging.ILogger<string> logger)
             {
             }
         }
 
         public class TypeWithWrongLoggerTypeInWrongPosition
         {
-            public TypeWithWrongLoggerTypeInWrongPosition(ILogger<string> logger, string someArg)
+            public TypeWithWrongLoggerTypeInWrongPosition(Microsoft.Extensions.Logging.ILogger<string> logger, string someArg)
             {
             }
         }
@@ -75,7 +75,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
 
         public class TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder
         {
-            public TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder(ILogger<string> logger, TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions someArg)
+            public TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder(Microsoft.Extensions.Logging.ILogger<string> logger, TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions someArg)
             {
             }
         }

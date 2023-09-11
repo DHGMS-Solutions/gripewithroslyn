@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Dhgms.GripeWithRoslyn.Analyzer.Extensions;
@@ -63,7 +64,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             var namespaceDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<NamespaceDeclarationSyntax>();
 
             var namespaceName = namespaceDeclarationSyntax.Name.ToString();
-            return namespaceName + "." + classDeclarationSyntax.Identifier.ToString();
+            return $"global::{namespaceName}.{classDeclarationSyntax.Identifier}";
         }
 
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
@@ -91,20 +92,68 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
                 else
                 {
                     var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, lastParameterType);
+                    var argType = typeInfo.Type;
 
-                    if (typeInfo.Type == null)
+                    if (argType == null)
                     {
                         // no op, as still spiking this out
                     }
                     else
                     {
                         // TODO: GetFullName doesn't handle generic arguments.
-                        var typeFullName = typeInfo.Type.GetFullName();
-                        if (typeFullName.Equals(
-                                $"global::Microsoft.Extensions.Logging.ILogger<{myType}>",
+                        var typeFullName = argType.GetFullName();
+                        if (!typeFullName.Equals(
+                                $"global::Microsoft.Extensions.Logging.ILogger",
                                 StringComparison.Ordinal))
                         {
-                            return;
+                            // no op, as still spiking this out
+                        }
+                        else
+                        {
+                            // var genericArgs = argType.GetGenericArguments();
+                            var childNodes = lastParameter.ChildNodes();
+
+                            // QualifiedNameSyntax
+                            var qualifiedNameSyntax = childNodes.OfType<QualifiedNameSyntax>().FirstOrDefault();
+
+                            // GenericNameSyntax
+                            var genericNameSyntax = qualifiedNameSyntax.ChildNodes().OfType<GenericNameSyntax>().ToArray();
+
+                            // GenericTokenSyntax
+                            var genericTokenSyntax = genericNameSyntax[0];
+
+                            // type arg list
+                            var typeArgumentList = genericTokenSyntax.TypeArgumentList;
+                            var typeArgumentListArgs = typeArgumentList.Arguments;
+
+                            // we should only have 1 arg for ILogger<T>.
+                            if (typeArgumentListArgs.Count != 1)
+                            {
+                                // no op, as still spiking this out
+                            }
+                            else
+                            {
+                                var genericArgType = ModelExtensions.GetTypeInfo(context.SemanticModel, typeArgumentListArgs[0]);
+                                var genericArgTypeType = genericArgType.Type;
+                                if (genericArgTypeType == null)
+                                {
+                                    // no op, as still spiking this out
+                                }
+                                else
+                                {
+                                    var genericArgTypeTypeFullName = genericArgTypeType.GetFullName();
+                                    if (!genericArgTypeTypeFullName.Equals(
+                                            myType,
+                                            StringComparison.Ordinal))
+                                    {
+                                        // no op, as still spiking this out
+                                    }
+                                    else
+                                    {
+                                        return;
+                                    }
+                                }
+                            }
                         }
                     }
                 }

@@ -21,14 +21,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class ConstructorShouldAcceptLoggingFrameworkArgumentAnalyzer : DiagnosticAnalyzer
     {
-        internal const string Title = "Constructors should minimise work and not execute methods";
+        internal const string Title = "Constructor should have a logging framework instance as the final parameter.";
 
         private const string MessageFormat = Title;
 
-        private const string Category = SupportedCategories.Maintainability;
-
-        private const string Description =
-            "Constructors should minimise work and not execute methods. This is to make code easier to test, avoid performance risks, race conditions and quirks of the IDE designer.";
+        private const string Category = SupportedCategories.Design;
 
         private readonly DiagnosticDescriptor _rule;
 
@@ -38,13 +35,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
         public ConstructorShouldAcceptLoggingFrameworkArgumentAnalyzer()
         {
             _rule = new DiagnosticDescriptor(
-                DiagnosticIdsHelper.ConstructorShouldNotInvokeExternalMethods,
+                DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
                 Title,
                 MessageFormat,
                 Category,
                 DiagnosticSeverity.Warning,
                 isEnabledByDefault: true,
-                description: Description);
+                description: DiagnosticResultDescriptionFactory.ConstructorShouldAcceptLoggingFrameworkArgument());
         }
 
         /// <inheritdoc />

@@ -80,16 +80,75 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
             }
         }
     }";
-            var expected = new DiagnosticResult
+
+            var expected = new[]
             {
-                Id = DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
-                Message = string.Empty,
-                Severity = DiagnosticSeverity.Warning,
-                Locations =
-                    new[]
-                    {
-                        new DiagnosticResultLocation("Test0.cs", 16, 14)
-                    }
+                new DiagnosticResult
+                {
+                    Id = DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
+                    Message = DiagnosticResultTitleFactory.ConstructorShouldAcceptLoggingFrameworkArgument(),
+                    Severity = DiagnosticSeverity.Warning,
+                    Locations =
+                        new[]
+                        {
+                            new DiagnosticResultLocation("Test0.cs", 15, 13),
+                        }
+                },
+                new DiagnosticResult
+                {
+                    Id = DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
+                    Message = DiagnosticResultTitleFactory.ConstructorShouldAcceptLoggingFrameworkArgument(),
+                    Severity = DiagnosticSeverity.Warning,
+                    Locations =
+                        new[]
+                        {
+                            new DiagnosticResultLocation("Test0.cs", 22, 13),
+                        }
+                },
+                new DiagnosticResult
+                {
+                    Id = DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
+                    Message = DiagnosticResultTitleFactory.ConstructorShouldAcceptLoggingFrameworkArgument(),
+                    Severity = DiagnosticSeverity.Warning,
+                    Locations =
+                        new[]
+                        {
+                            new DiagnosticResultLocation("Test0.cs", 29, 13),
+                        }
+                },
+                new DiagnosticResult
+                {
+                    Id = DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
+                    Message = DiagnosticResultTitleFactory.ConstructorShouldAcceptLoggingFrameworkArgument(),
+                    Severity = DiagnosticSeverity.Warning,
+                    Locations =
+                        new[]
+                        {
+                            new DiagnosticResultLocation("Test0.cs", 36, 13),
+                        }
+                },
+                new DiagnosticResult
+                {
+                    Id = DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
+                    Message = DiagnosticResultTitleFactory.ConstructorShouldAcceptLoggingFrameworkArgument(),
+                    Severity = DiagnosticSeverity.Warning,
+                    Locations =
+                        new[]
+                        {
+                            new DiagnosticResultLocation("Test0.cs", 46, 13),
+                        }
+                },
+                new DiagnosticResult
+                {
+                    Id = DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
+                    Message = DiagnosticResultTitleFactory.ConstructorShouldAcceptLoggingFrameworkArgument(),
+                    Severity = DiagnosticSeverity.Warning,
+                    Locations =
+                        new[]
+                        {
+                            new DiagnosticResultLocation("Test0.cs", 53, 13)
+                        }
+                },
             };
 
             VerifyCSharpDiagnostic(test, expected);

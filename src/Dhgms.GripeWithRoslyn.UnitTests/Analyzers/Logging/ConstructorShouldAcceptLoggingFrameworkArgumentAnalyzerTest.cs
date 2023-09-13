@@ -79,6 +79,17 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
             {
             }
         }
+
+        public sealed class LogMessageActionWrapper : Whipstaff.Core.Logging.AbstractLogMessageActionsWrapper<TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder, TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions>
+        {
+        }
+
+        public class TypeWithWrongLogMessageType
+        {
+            public TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder(Microsoft.Extensions.Logging.ILogger<string> logger, TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions someArg)
+            {
+            }
+        }
     }";
 
             var expected = new[]
@@ -147,6 +158,17 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
                         new[]
                         {
                             new DiagnosticResultLocation("Test0.cs", 53, 13)
+                        }
+                },
+                new DiagnosticResult
+                {
+                    Id = DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
+                    Message = DiagnosticResultTitleFactory.ConstructorShouldAcceptLoggingFrameworkArgument(),
+                    Severity = DiagnosticSeverity.Warning,
+                    Locations =
+                        new[]
+                        {
+                            new DiagnosticResultLocation("Test0.cs", 64, 13)
                         }
                 },
             };

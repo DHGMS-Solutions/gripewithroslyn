@@ -55,9 +55,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.ConstructorDeclaration);
         }
 
-        private static string GetFullName(ConstructorDeclarationSyntax constructorDeclarationSyntax)
+        private static string GetFullName(
+            ConstructorDeclarationSyntax constructorDeclarationSyntax,
+            ClassDeclarationSyntax classDeclarationSyntax)
         {
-            var classDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<ClassDeclarationSyntax>();
             var namespaceDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<NamespaceDeclarationSyntax>();
 
             var namespaceName = namespaceDeclarationSyntax.Name.ToString();
@@ -69,7 +70,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             var node = context.Node;
 
             var constructorDeclarationSyntax = (ConstructorDeclarationSyntax)context.Node;
-            var myType = GetFullName(constructorDeclarationSyntax);
+            var classDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<ClassDeclarationSyntax>();
+            var myType = GetFullName(constructorDeclarationSyntax, classDeclarationSyntax);
 
             // check the parameters
             var parametersList = constructorDeclarationSyntax.ParameterList.Parameters;
@@ -77,89 +79,107 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             if (parametersList.Count == 0)
             {
                 // no parameters, so no logging framework
+                LogWarning(context, node);
+                return;
             }
-            else
+
+            var lastParameter = parametersList.Last();
+            var lastParameterType = lastParameter.Type;
+            if (lastParameterType == null)
             {
-                var lastParameter = parametersList.Last();
-                var lastParameterType = lastParameter.Type;
-                if (lastParameterType == null)
+                // this is a problem, as we can't determine the type
+                LogWarning(context, node);
+                return;
+            }
+
+            var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, lastParameterType);
+            var argType = typeInfo.Type;
+
+            if (argType == null)
+            {
+                // this is a problem, as we can't determine the type
+                LogWarning(context, node);
+                return;
+            }
+
+            var typeFullName = argType.GetFullName();
+            if (typeFullName.Equals(
+                    $"global::Microsoft.Extensions.Logging.ILogger",
+                    StringComparison.Ordinal))
+            {
+                CheckGenericArgument(context, lastParameter, node, myType);
+
+                return;
+            }
+
+            // check if implementing Whipstaff.Core.Logging.ILogMessageActions<T>
+            var allInterfaces = argType.AllInterfaces;
+            foreach (var namedTypeSymbol in allInterfaces)
+            {
+                var interfaceName = namedTypeSymbol.GetFullName();
+                if (interfaceName.Equals(
+                        $"global::Whipstaff.Core.Logging.ILogMessageActions",
+                        StringComparison.Ordinal))
                 {
-                    // no op, as still spiking this out
-                }
-                else
-                {
-                    var typeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, lastParameterType);
-                    var argType = typeInfo.Type;
-
-                    if (argType == null)
+                    if (namedTypeSymbol.TypeArguments.Any(x => x.GetFullName().Equals(myType, StringComparison.Ordinal)))
                     {
-                        // no op, as still spiking this out
-                    }
-                    else
-                    {
-                        // TODO: GetFullName doesn't handle generic arguments.
-                        var typeFullName = argType.GetFullName();
-                        if (!typeFullName.Equals(
-                                $"global::Microsoft.Extensions.Logging.ILogger",
-                                StringComparison.Ordinal))
-                        {
-                            // no op, as still spiking this out
-                        }
-                        else
-                        {
-                            // var genericArgs = argType.GetGenericArguments();
-                            var childNodes = lastParameter.ChildNodes();
-
-                            // QualifiedNameSyntax
-                            var qualifiedNameSyntax = childNodes.OfType<QualifiedNameSyntax>().FirstOrDefault();
-
-                            // GenericNameSyntax
-                            var genericNameSyntax = qualifiedNameSyntax.ChildNodes().OfType<GenericNameSyntax>().ToArray();
-
-                            // GenericTokenSyntax
-                            var genericTokenSyntax = genericNameSyntax[0];
-
-                            // type arg list
-                            var typeArgumentList = genericTokenSyntax.TypeArgumentList;
-                            var typeArgumentListArgs = typeArgumentList.Arguments;
-
-                            // we should only have 1 arg for ILogger<T>.
-                            if (typeArgumentListArgs.Count != 1)
-                            {
-                                // no op, as still spiking this out
-                            }
-                            else
-                            {
-                                var genericArgType = ModelExtensions.GetTypeInfo(context.SemanticModel, typeArgumentListArgs[0]);
-                                var genericArgTypeType = genericArgType.Type;
-                                if (genericArgTypeType == null)
-                                {
-                                    // no op, as still spiking this out
-                                }
-                                else
-                                {
-                                    var genericArgTypeTypeFullName = genericArgTypeType.GetFullName();
-                                    if (!genericArgTypeTypeFullName.Equals(
-                                            myType,
-                                            StringComparison.Ordinal))
-                                    {
-                                        // no op, as still spiking this out
-                                    }
-                                    else
-                                    {
-                                        return;
-                                    }
-                                }
-                            }
-                        }
+                        return;
                     }
                 }
             }
 
-            // get those that are logging framework types
-            // on a count of 0, report a diagnostic
-            // on a count of 1, check the name is relevant to the type "logger" and the type is ILogger<T>
-            // on 2 check we go LogMessageActions then ILogger<T>
+            LogWarning(context, node);
+        }
+
+        private void CheckGenericArgument(
+            SyntaxNodeAnalysisContext context,
+            ParameterSyntax lastParameter,
+            SyntaxNode node,
+            string myType)
+        {
+            // var genericArgs = argType.GetGenericArguments();
+            var childNodes = lastParameter.ChildNodes();
+
+            // QualifiedNameSyntax
+            var qualifiedNameSyntax = childNodes.OfType<QualifiedNameSyntax>().FirstOrDefault();
+
+            // GenericNameSyntax
+            var genericNameSyntax = qualifiedNameSyntax.ChildNodes().OfType<GenericNameSyntax>().ToArray();
+
+            // GenericTokenSyntax
+            var genericTokenSyntax = genericNameSyntax[0];
+
+            // type arg list
+            var typeArgumentList = genericTokenSyntax.TypeArgumentList;
+            var typeArgumentListArgs = typeArgumentList.Arguments;
+
+            // we should only have 1 arg for ILogger<T>.
+            if (typeArgumentListArgs.Count != 1)
+            {
+                LogWarning(context, node);
+                return;
+            }
+
+            var genericArgType = ModelExtensions.GetTypeInfo(context.SemanticModel, typeArgumentListArgs[0]);
+            var genericArgTypeType = genericArgType.Type;
+            if (genericArgTypeType == null)
+            {
+                // this is a problem, as we can't determine the type
+                LogWarning(context, node);
+                return;
+            }
+
+            var genericArgTypeTypeFullName = genericArgTypeType.GetFullName();
+            if (!genericArgTypeTypeFullName.Equals(
+                    myType,
+                    StringComparison.Ordinal))
+            {
+                LogWarning(context, node);
+            }
+        }
+
+        private void LogWarning(SyntaxNodeAnalysisContext context, SyntaxNode node)
+        {
             context.ReportDiagnostic(Diagnostic.Create(_rule, node.GetLocation()));
         }
     }

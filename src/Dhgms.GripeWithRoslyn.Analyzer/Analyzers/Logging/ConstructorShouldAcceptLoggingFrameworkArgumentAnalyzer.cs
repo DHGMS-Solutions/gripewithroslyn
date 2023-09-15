@@ -71,47 +71,27 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
 
             var constructorDeclarationSyntax = (ConstructorDeclarationSyntax)context.Node;
             var classDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<ClassDeclarationSyntax>();
-            var myType = GetFullName(constructorDeclarationSyntax, classDeclarationSyntax);
 
-            // skip if the class implements ILogMessageActions<T> or ILogMessageActionsWrapper<T>
-            var baseList = classDeclarationSyntax.BaseList;
+            // skip if the class implements whipstaff ILogMessageActions<T> or ILogMessageActionsWrapper<T>
+            // or Splat IEnableLogger<T>
+            // or is the Foundatio XUnit test base
+            var baseClasses = Array.Empty<string>();
 
-            if (baseList != null
-                && baseList.Types.Count > 0)
+            var interfaces = new[]
             {
-                foreach (var baseTypeSyntax in baseList.Types)
-                {
-                    var baseType = baseTypeSyntax.Type;
-                    var baseTypeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, baseType);
+                "global::Whipstaff.Core.Logging.ILogMessageActions",
+                "global::Whipstaff.Core.Logging.ILogMessageActionsWrapper",
+                "global::Splat.IEnableLogger"
+            };
 
-                    if (baseTypeInfo.Type == null)
-                    {
-                        continue;
-                    }
-
-                    var baseTypeFullName = baseTypeInfo.Type.GetFullName();
-
-                    if (baseTypeFullName is "global::Whipstaff.Core.Logging.ILogMessageActions" or "global::Whipstaff.Core.Logging.ILogMessageActionsWrapper")
-                    {
-                        return;
-                    }
-
-                    if (baseTypeInfo.Type.AllInterfaces.Any(symbol =>
-                        {
-                            var fn = symbol.GetFullName();
-                            return fn is "global::Whipstaff.Core.Logging.ILogMessageActions"
-                                or "global::Whipstaff.Core.Logging.ILogMessageActionsWrapper";
-                        }))
-                    {
-                        return;
-                    }
-                }
+            if (classDeclarationSyntax.HasImplementedAnyOfType(baseClasses, interfaces, context.SemanticModel))
+            {
+                return;
             }
 
             // we can also skip out if the class has no methods
             // as there won't be any logging going on.
-            var methodDeclarationSyntaxes = classDeclarationSyntax.ChildNodes().OfType<MethodDeclarationSyntax>().ToArray();
-            if (methodDeclarationSyntaxes.Length == 0)
+            if (!classDeclarationSyntax.ChildNodes().OfType<MethodDeclarationSyntax>().Any())
             {
                 return;
             }
@@ -145,6 +125,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
                 return;
             }
 
+            var myType = GetFullName(constructorDeclarationSyntax, classDeclarationSyntax);
             var typeFullName = argType.GetFullName();
             if (typeFullName.Equals(
                     $"global::Microsoft.Extensions.Logging.ILogger",

@@ -47,7 +47,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
 
         public class TypeWithLoggerTypeInCorrectPosition
         {
-            public TypeWithLoggerTypeInCorrectPosition(string someArg, Microsoft.Extensions.Logging.ILogger<TypeWithWrongLoggerTypeInCorrectPosition> logger)
+            public TypeWithLoggerTypeInCorrectPosition(string someArg, Microsoft.Extensions.Logging.ILogger<TypeWithLoggerTypeInCorrectPosition> logger)
             {
             }
 

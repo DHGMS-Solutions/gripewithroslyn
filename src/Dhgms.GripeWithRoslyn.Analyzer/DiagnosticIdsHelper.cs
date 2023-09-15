@@ -57,5 +57,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseEnumToString => "GR0025";
 
         internal static string DoNotUseXUnitInlineDataAttribute => "GR0026";
+
+        internal static string ConstructorShouldAcceptLoggingFrameworkArgument => "GR0027";
     }
 }

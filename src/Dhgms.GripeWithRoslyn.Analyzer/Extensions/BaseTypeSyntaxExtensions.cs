@@ -44,6 +44,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Extensions
                 return true;
             }
 
+            if (interfaces.Any(i => i.Equals(baseTypeFullName, StringComparison.Ordinal)))
+            {
+                return true;
+            }
+
             if (baseTypeSymbol.AllInterfaces.Any(symbol =>
                 {
                     var fn = symbol.GetFullName();

@@ -151,11 +151,19 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
             public TypeWithEmptyCtor()
             {
             }
+
+            public void SomeMethod()
+            {
+            }
         }
 
         public class TypeWithSingleArgument
         {
             public TypeWithSingleArgument(string someArg)
+            {
+            }
+
+            public void SomeMethod()
             {
             }
         }
@@ -165,11 +173,19 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
             public TypeWithWrongLoggerType(Microsoft.Extensions.Logging.ILogger<string> logger)
             {
             }
+
+            public void SomeMethod()
+            {
+            }
         }
 
         public class TypeWithWrongLoggerTypeInWrongPosition
         {
             public TypeWithWrongLoggerTypeInWrongPosition(Microsoft.Extensions.Logging.ILogger<string> logger, string someArg)
+            {
+            }
+
+            public void SomeMethod()
             {
             }
         }
@@ -182,6 +198,10 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
             public TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder()
             {
             }
+
+            public void SomeMethod()
+            {
+            }
         }
 
         public class TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder
@@ -189,15 +209,26 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
             public TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder(Microsoft.Extensions.Logging.ILogger<string> logger, TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions someArg)
             {
             }
+
+            public void SomeMethod()
+            {
+            }
         }
 
         public sealed class LogMessageActionWrapper : Whipstaff.Core.Logging.AbstractLogMessageActionsWrapper<TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder, TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions>
         {
+            public void SomeMethod()
+            {
+            }
         }
 
         public class TypeWithWrongLogMessageType
         {
             public TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder(Microsoft.Extensions.Logging.ILogger<string> logger, TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions someArg)
+            {
+            }
+
+            public void SomeMethod()
             {
             }
         }
@@ -224,7 +255,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
                     Locations =
                         new[]
                         {
-                            new DiagnosticResultLocation("Test0.cs", 22, 13),
+                            new DiagnosticResultLocation("Test0.cs", 26, 13),
                         }
                 },
                 new DiagnosticResult
@@ -235,7 +266,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
                     Locations =
                         new[]
                         {
-                            new DiagnosticResultLocation("Test0.cs", 29, 13),
+                            new DiagnosticResultLocation("Test0.cs", 37, 13),
                         }
                 },
                 new DiagnosticResult
@@ -246,7 +277,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
                     Locations =
                         new[]
                         {
-                            new DiagnosticResultLocation("Test0.cs", 36, 13),
+                            new DiagnosticResultLocation("Test0.cs", 48, 13),
                         }
                 },
                 new DiagnosticResult
@@ -257,7 +288,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
                     Locations =
                         new[]
                         {
-                            new DiagnosticResultLocation("Test0.cs", 46, 13),
+                            new DiagnosticResultLocation("Test0.cs", 62, 13),
                         }
                 },
                 new DiagnosticResult
@@ -268,7 +299,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
                     Locations =
                         new[]
                         {
-                            new DiagnosticResultLocation("Test0.cs", 53, 13)
+                            new DiagnosticResultLocation("Test0.cs", 73, 13)
                         }
                 },
                 new DiagnosticResult
@@ -279,7 +310,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
                     Locations =
                         new[]
                         {
-                            new DiagnosticResultLocation("Test0.cs", 64, 13)
+                            new DiagnosticResultLocation("Test0.cs", 91, 13)
                         }
                 },
             };

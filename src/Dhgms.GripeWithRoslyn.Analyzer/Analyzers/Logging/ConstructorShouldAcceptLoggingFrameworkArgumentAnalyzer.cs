@@ -155,13 +155,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
                 return;
             }
 
-            // check if implementing Whipstaff.Core.Logging.ILogMessageActions<T>
+            // check if implementing Whipstaff.Core.Logging.ILogMessageActionsWrapper<T>
             var lastParameterAllInterfaces = argType.AllInterfaces;
             foreach (var namedTypeSymbol in lastParameterAllInterfaces)
             {
                 var interfaceName = namedTypeSymbol.GetFullName();
                 if (interfaceName.Equals(
-                        $"global::Whipstaff.Core.Logging.ILogMessageActions",
+                        $"global::Whipstaff.Core.Logging.ILogMessageActionsWrapper",
                         StringComparison.Ordinal)
                     && namedTypeSymbol.TypeArguments.Any(x => x.GetFullName().Equals(myType, StringComparison.Ordinal)))
                 {

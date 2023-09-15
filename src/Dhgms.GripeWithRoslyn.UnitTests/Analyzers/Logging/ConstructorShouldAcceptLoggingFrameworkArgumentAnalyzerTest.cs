@@ -79,6 +79,9 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
 
         public sealed class LogMessageActionWrapper : Whipstaff.Core.Logging.AbstractLogMessageActionsWrapper<TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder, TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions>
         {
+            public void SomeLoggingMethod(int someId)
+            {
+            }
         }
 
         public class TypeWithLogMessageActionWrapper

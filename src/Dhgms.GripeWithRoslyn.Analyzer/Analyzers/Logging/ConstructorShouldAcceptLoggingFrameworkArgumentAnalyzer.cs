@@ -74,7 +74,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
 
             // skip if the class implements whipstaff ILogMessageActions<T> or ILogMessageActionsWrapper<T>
             // or Splat IEnableLogger<T>
-            // or is the Foundatio XUnit test base
             var baseClasses = Array.Empty<string>();
 
             var interfaces = new[]
@@ -125,8 +124,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
                 return;
             }
 
+            // TODO: refactor this to take an array of types to check for, with an optional generic types array
             var myType = GetFullName(constructorDeclarationSyntax, classDeclarationSyntax);
             var typeFullName = argType.GetFullName();
+            if (typeFullName.Equals(
+                    $"global::XUnit.Abstractions.ITestOutputHelper",
+                    StringComparison.Ordinal))
+            {
+                return;
+            }
+
             if (typeFullName.Equals(
                     $"global::Microsoft.Extensions.Logging.ILogger",
                     StringComparison.Ordinal))

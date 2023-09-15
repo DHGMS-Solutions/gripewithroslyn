@@ -30,6 +30,17 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
         }
     }
 
+    namespace Whipstaff.Core.Logging
+    {
+        public abstract class AbstractLogMessageActionsWrapper<TCategoryName, TLogMessageActions> : ILogMessageActionsWrapper<TCategoryName>
+        {
+        }
+
+        public interface ILogMessageActionsWrapper<out TCategoryName>
+        {
+        }
+    }
+
     namespace ConsoleApplication1
     {
         using XUnit;
@@ -64,6 +75,10 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
             public TypeWithCorrectLoggerTypeAndLogMessageActionsInCorrectOrderMessageActions()
             {
             }
+
+            public void SomeLoggingMethod(int someId)
+            {
+            }
         }
 
         public class TypeWithCorrectLoggerTypeAndLogMessageActionsInCorrectOrder
@@ -77,16 +92,23 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
             }
         }
 
-        public sealed class LogMessageActionWrapper : Whipstaff.Core.Logging.AbstractLogMessageActionsWrapper<TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder, TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions>
+        public sealed class TypeWithLogMessageActionWrapperPassedMessageActions : Whipstaff.Core.Logging.ILogMessageActions<TypeWithLogMessageActionWrapperPassed>
         {
             public void SomeLoggingMethod(int someId)
             {
             }
         }
 
-        public class TypeWithLogMessageActionWrapper
+        public sealed class LogMessageActionWrapper : Whipstaff.Core.Logging.AbstractLogMessageActionsWrapper<TypeWithLogMessageActionWrapperPassed, TypeWithLogMessageActionWrapperPassedMessageActions>
         {
-            public TypeWithLogMessageActionWrapper(LogMessageActionWrapper logMessageActionsWrapper)
+            public void SomeLoggingMethod(int someId)
+            {
+            }
+        }
+
+        public class TypeWithLogMessageActionWrapperPassed
+        {
+            public TypeWithLogMessageActionWrapperPassed(LogMessageActionWrapper logMessageActionsWrapper)
             {
             }
 

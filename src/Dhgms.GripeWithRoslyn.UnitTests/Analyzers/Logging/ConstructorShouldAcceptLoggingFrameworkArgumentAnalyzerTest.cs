@@ -4,7 +4,6 @@
 
 using Dhgms.GripeWithRoslyn.Analyzer;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
 using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -17,6 +16,93 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Logging
     /// </summary>
     public sealed class ConstructorShouldAcceptLoggingFrameworkArgumentAnalyzerTest : CodeFixVerifier
     {
+        /// <summary>
+        /// Test to ensure good code doesn't return a warning.
+        /// </summary>
+        [Fact]
+        public void ReturnsNoWarnings()
+        {
+            var test = @"
+    namespace Microsoft.Extensions.Logging
+    {
+        public interface ILogger<T>
+        {
+        }
+    }
+
+    namespace ConsoleApplication1
+    {
+        using XUnit;
+
+        public class TypeWithCorrectLoggerType
+        {
+            public TypeWithWrongLoggerType(Microsoft.Extensions.Logging.ILogger<TypeWithCorrectLoggerType> logger)
+            {
+            }
+
+            public void SomeMethod()
+            {
+            }
+        }
+
+        public class TypeWithLoggerTypeInCorrectPosition
+        {
+            public TypeWithLoggerTypeInCorrectPosition(string someArg, Microsoft.Extensions.Logging.ILogger<TypeWithWrongLoggerTypeInCorrectPosition> logger)
+            {
+            }
+
+            public void SomeMethod()
+            {
+            }
+        }
+
+        /// <summary>
+        /// This should not be flagged as it is a message action helper.
+        /// </summary>
+        public sealed class TypeWithCorrectLoggerTypeAndLogMessageActionsInCorrectOrderMessageActions : Whipstaff.Core.Logging.ILogMessageActions<TypeWithCorrectLoggerTypeAndLogMessageActionsInCorrectOrder>
+        {
+            public TypeWithCorrectLoggerTypeAndLogMessageActionsInCorrectOrderMessageActions()
+            {
+            }
+        }
+
+        public class TypeWithCorrectLoggerTypeAndLogMessageActionsInCorrectOrder
+        {
+            public TypeWithCorrectLoggerTypeAndLogMessageActionsInCorrectOrder(TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions someArg, Microsoft.Extensions.Logging.ILogger<TypeWithCorrectLoggerTypeAndLogMessageActionsInCorrectOrder> logger)
+            {
+            }
+
+            public void SomeMethod()
+            {
+            }
+        }
+
+        public sealed class LogMessageActionWrapper : Whipstaff.Core.Logging.AbstractLogMessageActionsWrapper<TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrder, TypeWithWrongLoggerTypeAndLogMessageActionsInWrongOrderMessageActions>
+        {
+        }
+
+        public class TypeWithLogMessageActionWrapper
+        {
+            public TypeWithLogMessageActionWrapper(LogMessageActionWrapper logMessageActionsWrapper)
+            {
+            }
+
+            public void SomeMethod()
+            {
+            }
+        }
+
+        public class TypeWithNoLoggerTypeButNoMethods
+        {
+            public TypeWithNoLoggerTypeButNoMethods()
+            {
+            }
+        }
+    }";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
         /// <summary>
         /// Test to ensure bad code returns a warning.
         /// </summary>

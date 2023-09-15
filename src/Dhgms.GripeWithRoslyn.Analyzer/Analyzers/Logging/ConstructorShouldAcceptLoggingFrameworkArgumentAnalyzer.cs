@@ -73,6 +73,49 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             var classDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<ClassDeclarationSyntax>();
             var myType = GetFullName(constructorDeclarationSyntax, classDeclarationSyntax);
 
+            // skip if the class implements ILogMessageActions<T> or ILogMessageActionsWrapper<T>
+            var baseList = classDeclarationSyntax.BaseList;
+
+            if (baseList != null
+                && baseList.Types.Count > 0)
+            {
+                foreach (var baseTypeSyntax in baseList.Types)
+                {
+                    var baseType = baseTypeSyntax.Type;
+                    var baseTypeInfo = ModelExtensions.GetTypeInfo(context.SemanticModel, baseType);
+
+                    if (baseTypeInfo.Type == null)
+                    {
+                        continue;
+                    }
+
+                    var baseTypeFullName = baseTypeInfo.Type.GetFullName();
+
+                    if (baseTypeFullName is "global::Whipstaff.Core.Logging.ILogMessageActions" or "global::Whipstaff.Core.Logging.ILogMessageActionsWrapper")
+                    {
+                        return;
+                    }
+
+                    if (baseTypeInfo.Type.AllInterfaces.Any(symbol =>
+                        {
+                            var fn = symbol.GetFullName();
+                            return fn is "global::Whipstaff.Core.Logging.ILogMessageActions"
+                                or "global::Whipstaff.Core.Logging.ILogMessageActionsWrapper";
+                        }))
+                    {
+                        return;
+                    }
+                }
+            }
+
+            // we can also skip out if the class has no methods
+            // as there won't be any logging going on.
+            var methodDeclarationSyntaxes = classDeclarationSyntax.ChildNodes().OfType<MethodDeclarationSyntax>().ToArray();
+            if (methodDeclarationSyntaxes.Length == 0)
+            {
+                return;
+            }
+
             // check the parameters
             var parametersList = constructorDeclarationSyntax.ParameterList.Parameters;
 
@@ -113,18 +156,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             }
 
             // check if implementing Whipstaff.Core.Logging.ILogMessageActions<T>
-            var allInterfaces = argType.AllInterfaces;
-            foreach (var namedTypeSymbol in allInterfaces)
+            var lastParameterAllInterfaces = argType.AllInterfaces;
+            foreach (var namedTypeSymbol in lastParameterAllInterfaces)
             {
                 var interfaceName = namedTypeSymbol.GetFullName();
                 if (interfaceName.Equals(
                         $"global::Whipstaff.Core.Logging.ILogMessageActions",
-                        StringComparison.Ordinal))
+                        StringComparison.Ordinal)
+                    && namedTypeSymbol.TypeArguments.Any(x => x.GetFullName().Equals(myType, StringComparison.Ordinal)))
                 {
-                    if (namedTypeSymbol.TypeArguments.Any(x => x.GetFullName().Equals(myType, StringComparison.Ordinal)))
-                    {
-                        return;
-                    }
+                    return;
                 }
             }
 

@@ -11,6 +11,7 @@ using DiagnosticDescriptor = Microsoft.CodeAnalysis.DiagnosticDescriptor;
 using DiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
 using ReportDiagnostic = Microsoft.CodeAnalysis.ReportDiagnostic;
 
+#if TBC
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
     /// <summary>
@@ -63,3 +64,4 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         }
     }
 }
+#endif

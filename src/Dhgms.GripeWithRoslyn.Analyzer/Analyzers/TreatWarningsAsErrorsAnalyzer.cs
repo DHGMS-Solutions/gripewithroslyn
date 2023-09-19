@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections.Immutable;
+using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -18,33 +19,27 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class TreatWarningsAsErrorsAnalyzer : DiagnosticAnalyzer
     {
+        internal const string Title = "Treat Warnings as Errors should be enabled on the build.";
+
+        private const string MessageFormat = Title;
+
+        private const string Category = SupportedCategories.Maintainability;
+
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TreatWarningsAsErrorsAnalyzer"/> class.
         /// </summary>
-        /// <param name="diagnosticId">The Diagnostic Id.</param>
-        /// <param name="title">The title of the analyzer.</param>
-        /// <param name="message">The message to display detailing the issue with the analyzer.</param>
-        /// <param name="category">The category the analyzer belongs to.</param>
-        /// <param name="description">The description of the analyzer.</param>
-        /// <param name="diagnosticSeverity">The severity associated with breaches of the analyzer.</param>
-        public TreatWarningsAsErrorsAnalyzer(
-            [NotNull] string diagnosticId,
-            [NotNull] string title,
-            [NotNull] string message,
-            [NotNull] string category,
-            [NotNull] string description,
-            DiagnosticSeverity diagnosticSeverity)
+        public TreatWarningsAsErrorsAnalyzer()
         {
             _rule = new DiagnosticDescriptor(
-                diagnosticId,
-                title,
-                message,
-                category,
-                diagnosticSeverity,
+                DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
+                Title,
+                MessageFormat,
+                Category,
+                DiagnosticSeverity.Error,
                 isEnabledByDefault: true,
-                description: description);
+                description: DiagnosticResultDescriptionFactory.TreatWarningsAsErrors());
         }
 
         /// <inheritdoc />

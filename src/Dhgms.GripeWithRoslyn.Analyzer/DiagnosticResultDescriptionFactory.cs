@@ -9,5 +9,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
     internal static class DiagnosticResultDescriptionFactory
     {
         internal static string ConstructorShouldAcceptLoggingFrameworkArgument() => $"Constructors should have a final parameter of \nMicrosoft.Extensions.Logging.ILogging<T> or, \na sublass of Whipstaff.Core.ILogMessageActionsWrapper<T> or,\nXUnit.Abstractions.ITestOutputHelper.\n\nThis is to encourage a design that contains sufficient logging.";
+
+        internal static string TreatWarningsAsErrors() => $"Treat warnings as errors should be enabled on the build. This is to avoid issues that are reported as warnings being missed and piling up technical debt.";
     }
 }

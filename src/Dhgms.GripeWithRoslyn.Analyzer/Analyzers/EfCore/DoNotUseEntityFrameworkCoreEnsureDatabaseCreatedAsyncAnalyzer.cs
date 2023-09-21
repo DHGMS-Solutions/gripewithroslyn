@@ -38,7 +38,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.EfCore
         }
 
         /// <inheritdoc />
-        protected override string MethodName => "EnsureCreated";
+        protected override string MethodName => "EnsureCreatedAsync";
 
         /// <inheritdoc />
         protected override string[] ContainingTypes => new[]

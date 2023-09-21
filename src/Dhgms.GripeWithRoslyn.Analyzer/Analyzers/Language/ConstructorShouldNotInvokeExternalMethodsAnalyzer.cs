@@ -30,6 +30,8 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
 
         private const string GlobalSystemStringNamespace = "global::System.String";
         private const string GlobalSystemArgumentNullExceptionNamespace = "global::System.ArgumentNullException";
+        private const string GlobalReactiveMarblesObservableEventsNamespace = "global::ReactiveMarbles.ObservableEvents.ObservableGeneratorExtensions";
+        private const string GlobalSystemIObservableNamespace = "global::System.IObservable<T>";
 
         private readonly DiagnosticDescriptor _rule;
 
@@ -57,6 +59,15 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
                 new[]
                 {
                     "ThrowIfNull"
+                }),
+            (
+                GlobalReactiveMarblesObservableEventsNamespace,
+                Array.Empty<string>()),
+            (
+                GlobalSystemIObservableNamespace,
+                new[]
+                {
+                    "Subscribe"
                 }),
         };
 
@@ -165,7 +176,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
 
             return _methodWhiteList
                 .Any(tuple => tuple.Namespace.Equals(typeFullName)
-                              && tuple.Methods.Any(tupleMethod => methodName.Equals(tupleMethod, StringComparison.Ordinal)));
+                              && (
+                                  tuple.Methods.Length == 0
+                                  || tuple.Methods.Any(tupleMethod => methodName.Equals(tupleMethod, StringComparison.Ordinal))));
         }
     }
 }

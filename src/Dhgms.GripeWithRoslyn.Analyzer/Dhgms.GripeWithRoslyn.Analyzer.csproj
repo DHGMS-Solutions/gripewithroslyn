@@ -19,7 +19,6 @@
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
         <TfmSpecificPackageFile Include="$(OutputPath)\Dhgms.GripeWithRoslyn.Analyzer.dll" PackagePath="analyzers/dotnet/cs" />
-        <TfmSpecificPackageFile Include="$(OutputPath)\Dhgms.GripeWithRoslyn.Analyzer.pdb" PackagePath="analyzers/dotnet/cs" />
         <TfmSpecificPackageFile Include="$(OutputPath)\Dhgms.GripeWithRoslyn.Analyzer.xml" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>

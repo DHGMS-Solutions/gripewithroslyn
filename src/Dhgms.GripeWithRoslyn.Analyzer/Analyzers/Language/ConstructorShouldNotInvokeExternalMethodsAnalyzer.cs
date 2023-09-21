@@ -29,6 +29,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
             "Constructors should minimise work and not execute methods. This is to make code easier to test, avoid performance risks, race conditions and quirks of the IDE designer.";
 
         private const string GlobalSystemStringNamespace = "global::System.String";
+        private const string GlobalSystemArgumentNullExceptionNamespace = "global::System.ArgumentNullException";
 
         private readonly DiagnosticDescriptor _rule;
 
@@ -50,6 +51,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
                     "IsNullOrWhiteSpace",
                     "IsNullOrEmpty",
                     "StartsWith",
+                }),
+            (
+                GlobalSystemArgumentNullExceptionNamespace,
+                new[]
+                {
+                    "ThrowIfNull"
                 }),
         };
 

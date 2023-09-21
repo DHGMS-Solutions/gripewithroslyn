@@ -88,9 +88,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
                 return;
             }
 
-            // we can also skip out if the class has no methods
+            // we can also skip out if the class has no member methods
             // as there won't be any logging going on.
-            if (!classDeclarationSyntax.ChildNodes().OfType<MethodDeclarationSyntax>().Any())
+            if (!classDeclarationSyntax.ChildNodes()
+                    .OfType<MethodDeclarationSyntax>()
+                    .Any(methodDeclarationSyntax => methodDeclarationSyntax.Modifiers.All(mod => !mod.IsKind(SyntaxKind.StaticKeyword))))
             {
                 return;
             }
@@ -128,7 +130,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             var myType = GetFullName(constructorDeclarationSyntax, classDeclarationSyntax);
             var typeFullName = argType.GetFullName();
             if (typeFullName.Equals(
-                    $"global::XUnit.Abstractions.ITestOutputHelper",
+                    $"global::Xunit.Abstractions.ITestOutputHelper",
                     StringComparison.Ordinal))
             {
                 return;

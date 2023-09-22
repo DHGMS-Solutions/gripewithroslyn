@@ -59,5 +59,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseXUnitInlineDataAttribute => "GR0026";
 
         internal static string ConstructorShouldAcceptLoggingFrameworkArgument => "GR0027";
+
+        internal static string UseReactiveMarblesObservableEventsInsteadOfObservableFromEventPattern => "GR0028";
     }
 }

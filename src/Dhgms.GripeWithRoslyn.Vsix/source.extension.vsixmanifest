@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Dhgms.GripeWithRoslyn.Vsix.88e33442-d874-4d79-8a00-2a8492deab06" Version="1.0" Language="en-US" Publisher="HP" />
-    <DisplayName>Dhgms.GripeWithRoslyn.Vsix</DisplayName>
-    <Description>Empty VSIX Project.</Description>
+    <Identity Id="Dhgms.GripeWithRoslyn.Analyzer..891f9af6-67d1-4c48-9b15-81cd9b61ecc5" Version="1.0" Language="en-US" Publisher="dv012201"/>
+    <DisplayName>Dhgms.GripeWithRoslyn.Analyzer</DisplayName>
+    <Description xml:space="preserve">This is a sample diagnostic extension for the .NET Compiler Platform ("Roslyn").</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
@@ -17,6 +17,7 @@
     <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
   </Prerequisites>
   <Assets>
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Dhgms.GripeWithRoslyn.Analyzer" Path="|Dhgms.GripeWithRoslyn.Analyzer|"/>
+    <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="Dhgms.GripeWithRoslyn.Analyzer" Path="|Dhgms.GripeWithRoslyn.Analyzer|"/>
   </Assets>
 </PackageManifest>

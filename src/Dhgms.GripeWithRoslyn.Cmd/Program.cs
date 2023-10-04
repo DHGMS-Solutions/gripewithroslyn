@@ -3,10 +3,19 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.MediatR;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.StructureMap;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
 using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
 
 namespace Dhgms.GripeWithRoslyn.Cmd
@@ -39,6 +48,7 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             //       otherwise, MSBuildWorkspace won't MEF compose.
             MSBuildLocator.RegisterInstance(instance);
 
+            var hasIssues = false;
             using (var workspace = MSBuildWorkspace.Create())
             {
                 // Print message for WorkspaceFailed event to help diagnosing project load failures.
@@ -51,10 +61,45 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 var solution = await workspace.OpenSolutionAsync(solutionPath, new ConsoleProgressReporter());
                 Console.WriteLine($"Finished loading solution '{solutionPath}'");
 
+                // TODO: weave a factory into this.
+                var analyzers = new ImmutableArray<DiagnosticAnalyzer>
+                {
+                    new BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzer(),
+                    new ConstructorShouldNotInvokeExternalMethodsAnalyzer(),
+                    new UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer(),
+                    new UseTypeofInsteadOfTypeGetTypeAnalyzer(),
+                    new ConstructorShouldAcceptLoggingFrameworkArgumentAnalyzer(),
+                    new NameOfRequestHandlerShouldEndWithCommandHandlerOrQueryHandlerAnalyzer(),
+                    new NameOfRequestShouldEndWithCommandOrQueryAnalyzer(),
+                    new RequestResponseTypeShouldHaveSpecificNameAnalyzer(),
+                    new NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer(),
+                    new NameOfReactiveObjectBasedInterfaceShouldEndWithViewModelAnalyzer(),
+                    new ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer(),
+                    new ViewModelClassShouldInheritReactiveObjectAnalyzer(),
+                    new ViewModelInterfaceShouldInheritReactiveObjectAnalyzer(),
+                    new DoNotUseEnumToStringAnalyzer(),
+                    new DoNotUseGdiPlusAnalyzer(),
+                    new DoNotUseSystemConsoleAnalyzer(),
+                    new DoNotUseSystemNetServicePointManagerAnalyzer(),
+                    new DoNotUseSystemSecuritySecureStringAnalyzer(),
+                    new UseDateTimeUtcNowInsteadofNowAnalyzer(),
+                    new UseEncodingUnicodeInsteadOfASCIIAnalyzer(),
+                    new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer(),
+                    new StructureMapShouldNotBeUsedAnalyzer(),
+                    new DoNotUseXUnitInlineDataAttributeAnalyzer()
+                };
+
                 // TODO: Do analysis on the projects in the loaded solution
+                foreach (var project in solution.Projects)
+                {
+                    var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
+                    var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
+                    var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
+                    hasIssues |= !diagnostics.IsEmpty;
+                }
             }
 
-            return 0;
+            return hasIssues ? 1 : 0;
         }
 
         private static VisualStudioInstance SelectVisualStudioInstance(VisualStudioInstance[] visualStudioInstances)

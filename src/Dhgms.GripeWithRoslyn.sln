@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dhgms.GripeWithRoslyn.Analyzer", "Dhgms.GripeWithRoslyn.Analyzer\Dhgms.GripeWithRoslyn.Analyzer.csproj", "{C83BD07B-9C2A-4FA9-8F6D-98D761494B6C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dhgms.GripeWithRoslyn.Analyzer.Test", "Dhgms.GripeWithRoslyn.UnitTests\Dhgms.GripeWithRoslyn.UnitTests.csproj", "{0D5026BC-C817-4153-BCF4-2AE53809A2A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dhgms.GripeWithRoslyn.UnitTests", "Dhgms.GripeWithRoslyn.UnitTests\Dhgms.GripeWithRoslyn.UnitTests.csproj", "{0D5026BC-C817-4153-BCF4-2AE53809A2A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Cmd", "Dhgms.GripeWithRoslyn.Cmd\Dhgms.GripeWithRoslyn.Cmd.csproj", "{343C46ED-B318-4E49-A219-D142DC309461}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0D5026BC-C817-4153-BCF4-2AE53809A2A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D5026BC-C817-4153-BCF4-2AE53809A2A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D5026BC-C817-4153-BCF4-2AE53809A2A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{343C46ED-B318-4E49-A219-D142DC309461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{343C46ED-B318-4E49-A219-D142DC309461}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{343C46ED-B318-4E49-A219-D142DC309461}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{343C46ED-B318-4E49-A219-D142DC309461}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

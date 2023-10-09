@@ -31,7 +31,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
         private const string GlobalSystemStringNamespace = "global::System.String";
         private const string GlobalSystemArgumentNullExceptionNamespace = "global::System.ArgumentNullException";
         private const string GlobalReactiveMarblesObservableEventsNamespace = "global::ReactiveMarbles.ObservableEvents.ObservableGeneratorExtensions";
-        private const string GlobalSystemIObservableNamespace = "global::System.IObservable<T>";
+        private const string GlobalSystemIObservableNamespace = "global::System.IObservable";
 
         private readonly DiagnosticDescriptor _rule;
 
@@ -62,7 +62,10 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
                 }),
             (
                 GlobalReactiveMarblesObservableEventsNamespace,
-                Array.Empty<string>()),
+                new[]
+                {
+                    "Events"
+                }),
             (
                 GlobalSystemIObservableNamespace,
                 new[]

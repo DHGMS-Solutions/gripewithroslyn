@@ -35,9 +35,16 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             // Attempt to set the version of MSBuild.
             var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
 
+            var count = visualStudioInstances.Length;
+            if (count == 0)
+            {
+                Console.WriteLine($"No MSBuild instance found.");
+                return 1;
+            }
+
             // If there is only one instance of MSBuild on this machine, set that as the one to use.
             // Handle selecting the version of MSBuild you want to use.
-            var instance = visualStudioInstances.Length == 1
+            var instance = count == 1
                 ? visualStudioInstances[0]
                 : SelectVisualStudioInstance(visualStudioInstances);
 
@@ -61,9 +68,9 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 var solution = await workspace.OpenSolutionAsync(solutionPath, new ConsoleProgressReporter());
                 Console.WriteLine($"Finished loading solution '{solutionPath}'");
 
-                // TODO: weave a factory into this.
-                var analyzers = new ImmutableArray<DiagnosticAnalyzer>
-                {
+                var analyzersBuilder = ImmutableArray.CreateBuilder<DiagnosticAnalyzer>();
+
+                analyzersBuilder.AddRange(
                     new BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzer(),
                     new ConstructorShouldNotInvokeExternalMethodsAnalyzer(),
                     new UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer(),
@@ -86,8 +93,9 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                     new UseEncodingUnicodeInsteadOfASCIIAnalyzer(),
                     new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer(),
                     new StructureMapShouldNotBeUsedAnalyzer(),
-                    new DoNotUseXUnitInlineDataAttributeAnalyzer()
-                };
+                    new DoNotUseXUnitInlineDataAttributeAnalyzer());
+
+                var analyzers = analyzersBuilder.ToImmutable();
 
                 // TODO: Do analysis on the projects in the loaded solution
                 foreach (var project in solution.Projects)

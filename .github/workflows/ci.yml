@@ -32,20 +32,13 @@ jobs:
         distribution: 'temurin' # See 'Supported distributions' for available options
         java-version: '11'
 
-    - name: Setup .NET Core 3.1
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.x
-
-    - name: Setup .NET 5
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-
     - name: Setup .NET 6
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
+        
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.3.1
 
     - name: NBGV
       id: nbgv
@@ -90,10 +83,9 @@ jobs:
         SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         SONAR_ORGANISATION_KEY: ${{ secrets.SONAR_ORGANISATION_KEY }}
 
-    - name: Run Build
-      run: |
-        dotnet build ${{ env.solutionpath }} --configuration Release --no-restore /bl:artifacts\\binlog\\build.binlog /p:ContinuousIntegrationBuild=true 
-
+    - name: Build MsBuild
+      run: msbuild /t:build,pack /maxcpucount /p:Configuration=Release ${{ env.solutionpath }}
+      
     - name: Run Unit Tests
       run: |
         dotnet test ${{ env.unittestprojectpath }} --configuration Release --no-build /bl:artifacts\\binlog\\unittest.binlog --nologo --logger GitHubActions --blame-hang-timeout 60000 --results-directory artifacts\opencover --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover

@@ -29,6 +29,7 @@
     <StartArguments>/rootsuffix Exp</StartArguments>
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);SA0001</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

@@ -6,6 +6,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dhgms.GripeWithRoslyn.Analyzer\Dhgms.GripeWithRoslyn.Analyzer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net48')) ">
     <ProjectReference Include="..\Dhgms.GripeWithRoslyn.Cmd\Dhgms.GripeWithRoslyn.Cmd.csproj" />
   </ItemGroup>
 </Project>

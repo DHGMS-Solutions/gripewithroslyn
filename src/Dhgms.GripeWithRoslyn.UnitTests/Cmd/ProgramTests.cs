@@ -2,6 +2,7 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+#if NET48
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -56,3 +57,4 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Cmd
         }
     }
 }
+#endif

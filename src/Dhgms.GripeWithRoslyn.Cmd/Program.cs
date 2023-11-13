@@ -36,17 +36,35 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
 
             var count = visualStudioInstances.Length;
-            if (count == 0)
-            {
-                Console.WriteLine($"No MSBuild instance found.");
-                return 1;
-            }
 
-            // If there is only one instance of MSBuild on this machine, set that as the one to use.
-            // Handle selecting the version of MSBuild you want to use.
-            var instance = count == 1
-                ? visualStudioInstances[0]
-                : SelectVisualStudioInstance(visualStudioInstances);
+            // TODO: add command line parsing
+            var specificMsBuildInstance = "TEST";
+
+            VisualStudioInstance? instance;
+            switch (count)
+            {
+                case 0:
+                    Console.WriteLine($"No MSBuild instance found.");
+                    return 1;
+                case 1:
+                    instance = visualStudioInstances[0];
+
+                    if (!string.IsNullOrWhiteSpace(specificMsBuildInstance))
+                    {
+                        // check if instance name matches
+                        if (!instance.Name.Equals(specificMsBuildInstance, StringComparison.OrdinalIgnoreCase))
+                        {
+                            Console.WriteLine($"Requested MSBuild instance \"{specificMsBuildInstance}\" not found.");
+                            return 2;
+                        }
+                    }
+
+                    break;
+                default:
+                    Console.WriteLine($"Multiple MSBuild instances found. Scenario not yet supported because of behavioural issues with different DiscoveryTypes and Roslyn Analyzers.");
+
+                    return 3;
+            }
 
             return await DoAnalysis(
                 instance,
@@ -88,6 +106,13 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 foreach (var project in solution.Projects)
                 {
                     var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
+                    if (compilation == null)
+                    {
+                        // TODO: warn about failure to get compilation object.
+                        hasIssues = true;
+                        continue;
+                    }
+
                     var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
                     var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
                     hasIssues |= !diagnostics.IsEmpty;

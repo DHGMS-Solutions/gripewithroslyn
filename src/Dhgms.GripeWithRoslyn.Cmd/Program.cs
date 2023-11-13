@@ -16,6 +16,7 @@ using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.StructureMap;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
+using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -36,48 +37,79 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         {
             try
             {
-                var rootCommand = GetRootCommand();
-
-                return await rootCommand.InvokeAsync(args)
+                return await CommandLineArgumentHelpers.GetResultFromRootCommand<CommandLineArgModel, CommandLineArgModelBinder>(
+                        args,
+                        CommandLineArgumentHelpers.GetRootCommandAndBinder,
+                        HandleCommand)
                     .ConfigureAwait(false);
             }
             catch
             {
                 return int.MaxValue;
             }
-
         }
 
-        private static RootCommand GetRootCommand()
+        /// <summary>
+        /// Carry out analysis using specified instance of MSBuild.
+        /// </summary>
+        /// <param name="instance">Instance of MSBuild to use.</param>
+        /// <param name="solutionPath">Solution to analyze.</param>
+        /// <returns>0 for success, 1 for failure.</returns>
+        public static async Task<int> DoAnalysis(
+            VisualStudioInstance instance,
+            FileInfo solutionPath)
         {
-            var pathArgument = new Argument<DirectoryInfo>(
-                    "path",
-                    () => new DirectoryInfo("."))
-                .ExistingOnly();
+            Console.WriteLine($"Using MSBuild at '{instance.MSBuildPath}' to load projects.");
 
-            var rootCommand = new RootCommand
+            // NOTE: Be sure to register an instance with the MSBuildLocator
+            //       before calling MSBuildWorkspace.Create()
+            //       otherwise, MSBuildWorkspace won't MEF compose.
+            MSBuildLocator.RegisterInstance(instance);
+
+            var solutionFullPath = solutionPath.FullName;
+            var hasIssues = false;
+            using (var workspace = MSBuildWorkspace.Create())
             {
-                pathArgument
-            };
+                // Print message for WorkspaceFailed event to help diagnosing project load failures.
+                workspace.WorkspaceFailed += (o, e) => Console.WriteLine(e.Diagnostic.Message);
 
-#pragma warning disable RCS1207 // Convert anonymous function to method group (or vice versa).
-            rootCommand.Handler = CommandHandler.Create<DirectoryInfo>(path => HandleCommand(path));
-#pragma warning restore RCS1207 // Convert anonymous function to method group (or vice versa).
+                Console.WriteLine($"Loading solution '{solutionFullPath}'");
 
-            return rootCommand;
+                // Attach progress reporter so we print projects as they are loaded.
+                var solution = await workspace.OpenSolutionAsync(solutionFullPath, new ConsoleProgressReporter());
+                Console.WriteLine($"Finished loading solution '{solutionFullPath}'");
+
+                var analyzers = GetDiagnosticAnalyzers();
+
+                foreach (var project in solution.Projects)
+                {
+                    var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
+                    if (compilation == null)
+                    {
+                        // TODO: warn about failure to get compilation object.
+                        hasIssues = true;
+                        continue;
+                    }
+
+                    var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
+                    var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
+                    hasIssues |= !diagnostics.IsEmpty;
+                }
+            }
+
+            return hasIssues ? 1 : 0;
         }
 
-        private static async Task<int> HandleCommand(DirectoryInfo path)
+        private static async Task<int> HandleCommand(CommandLineArgModel commandLineArgModel)
         {
             // Attempt to set the version of MSBuild.
             var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();
 
             var count = visualStudioInstances.Length;
 
-            // TODO: add command line parsing
-            var specificMsBuildInstance = "TEST";
-
             VisualStudioInstance? instance;
+            var specificMsBuildInstance = commandLineArgModel.MsBuildInstanceName;
+
             switch (count)
             {
                 case 0:
@@ -105,58 +137,7 @@ namespace Dhgms.GripeWithRoslyn.Cmd
 
             return await DoAnalysis(
                 instance,
-                args).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Carry out analysis using specified instance of MSBuild.
-        /// </summary>
-        /// <param name="instance">Instance of MSBuild to use.</param>
-        /// <param name="args">Command line arguments.</param>
-        /// <returns>0 for success, 1 for failure.</returns>
-        public static async Task<int> DoAnalysis(
-            VisualStudioInstance instance,
-            string[] args)
-        {
-            Console.WriteLine($"Using MSBuild at '{instance.MSBuildPath}' to load projects.");
-
-            // NOTE: Be sure to register an instance with the MSBuildLocator
-            //       before calling MSBuildWorkspace.Create()
-            //       otherwise, MSBuildWorkspace won't MEF compose.
-            MSBuildLocator.RegisterInstance(instance);
-
-            var hasIssues = false;
-            using (var workspace = MSBuildWorkspace.Create())
-            {
-                // Print message for WorkspaceFailed event to help diagnosing project load failures.
-                workspace.WorkspaceFailed += (o, e) => Console.WriteLine(e.Diagnostic.Message);
-
-                var solutionPath = args[0];
-                Console.WriteLine($"Loading solution '{solutionPath}'");
-
-                // Attach progress reporter so we print projects as they are loaded.
-                var solution = await workspace.OpenSolutionAsync(solutionPath, new ConsoleProgressReporter());
-                Console.WriteLine($"Finished loading solution '{solutionPath}'");
-
-                var analyzers = GetDiagnosticAnalyzers();
-
-                foreach (var project in solution.Projects)
-                {
-                    var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
-                    if (compilation == null)
-                    {
-                        // TODO: warn about failure to get compilation object.
-                        hasIssues = true;
-                        continue;
-                    }
-
-                    var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
-                    var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
-                    hasIssues |= !diagnostics.IsEmpty;
-                }
-            }
-
-            return hasIssues ? 1 : 0;
+                commandLineArgModel.SolutionPath).ConfigureAwait(false);
         }
 
         private static ImmutableArray<DiagnosticAnalyzer> GetDiagnosticAnalyzers()

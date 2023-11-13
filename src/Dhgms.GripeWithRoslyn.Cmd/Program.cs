@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections.Immutable;
+using System.CommandLine;
+using System.CommandLine.Invocation;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +33,41 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         /// <param name="args">Command line arguments.</param>
         /// <returns>0 for success, 1 for failure.</returns>
         public static async Task<int> Main(string[] args)
+        {
+            try
+            {
+                var rootCommand = GetRootCommand();
+
+                return await rootCommand.InvokeAsync(args)
+                    .ConfigureAwait(false);
+            }
+            catch
+            {
+                return int.MaxValue;
+            }
+
+        }
+
+        private static RootCommand GetRootCommand()
+        {
+            var pathArgument = new Argument<DirectoryInfo>(
+                    "path",
+                    () => new DirectoryInfo("."))
+                .ExistingOnly();
+
+            var rootCommand = new RootCommand
+            {
+                pathArgument
+            };
+
+#pragma warning disable RCS1207 // Convert anonymous function to method group (or vice versa).
+            rootCommand.Handler = CommandHandler.Create<DirectoryInfo>(path => HandleCommand(path));
+#pragma warning restore RCS1207 // Convert anonymous function to method group (or vice versa).
+
+            return rootCommand;
+        }
+
+        private static async Task<int> HandleCommand(DirectoryInfo path)
         {
             // Attempt to set the version of MSBuild.
             var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToArray();

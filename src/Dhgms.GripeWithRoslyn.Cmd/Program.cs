@@ -124,6 +124,7 @@ namespace Dhgms.GripeWithRoslyn.Cmd
 
         private static ImmutableArray<DiagnosticAnalyzer> GetDiagnosticAnalyzers()
         {
+            // TODO: build source generator to detect these at build time instead of manual maintenance. got basics of logic in Vetuviem.
             var analyzersBuilder = ImmutableArray.CreateBuilder<DiagnosticAnalyzer>();
 
             analyzersBuilder.AddRange(

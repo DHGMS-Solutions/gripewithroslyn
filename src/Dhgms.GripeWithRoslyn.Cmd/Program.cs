@@ -48,6 +48,21 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 ? visualStudioInstances[0]
                 : SelectVisualStudioInstance(visualStudioInstances);
 
+            return await DoAnalysis(
+                instance,
+                args).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Carry out analysis using specified instance of MSBuild.
+        /// </summary>
+        /// <param name="instance">Instance of MSBuild to use.</param>
+        /// <param name="args">Command line arguments.</param>
+        /// <returns>0 for success, 1 for failure.</returns>
+        public static async Task<int> DoAnalysis(
+            VisualStudioInstance instance,
+            string[] args)
+        {
             Console.WriteLine($"Using MSBuild at '{instance.MSBuildPath}' to load projects.");
 
             // NOTE: Be sure to register an instance with the MSBuildLocator
@@ -68,36 +83,8 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 var solution = await workspace.OpenSolutionAsync(solutionPath, new ConsoleProgressReporter());
                 Console.WriteLine($"Finished loading solution '{solutionPath}'");
 
-                var analyzersBuilder = ImmutableArray.CreateBuilder<DiagnosticAnalyzer>();
+                var analyzers = GetDiagnosticAnalyzers();
 
-                analyzersBuilder.AddRange(
-                    new BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzer(),
-                    new ConstructorShouldNotInvokeExternalMethodsAnalyzer(),
-                    new UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer(),
-                    new UseTypeofInsteadOfTypeGetTypeAnalyzer(),
-                    new ConstructorShouldAcceptLoggingFrameworkArgumentAnalyzer(),
-                    new NameOfRequestHandlerShouldEndWithCommandHandlerOrQueryHandlerAnalyzer(),
-                    new NameOfRequestShouldEndWithCommandOrQueryAnalyzer(),
-                    new RequestResponseTypeShouldHaveSpecificNameAnalyzer(),
-                    new NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer(),
-                    new NameOfReactiveObjectBasedInterfaceShouldEndWithViewModelAnalyzer(),
-                    new ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer(),
-                    new ViewModelClassShouldInheritReactiveObjectAnalyzer(),
-                    new ViewModelInterfaceShouldInheritReactiveObjectAnalyzer(),
-                    new DoNotUseEnumToStringAnalyzer(),
-                    new DoNotUseGdiPlusAnalyzer(),
-                    new DoNotUseSystemConsoleAnalyzer(),
-                    new DoNotUseSystemNetServicePointManagerAnalyzer(),
-                    new DoNotUseSystemSecuritySecureStringAnalyzer(),
-                    new UseDateTimeUtcNowInsteadofNowAnalyzer(),
-                    new UseEncodingUnicodeInsteadOfASCIIAnalyzer(),
-                    new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer(),
-                    new StructureMapShouldNotBeUsedAnalyzer(),
-                    new DoNotUseXUnitInlineDataAttributeAnalyzer());
-
-                var analyzers = analyzersBuilder.ToImmutable();
-
-                // TODO: Do analysis on the projects in the loaded solution
                 foreach (var project in solution.Projects)
                 {
                     var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
@@ -108,6 +95,39 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             }
 
             return hasIssues ? 1 : 0;
+        }
+
+        private static ImmutableArray<DiagnosticAnalyzer> GetDiagnosticAnalyzers()
+        {
+            var analyzersBuilder = ImmutableArray.CreateBuilder<DiagnosticAnalyzer>();
+
+            analyzersBuilder.AddRange(
+                new BooleanTryMethodShouldBeUsedInLogicalNotIfStatementAnalyzer(),
+                new ConstructorShouldNotInvokeExternalMethodsAnalyzer(),
+                new UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer(),
+                new UseTypeofInsteadOfTypeGetTypeAnalyzer(),
+                new ConstructorShouldAcceptLoggingFrameworkArgumentAnalyzer(),
+                new NameOfRequestHandlerShouldEndWithCommandHandlerOrQueryHandlerAnalyzer(),
+                new NameOfRequestShouldEndWithCommandOrQueryAnalyzer(),
+                new RequestResponseTypeShouldHaveSpecificNameAnalyzer(),
+                new NameOfReactiveObjectBasedClassShouldEndWithViewModelAnalyzer(),
+                new NameOfReactiveObjectBasedInterfaceShouldEndWithViewModelAnalyzer(),
+                new ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer(),
+                new ViewModelClassShouldInheritReactiveObjectAnalyzer(),
+                new ViewModelInterfaceShouldInheritReactiveObjectAnalyzer(),
+                new DoNotUseEnumToStringAnalyzer(),
+                new DoNotUseGdiPlusAnalyzer(),
+                new DoNotUseSystemConsoleAnalyzer(),
+                new DoNotUseSystemNetServicePointManagerAnalyzer(),
+                new DoNotUseSystemSecuritySecureStringAnalyzer(),
+                new UseDateTimeUtcNowInsteadofNowAnalyzer(),
+                new UseEncodingUnicodeInsteadOfASCIIAnalyzer(),
+                new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer(),
+                new StructureMapShouldNotBeUsedAnalyzer(),
+                new DoNotUseXUnitInlineDataAttributeAnalyzer());
+
+            var analyzers = analyzersBuilder.ToImmutable();
+            return analyzers;
         }
 
         private static VisualStudioInstance SelectVisualStudioInstance(VisualStudioInstance[] visualStudioInstances)

@@ -18,6 +18,7 @@ using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Dhgms.GripeWithRoslyn.Cmd
 {
@@ -35,10 +36,12 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         {
             try
             {
+                var job = new Job(new JobLogMessageActionsWrapper(new NullLogger<Job>(), new JobLogMessageActions()));
+
                 return await CommandLineArgumentHelpers.GetResultFromRootCommand<CommandLineArgModel, CommandLineArgModelBinder>(
                         args,
                         CommandLineArgumentHelpers.GetRootCommandAndBinder,
-                        HandleCommand)
+                        job.HandleCommand)
                     .ConfigureAwait(false);
             }
             catch

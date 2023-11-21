@@ -16,13 +16,14 @@ using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.StructureMap;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
 using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
 using Microsoft.Build.Locator;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.Extensions.Logging;
 
 namespace Dhgms.GripeWithRoslyn.Cmd
 {
+    /// <summary>
+    /// Job to carry out analysis.
+    /// </summary>
     public sealed class Job
     {
         private readonly JobLogMessageActionsWrapper _logMessageActionsWrapper;
@@ -47,7 +48,6 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             FileInfo solutionPath)
         {
             _logMessageActionsWrapper.UsingMsBuildAtPath(instance.MSBuildPath);
-            Console.WriteLine($"Using MSBuild at '{instance.MSBuildPath}' to load projects.");
 
             // NOTE: Be sure to register an instance with the MSBuildLocator
             //       before calling MSBuildWorkspace.Create()
@@ -60,21 +60,24 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             {
                 // Print message for WorkspaceFailed event to help diagnosing project load failures.
                 // TODO: add subscription handler.
-                workspace.WorkspaceFailed += (o, e) => Console.WriteLine(e.Diagnostic.Message);
+                workspace.WorkspaceFailed += (o, e) => _logMessageActionsWrapper.WorkspaceFailed(e);
 
                 _logMessageActionsWrapper.StartingLoadOfSolution(solutionFullPath);
-                Console.WriteLine($"Loading solution '{solutionFullPath}'");
 
                 // Attach progress reporter so we print projects as they are loaded.
                 var solution = await workspace.OpenSolutionAsync(solutionFullPath, new ConsoleProgressReporter());
                 _logMessageActionsWrapper.FinishedLoadOfSolution(solutionFullPath);
-                Console.WriteLine($"Finished loading solution '{solutionFullPath}'");
 
                 var analyzers = GetDiagnosticAnalyzers();
 
                 _logMessageActionsWrapper.StartingAnalysisOfProjects();
                 foreach (var project in solution.Projects)
                 {
+                    if (project.FilePath == null)
+                    {
+                        continue;
+                    }
+
                     _logMessageActionsWrapper.StartingAnalysisOfProject(project.FilePath);
                     var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
                     if (compilation == null)
@@ -94,6 +97,11 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             return hasIssues ? 1 : 0;
         }
 
+        /// <summary>
+        /// Handle the command line arguments.
+        /// </summary>
+        /// <param name="commandLineArgModel">Command Line Argument Model.</param>
+        /// <returns>0 for success, non-zero for failure.</returns>
         public async Task<int> HandleCommand(CommandLineArgModel commandLineArgModel)
         {
             // Attempt to set the version of MSBuild.
@@ -108,7 +116,6 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             {
                 case 0:
                     _logMessageActionsWrapper.NoMsBuildInstanceFound();
-                    Console.WriteLine($"No MSBuild instance found.");
                     return 1;
                 case 1:
                     instance = visualStudioInstances[0];
@@ -118,8 +125,7 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                         // check if instance name matches
                         if (!instance.Name.Equals(specificMsBuildInstance, StringComparison.OrdinalIgnoreCase))
                         {
-                            _logMessageActionsWrapper.RequestedMsBuildInstanceNotFound(specificMsBuildInstance);
-                            Console.WriteLine($"Requested MSBuild instance \"{specificMsBuildInstance}\" not found.");
+                            _logMessageActionsWrapper.RequestedMsBuildInstanceNotFound(specificMsBuildInstance!);
                             return 2;
                         }
                     }
@@ -127,7 +133,6 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                     break;
                 default:
                     _logMessageActionsWrapper.MultipleMsBuildInstancesFound(visualStudioInstances.Length);
-                    Console.WriteLine($"Multiple MSBuild instances found. Scenario not yet supported because of behavioural issues with different DiscoveryTypes and Roslyn Analyzers.");
 
                     return 3;
             }

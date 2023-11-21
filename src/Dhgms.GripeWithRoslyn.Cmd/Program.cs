@@ -2,22 +2,8 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.MediatR;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.StructureMap;
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
 using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
-using Microsoft.Build.Locator;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Dhgms.GripeWithRoslyn.Cmd

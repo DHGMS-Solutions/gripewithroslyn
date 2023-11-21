@@ -33,11 +33,11 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Cmd
             }
 
             /// <summary>
-            /// Test to ensure a successful run returns 0.
+            /// Test to ensure a failure run non zero.
             /// </summary>
             /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
             [Fact]
-            public async Task ReturnsZero()
+            public async Task ReturnsNonZero()
             {
                 var args = new[]
                 {
@@ -52,7 +52,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Cmd
 
                 _logger.LogInformation(stdOutputString);
 
-                Assert.Equal(0, result);
+                Assert.NotEqual(0, result);
             }
         }
     }

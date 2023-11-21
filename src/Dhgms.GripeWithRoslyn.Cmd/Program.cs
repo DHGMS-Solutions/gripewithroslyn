@@ -4,7 +4,8 @@
 
 using System.Threading.Tasks;
 using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Dhgms.GripeWithRoslyn.Cmd
 {
@@ -20,11 +21,17 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         /// <returns>0 for success, 1 for failure.</returns>
         public static async Task<int> Main(string[] args)
         {
-            // TODO: hook up logging
-            // TODO: hook up cmd app host
             try
             {
-                var job = new Job(new JobLogMessageActionsWrapper(new NullLogger<Job>(), new JobLogMessageActions()));
+                var serviceProvider = new ServiceCollection()
+                    .AddLogging((loggingBuilder) => loggingBuilder
+                        .SetMinimumLevel(LogLevel.Information)
+                        .AddConsole())
+                    .BuildServiceProvider();
+
+                var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<Job>();
+
+                var job = new Job(new JobLogMessageActionsWrapper(logger, new JobLogMessageActions()));
 
                 return await CommandLineArgumentHelpers.GetResultFromRootCommand<CommandLineArgModel, CommandLineArgModelBinder>(
                         args,

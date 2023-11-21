@@ -2,6 +2,7 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
@@ -40,6 +41,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
 
         /// <inheritdoc/>
         protected override string MethodName => "ToString";
+
+        /// <inheritdoc/>
+        protected override string[] ContainingTypes => Array.Empty<string>();
 
         /// <inheritdoc/>
         protected override bool GetIfShouldReport(

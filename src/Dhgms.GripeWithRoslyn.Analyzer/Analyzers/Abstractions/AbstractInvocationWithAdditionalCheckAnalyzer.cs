@@ -46,6 +46,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Abstractions
         /// </summary>
         protected abstract string MethodName { get; }
 
+        /// <summary>
+        /// Gets the types the method may belong to.
+        /// </summary>
+        protected abstract string[] ContainingTypes { get; }
+
         /// <inheritdoc />
         public sealed override void Initialize(AnalysisContext context)
         {

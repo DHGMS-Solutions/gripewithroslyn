@@ -26,26 +26,19 @@ jobs:
         fetch-depth: 0
         
     # java is used by sonar scanner
-    - name: Setup Java 11
+    - name: Setup Java 17
       uses: actions/setup-java@v2
       with:
         distribution: 'temurin' # See 'Supported distributions' for available options
-        java-version: '11'
+        java-version: '17'
 
-    - name: Setup .NET Core 3.1
+    - name: Setup .NET 8
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x
-
-    - name: Setup .NET 5
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-
-    - name: Setup .NET 6
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
+        
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.3.1
 
     - name: NBGV
       id: nbgv
@@ -57,7 +50,6 @@ jobs:
       run: |
         dotnet tool install --global dotMorten.OmdGenerator
         dotnet tool install --global ConfigValidate
-        dotnet tool install --global dotnet-outdated-tool
         dotnet tool install --global snitch
         dotnet tool install --global dotnet-sonarscanner
         dotnet tool install --global JetBrains.ReSharper.GlobalTools
@@ -70,6 +62,12 @@ jobs:
         mkdir artifacts\snitch
         mkdir artifacts\omd
         mkdir artifacts\docfx
+
+    - name: Add Visual Studio SDK
+      run: |
+        dotnet tool update -g dotnet-vs
+        vs where release
+        vs modify release Enterprise +Microsoft.VisualStudio.Workload.VisualStudioExtension
 
     - name: Restore Packages
       run: |
@@ -84,10 +82,9 @@ jobs:
         SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         SONAR_ORGANISATION_KEY: ${{ secrets.SONAR_ORGANISATION_KEY }}
 
-    - name: Run Build
-      run: |
-        dotnet build ${{ env.solutionpath }} --configuration Release --no-restore /bl:artifacts\\binlog\\build.binlog /p:ContinuousIntegrationBuild=true 
-
+    - name: Build MsBuild
+      run: msbuild /t:build,pack /maxcpucount /p:Configuration=Release ${{ env.solutionpath }}
+      
     - name: Run Unit Tests
       run: |
         dotnet test ${{ env.unittestprojectpath }} --configuration Release --no-build /bl:artifacts\\binlog\\unittest.binlog --nologo --logger GitHubActions --blame-hang-timeout 60000 --results-directory artifacts\opencover --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
@@ -115,7 +112,8 @@ jobs:
 
     - name: List outdated packages
       run: |
-        dotnet outdated -o artifacts\outdated\outdated.json src
+        dotnet list package --outdated --format json --output-version 1 > ..\artifacts\outdated\outdated.json
+      working-directory: src
 
 # only store binlog on failure      
     - name: store binlogs

@@ -112,7 +112,7 @@ jobs:
 
     - name: List outdated packages
       run: |
-        dotnet list packages --outdated --format json --output-version 1 > \artifacts\outdated\outdated.json
+        dotnet list packages --outdated --format json --output-version 1 > ..\artifacts\outdated\outdated.json
       working-directory: src
 
 # only store binlog on failure      

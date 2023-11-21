@@ -50,7 +50,6 @@ jobs:
       run: |
         dotnet tool install --global dotMorten.OmdGenerator
         dotnet tool install --global ConfigValidate
-        dotnet tool install --global dotnet-outdated-tool
         dotnet tool install --global snitch
         dotnet tool install --global dotnet-sonarscanner
         dotnet tool install --global JetBrains.ReSharper.GlobalTools
@@ -113,7 +112,8 @@ jobs:
 
     - name: List outdated packages
       run: |
-        dotnet outdated -o artifacts\outdated\outdated.json src
+        dotnet list packages --outdated --format json --output-version 1 > artifacts\outdated\outdated.json
+      working-directory: src
 
 # only store binlog on failure      
     - name: store binlogs

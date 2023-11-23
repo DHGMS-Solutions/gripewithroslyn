@@ -52,7 +52,8 @@ namespace Dhgms.GripeWithRoslyn.Cmd.CommandLine
         public static RootCommandAndBinderModel<CommandLineArgModelBinder> GetRootCommandAndBinder()
         {
             var solutionArgument = new Argument<FileInfo>("solution")
-                .ExistingOnly();
+                .ExistingOnly()
+                .SpecificFileExtensionOnly(".sln");
 
             var msBuildInstanceNameArgument = new Argument<string?>("msbuild-instance-name");
 

@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
+namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
 {
     /// <summary>
     /// Analyzer to check if a class with the abstract keyword starts with the word "Abstract".
@@ -18,6 +18,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class ClassWithAbstractKeywordAnalyzer : DiagnosticAnalyzer
     {
+        internal const string Title = "Class with abstract keyword should start with Abstract";
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>

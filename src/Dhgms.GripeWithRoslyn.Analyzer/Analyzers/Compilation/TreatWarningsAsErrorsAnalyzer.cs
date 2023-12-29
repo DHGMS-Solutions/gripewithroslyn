@@ -2,6 +2,7 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using JetBrains.Annotations;
@@ -11,7 +12,6 @@ using DiagnosticDescriptor = Microsoft.CodeAnalysis.DiagnosticDescriptor;
 using DiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
 using ReportDiagnostic = Microsoft.CodeAnalysis.ReportDiagnostic;
 
-#if TBC
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 {
     /// <summary>
@@ -20,7 +20,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public sealed class TreatWarningsAsErrorsAnalyzer : DiagnosticAnalyzer
     {
-        internal const string Title = "Treat Warnings as Errors should be enabled on the build.";
+        internal const string Title = "Treat Warnings as Errors should be enabled on the project.";
 
         private const string MessageFormat = Title;
 
@@ -34,7 +34,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         public TreatWarningsAsErrorsAnalyzer()
         {
             _rule = new DiagnosticDescriptor(
-                DiagnosticIdsHelper.ConstructorShouldAcceptLoggingFrameworkArgument,
+                DiagnosticIdsHelper.TreatWarningsAsErrorsShouldBeEnabled,
                 Title,
                 MessageFormat,
                 Category,
@@ -56,7 +56,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
 
         private void CompilationAnalysis(CompilationAnalysisContext context)
         {
-            if (context.Compilation.Options.GeneralDiagnosticOption != ReportDiagnostic.Error)
+
+            if (!context.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("TreatWarningsAsErrors", out var treatWarningsAsErrors)
+                || !treatWarningsAsErrors.Equals("True", StringComparison.OrdinalIgnoreCase))
             {
                 var diagnostic = Diagnostic.Create(_rule, Location.None);
                 context.ReportDiagnostic(diagnostic);
@@ -64,4 +66,3 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers
         }
     }
 }
-#endif

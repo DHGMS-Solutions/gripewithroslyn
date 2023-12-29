@@ -67,5 +67,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string ClassWithAbstractKeyword => "GR0030";
 
         internal static string MethodsThatUseReturnYieldShouldHaveNameThatBeginsWithEnumerate => "GR0031";
+
+        internal static string DoNotUseManualEventSubscriptions => "GR0032";
     }
 }

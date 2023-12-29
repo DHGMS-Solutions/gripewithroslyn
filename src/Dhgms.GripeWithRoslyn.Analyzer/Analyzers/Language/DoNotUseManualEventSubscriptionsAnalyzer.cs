@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq.Expressions;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -54,8 +55,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
                 return;
             }
 
-            // need to find the left hand side of the assignment expression
-            // need to check if it an event handler
+            var assignmentTarget = assignmentExpressionSyntax.Left;
+            var assignmentTargetSymbol = context.SemanticModel.GetSymbolInfo(assignmentTarget).Symbol;
+
+            if (assignmentTargetSymbol is not IEventSymbol _)
+            {
+                return;
+            }
+
             context.ReportDiagnostic(Diagnostic.Create(_rule, assignmentExpressionSyntax.GetLocation()));
         }
     }

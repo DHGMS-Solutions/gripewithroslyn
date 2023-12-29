@@ -65,5 +65,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string ReactiveMarblesEventsShouldBeToAVariableAssignment => "GR0029";
 
         internal static string ClassWithAbstractKeyword => "GR0030";
+
+        internal static string MethodsThatUseReturnYieldShouldHaveNameThatBeginsWithEnumerate => "GR0031";
     }
 }

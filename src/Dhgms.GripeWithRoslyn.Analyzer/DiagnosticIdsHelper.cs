@@ -69,5 +69,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string MethodsThatUseReturnYieldShouldHaveNameThatBeginsWithEnumerate => "GR0031";
 
         internal static string DoNotUseManualEventSubscriptions => "GR0032";
+
+        internal static string DoNotUseObjectAsParameterType => "GR0033";
     }
 }

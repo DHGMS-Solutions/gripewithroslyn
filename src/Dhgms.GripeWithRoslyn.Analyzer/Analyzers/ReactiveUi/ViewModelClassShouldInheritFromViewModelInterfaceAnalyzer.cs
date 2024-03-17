@@ -37,7 +37,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
         public ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer()
         {
             _rule = new DiagnosticDescriptor(
-                DiagnosticIdsHelper.ViewModelClassShouldInheritReactiveObject,
+                DiagnosticIdsHelper.ViewModelClassShouldInheritFromViewModelInterface,
                 Title,
                 MessageFormat,
                 Category,

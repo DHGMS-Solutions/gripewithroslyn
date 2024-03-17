@@ -6,7 +6,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
 {
     internal static class DiagnosticIdsHelper
     {
-        internal static string FluentDataAutoMapAnalyzer => "GR0000";
+        internal static string FluentDataAutoMapAnalyzer => "GR0001";
 
         internal static string FluentDataQueryManyWithNullArgumentAnalyzer => "GR0002";
 
@@ -71,5 +71,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseManualEventSubscriptions => "GR0032";
 
         internal static string DoNotUseObjectAsParameterType => "GR0033";
+
+        internal static string ViewModelClassShouldInheritFromViewModelInterface => "GR0034";
+
+        internal static string UseTypeofInsteadOfMethodBaseGetCurrentMethodDeclaringType => "GR0035";
+
+        internal static string UseTypeofInsteadOfSystemTypeGetType => "GR0036";
     }
 }

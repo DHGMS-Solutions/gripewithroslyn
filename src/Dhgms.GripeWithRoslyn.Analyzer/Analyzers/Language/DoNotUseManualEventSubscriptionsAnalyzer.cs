@@ -31,7 +31,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
                 DiagnosticIdsHelper.DoNotUseManualEventSubscriptions,
                 Title,
                 Title,
-                SupportedCategories.Naming,
+                SupportedCategories.Maintainability,
                 DiagnosticSeverity.Warning,
                 isEnabledByDefault: true,
                 description: Title);

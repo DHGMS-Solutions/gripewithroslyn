@@ -40,7 +40,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.ReactiveUi
     }";
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.ViewModelClassShouldInheritReactiveObject,
+                Id = DiagnosticIdsHelper.ViewModelClassShouldInheritFromViewModelInterface,
                 Message = ViewModelClassShouldInheritFromViewModelInterfaceAnalyzer.Title,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =

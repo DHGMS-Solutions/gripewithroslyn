@@ -28,7 +28,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
         /// </summary>
         public UseTypeofInsteadOfTypeGetTypeAnalyzer()
             : base(
-            DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
+            DiagnosticIdsHelper.UseTypeofInsteadOfSystemTypeGetType,
             Title,
             MessageFormat,
             Category,

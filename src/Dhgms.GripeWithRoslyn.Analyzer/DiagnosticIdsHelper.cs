@@ -77,5 +77,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string UseTypeofInsteadOfMethodBaseGetCurrentMethodDeclaringType => "GR0035";
 
         internal static string UseTypeofInsteadOfSystemTypeGetType => "GR0036";
+
+        internal static string ApiShouldUseGenericActionResult => "GR0037";
     }
 }

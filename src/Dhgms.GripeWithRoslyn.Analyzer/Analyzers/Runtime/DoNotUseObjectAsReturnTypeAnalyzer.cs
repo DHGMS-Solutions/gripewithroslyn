@@ -15,9 +15,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
     /// Analyzer to ensure <see cref="object"/> is not used in a parameter declaration.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class DoNotUseObjectAsParameterTypeAnalyzer : DiagnosticAnalyzer
+    public sealed class DoNotUseObjectAsReturnTypeAnalyzer : DiagnosticAnalyzer
     {
-        internal const string Title = "Do not use Object in a parameter declaration.";
+        internal const string Title = "Do not use Object as a return type on a method declaration.";
 
         private const string MessageFormat = Title;
 
@@ -26,18 +26,18 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DoNotUseObjectAsParameterTypeAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="DoNotUseObjectAsReturnTypeAnalyzer"/> class.
         /// </summary>
-        public DoNotUseObjectAsParameterTypeAnalyzer()
+        public DoNotUseObjectAsReturnTypeAnalyzer()
         {
             _rule = new DiagnosticDescriptor(
-                DiagnosticIdsHelper.DoNotUseObjectAsParameterType,
+                DiagnosticIdsHelper.DoNotUseObjectAsReturnType,
                 Title,
                 MessageFormat,
                 Category,
                 DiagnosticSeverity.Warning,
                 isEnabledByDefault: true,
-                description: DiagnosticResultDescriptionFactory.DoNotUseObjectAsParameterType());
+                description: DiagnosticResultDescriptionFactory.DoNotUseObjectAsReturnType());
         }
 
         /// <inheritdoc />
@@ -48,15 +48,15 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
         {
             context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-            context.RegisterSyntaxNodeAction(AnalyzeParameter, SyntaxKind.ParamKeyword);
+            context.RegisterSyntaxNodeAction(AnalyzeParameter, SyntaxKind.MethodDeclaration);
         }
 
         private void AnalyzeParameter(SyntaxNodeAnalysisContext syntaxNodeAnalysisContext)
         {
-            var parameterSyntax = (ParameterSyntax)syntaxNodeAnalysisContext.Node;
+            var parameterSyntax = (MethodDeclarationSyntax)syntaxNodeAnalysisContext.Node;
 
             var semanticModel = syntaxNodeAnalysisContext.SemanticModel;
-            var type = parameterSyntax.Type;
+            var type = parameterSyntax.ReturnType;
             if (type == null)
             {
                 return;

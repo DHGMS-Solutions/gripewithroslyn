@@ -79,5 +79,13 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string UseTypeofInsteadOfSystemTypeGetType => "GR0036";
 
         internal static string ApiShouldUseGenericActionResult => "GR0037";
+
+        internal static string DoNotUseObjectAsReturnType => "GR0038";
+
+        internal static string DoNotUseObjectAsPropertyType => "GR0039";
+
+        internal static string DoNotUseObjectAsFieldType => "GR0040";
+
+        internal static string DoNotUseObjectAsLocalVariableType => "GR0041";
     }
 }

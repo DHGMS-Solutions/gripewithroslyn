@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.Analyzer.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -12,12 +13,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
 {
     /// <summary>
-    /// Analyzer to ensure <see cref="object"/> is not used in a parameter declaration.
+    /// Analyzer to ensure <see cref="object"/> is not used in a field declaration.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class DoNotUseObjectAsParameterTypeAnalyzer : DiagnosticAnalyzer
+    public sealed class DoNotUseObjectAsFieldTypeAnalyzer : DiagnosticAnalyzer
     {
-        internal const string Title = "Do not use Object in a parameter declaration.";
+        internal const string Title = "Do not use Object in a field declaration.";
 
         private const string MessageFormat = Title;
 
@@ -26,18 +27,18 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DoNotUseObjectAsParameterTypeAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="DoNotUseObjectAsFieldTypeAnalyzer"/> class.
         /// </summary>
-        public DoNotUseObjectAsParameterTypeAnalyzer()
+        public DoNotUseObjectAsFieldTypeAnalyzer()
         {
             _rule = new DiagnosticDescriptor(
-                DiagnosticIdsHelper.DoNotUseObjectAsParameterType,
+                DiagnosticIdsHelper.DoNotUseObjectAsFieldType,
                 Title,
                 MessageFormat,
                 Category,
                 DiagnosticSeverity.Warning,
                 isEnabledByDefault: true,
-                description: DiagnosticResultDescriptionFactory.DoNotUseObjectAsParameterType());
+                description: DiagnosticResultDescriptionFactory.DoNotUseObjectAsFieldType());
         }
 
         /// <inheritdoc />
@@ -48,15 +49,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
         {
             context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-            context.RegisterSyntaxNodeAction(AnalyzeParameter, SyntaxKind.ParamKeyword);
+            context.RegisterSyntaxNodeAction(AnalyzeParameter, SyntaxKind.FieldDeclaration);
         }
 
         private void AnalyzeParameter(SyntaxNodeAnalysisContext syntaxNodeAnalysisContext)
         {
-            var parameterSyntax = (ParameterSyntax)syntaxNodeAnalysisContext.Node;
+            var fieldDeclarationSyntax = (FieldDeclarationSyntax)syntaxNodeAnalysisContext.Node;
 
             var semanticModel = syntaxNodeAnalysisContext.SemanticModel;
-            var type = parameterSyntax.Type;
+            var variableDeclarationSyntax = fieldDeclarationSyntax.GetAncestor<VariableDeclarationSyntax>();
+            var type = variableDeclarationSyntax.Type;
             if (type == null)
             {
                 return;

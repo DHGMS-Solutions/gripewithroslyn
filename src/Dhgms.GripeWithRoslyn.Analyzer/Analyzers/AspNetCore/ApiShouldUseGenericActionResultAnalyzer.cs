@@ -19,7 +19,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.AspNetCore
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class ApiShouldUseGenericActionResultAnalyzer : DiagnosticAnalyzer
     {
-        internal const string Title = "ActionResult<TValue> should be used in an API.";
+        internal const string Title = "Task<ActionResult<TValue>> should be used as the result type in an API.";
 
         private const string MessageFormat = Title;
 
@@ -98,12 +98,30 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.AspNetCore
                 return;
             }
 
-            var typeFullName = typeInfo.Type.GetFullName();
-
-            if (typeFullName.StartsWith("global::Microsoft.AspNetCore.Mvc.ActionResult<", StringComparison.Ordinal)
-                || typeFullName.StartsWith("global::System.Threading.Task<global::Microsoft.AspNetCore.Mvc.ActionResult<", StringComparison.Ordinal))
+            if (typeInfo.Type is not INamedTypeSymbol namedTypeSymbol)
             {
                 return;
+            }
+
+            var typeFullName = namedTypeSymbol.GetFullName();
+
+            if (typeFullName.Equals("global::System.Threading.Task", StringComparison.Ordinal))
+            {
+                var typeArguments = namedTypeSymbol.TypeArguments;
+                var typeArgument = typeArguments[0];
+                var argFullName = typeArgument.GetFullName();
+                if (typeArgument is not INamedTypeSymbol typeArgNamedTypeSymbol)
+                {
+                    return;
+                }
+
+                if (argFullName.Equals("global::Microsoft.AspNetCore.Mvc.ActionResult", StringComparison.Ordinal))
+                {
+                    if (typeArgNamedTypeSymbol.MetadataName.Equals("ActionResult`1"))
+                    {
+                        return;
+                    }
+                }
             }
 
             context.ReportDiagnostic(Diagnostic.Create(_rule, node.GetLocation()));

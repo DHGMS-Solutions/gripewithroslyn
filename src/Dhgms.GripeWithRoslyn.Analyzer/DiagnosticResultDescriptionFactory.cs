@@ -13,5 +13,15 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string TreatWarningsAsErrors() => $"Treat warnings as errors should be enabled on the build. This is to avoid issues that are reported as warnings being missed and piling up technical debt.";
 
         internal static string DoNotUseObjectAsParameterType() => $"Do not use object as a parameter type. This is to avoid issues with type safety.";
+
+        internal static string DoNotUseObjectAsReturnType() => $"Do not use object as a return type. This is to avoid issues with type safety.";
+
+        internal static string DoNotUseObjectAsPropertyType() => $"Do not use object as a property type. This is to avoid issues with type safety.";
+
+        internal static string DoNotUseObjectAsFieldType() => $"Do not use object as a field type. This is to avoid issues with type safety.";
+
+        internal static string DoNotUseObjectAsLocalVariableType() => $"Do not use object as a local variable type. This is to avoid issues with type safety.";
+
+        internal static string ApiShouldUseGenericActionResult() => $"API methods should return ActionResult<T> to allow easier compile time validating and testing of return results.";
     }
 }

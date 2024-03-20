@@ -48,7 +48,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
         {
             context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-            context.RegisterSyntaxNodeAction(AnalyzeParameter, SyntaxKind.ParamKeyword);
+            context.RegisterSyntaxNodeAction(AnalyzeParameter, SyntaxKind.Parameter);
         }
 
         private void AnalyzeParameter(SyntaxNodeAnalysisContext syntaxNodeAnalysisContext)

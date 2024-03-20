@@ -57,7 +57,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
             var fieldDeclarationSyntax = (FieldDeclarationSyntax)syntaxNodeAnalysisContext.Node;
 
             var semanticModel = syntaxNodeAnalysisContext.SemanticModel;
-            var variableDeclarationSyntax = fieldDeclarationSyntax.GetAncestor<VariableDeclarationSyntax>();
+            var variableDeclarationSyntax = fieldDeclarationSyntax.Declaration;
             var type = variableDeclarationSyntax.Type;
             if (type == null)
             {

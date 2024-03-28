@@ -23,5 +23,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseObjectAsLocalVariableType() => $"Do not use object as a local variable type. This is to avoid issues with type safety.";
 
         internal static string ApiShouldUseGenericActionResult() => $"API methods should return ActionResult<T> to allow easier compile time validating and testing of return results.";
+
+        internal static string DoNotUseDynamicAsParameterType() => $"Do not use dynamic as a parameter type.";
     }
 }

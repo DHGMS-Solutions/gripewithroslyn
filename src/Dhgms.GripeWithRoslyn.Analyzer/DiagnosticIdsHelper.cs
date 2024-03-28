@@ -87,5 +87,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseObjectAsFieldType => "GR0040";
 
         internal static string DoNotUseObjectAsLocalVariableType => "GR0041";
+
+        internal static string DoNotUseDynamicAsParameterType => "GR0042";
     }
 }

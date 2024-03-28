@@ -2,6 +2,7 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
@@ -55,25 +56,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
         {
             var parameterSyntax = (ParameterSyntax)syntaxNodeAnalysisContext.Node;
 
-            var semanticModel = syntaxNodeAnalysisContext.SemanticModel;
-            var type = parameterSyntax.Type;
-            if (type == null)
+            var identifierNameSyntax = parameterSyntax.Type as IdentifierNameSyntax;
+            if (identifierNameSyntax == null)
             {
                 return;
             }
 
-            var baseTypeInfo = semanticModel.GetTypeInfo(type);
-            var baseTypeSymbol = baseTypeInfo.Type;
-
-            if (baseTypeSymbol == null)
+            var identifier = identifierNameSyntax.Identifier.Text;
+            if (identifier.Equals("dynamic", StringComparison.Ordinal))
             {
-                return;
-            }
-
-            var fullName = baseTypeSymbol.GetFullName(true);
-            if (fullName == "dynamic")
-            {
-                syntaxNodeAnalysisContext.ReportDiagnostic(Diagnostic.Create(_rule, type.GetLocation()));
+                syntaxNodeAnalysisContext.ReportDiagnostic(Diagnostic.Create(_rule, identifierNameSyntax.GetLocation()));
             }
         }
     }

@@ -16,7 +16,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
     /// Analyzer to ensure dynamic is not used in a parameter declaration.
     /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class DoNotUseDynamicKeywordAnalyzer : DiagnosticAnalyzer
+    public sealed class DoNotUseDynamicAsParameterTypeAnalyzer : DiagnosticAnalyzer
     {
         internal const string Title = "Do not use dynamic in a parameter declaration.";
 
@@ -27,9 +27,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
         private readonly DiagnosticDescriptor _rule;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DoNotUseDynamicKeywordAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="DoNotUseDynamicAsParameterTypeAnalyzer"/> class.
         /// </summary>
-        public DoNotUseDynamicKeywordAnalyzer()
+        public DoNotUseDynamicAsParameterTypeAnalyzer()
         {
             _rule = new DiagnosticDescriptor(
                 DiagnosticIdsHelper.DoNotUseDynamicAsParameterType,

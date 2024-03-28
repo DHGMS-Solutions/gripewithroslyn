@@ -12,7 +12,7 @@ using Xunit;
 namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Language
 {
     /// <summary>
-    /// Unit Tests for <see cref="DoNotUseDynamicKeywordAnalyzer"/>.
+    /// Unit Tests for <see cref="DoNotUseDynamicAsParameterTypeAnalyzer"/>.
     /// </summary>
     public sealed class DoNotUseDynamicKeywordAnalyzerTests : CodeFixVerifier
     {
@@ -37,7 +37,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Language
                 new DiagnosticResult
                 {
                     Id = DiagnosticIdsHelper.DoNotUseDynamicAsParameterType,
-                    Message = DoNotUseDynamicKeywordAnalyzer.Title,
+                    Message = DoNotUseDynamicAsParameterTypeAnalyzer.Title,
                     Severity = DiagnosticSeverity.Warning,
                     Locations =
                     [
@@ -54,7 +54,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Language
         /// <inheritdoc />
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new DoNotUseDynamicKeywordAnalyzer();
+            return new DoNotUseDynamicAsParameterTypeAnalyzer();
         }
     }
 }

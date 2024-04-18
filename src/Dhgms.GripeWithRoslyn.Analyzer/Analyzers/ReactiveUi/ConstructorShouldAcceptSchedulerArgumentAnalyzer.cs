@@ -54,16 +54,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi
             context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.ConstructorDeclaration);
         }
 
-        private static string GetFullName(
-            ConstructorDeclarationSyntax constructorDeclarationSyntax,
-            ClassDeclarationSyntax classDeclarationSyntax)
-        {
-            var namespaceDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<NamespaceDeclarationSyntax>();
-
-            var namespaceName = namespaceDeclarationSyntax.Name.ToString();
-            return $"global::{namespaceName}.{classDeclarationSyntax.Identifier}";
-        }
-
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
             var node = context.Node;

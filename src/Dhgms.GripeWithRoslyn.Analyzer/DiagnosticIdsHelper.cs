@@ -89,5 +89,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseObjectAsLocalVariableType => "GR0041";
 
         internal static string DoNotUseDynamicAsParameterType => "GR0042";
+
+        internal static string ConstructorShouldAcceptSchedulerArgument => "GR0043";
     }
 }

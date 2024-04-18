@@ -25,5 +25,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string ApiShouldUseGenericActionResult() => $"API methods should return ActionResult<T> to allow easier compile time validating and testing of return results.";
 
         internal static string DoNotUseDynamicAsParameterType() => $"Do not use dynamic as a parameter type.";
+
+        internal static string ConstructorShouldAcceptSchedulerArgument() => $"ReactiveUI ViewModel Constructors should accept a parameter of \nSystem.Reactive.Concurrency.Scheduler.\n\nThis is to aid with Unit Testing time sensitive logic.";
     }
 }

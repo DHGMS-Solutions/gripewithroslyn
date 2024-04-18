@@ -2,8 +2,6 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-
 namespace Dhgms.GripeWithRoslyn.Analyzer
 {
     internal static class DiagnosticResultDescriptionFactory
@@ -27,5 +25,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseDynamicAsParameterType() => $"Do not use dynamic as a parameter type.";
 
         internal static string ConstructorShouldAcceptSchedulerArgument() => $"ReactiveUI ViewModel Constructors should accept a parameter of \nSystem.Reactive.Concurrency.Scheduler.\n\nThis is to aid with Unit Testing time sensitive logic.";
+
+        internal static string ProjectShouldEnableNullableReferenceTypes() => $"Project should enable Nullable Reference Types. This is to aid with code correctness and to avoid null reference exceptions.";
     }
 }

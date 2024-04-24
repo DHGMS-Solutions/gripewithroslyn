@@ -14,6 +14,7 @@ using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.StructureMap;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
+using Dhgms.GripeWithRoslyn.Analyzer.Project;
 using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -170,7 +171,8 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 new UseEncodingUnicodeInsteadOfASCIIAnalyzer(),
                 new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer(),
                 new StructureMapShouldNotBeUsedAnalyzer(),
-                new DoNotUseXUnitInlineDataAttributeAnalyzer());
+                new DoNotUseXUnitInlineDataAttributeAnalyzer(),
+                new ProjectShouldEnableNullableReferenceTypesAnalyzer());
 
             var analyzers = analyzersBuilder.ToImmutable();
             return analyzers;

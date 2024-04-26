@@ -91,5 +91,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseDynamicAsParameterType => "GR0042";
 
         internal static string ConstructorShouldAcceptSchedulerArgument => "GR0043";
+
+        internal static string MicrosoftAppCenterShouldNotBeUsed => "GR0045";
     }
 }

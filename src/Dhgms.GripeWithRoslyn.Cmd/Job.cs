@@ -133,9 +133,16 @@ namespace Dhgms.GripeWithRoslyn.Cmd
 
                     break;
                 default:
+                    instance = visualStudioInstances.OrderByDescending(x => x.Version).First();
+#if TBC
                     _logMessageActionsWrapper.MultipleMsBuildInstancesFound(visualStudioInstances.Length);
-
+                    foreach (var visualStudioInstance in visualStudioInstances)
+                    {
+                        _logMessageActionsWrapper.FoundMsBuildInstance(visualStudioInstance.Name, visualStudioInstance.MSBuildPath);
+                    }
                     return 3;
+#endif
+                    break;
             }
 
             return await DoAnalysis(

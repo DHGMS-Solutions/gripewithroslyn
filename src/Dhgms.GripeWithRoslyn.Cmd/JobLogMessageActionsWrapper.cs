@@ -105,7 +105,21 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             _logMessageActions.MultipleMsBuildInstancesFound(_logger, count);
         }
 
-        internal void WorkspaceFailed(WorkspaceDiagnosticEventArgs e)
+        /// <summary>
+        /// Logging action for when an MSBuild instance was found.
+        /// </summary>
+        /// <param name="instanceName">Name of the MSBuild instance.</param>
+        /// <param name="instancePath">Path where the instance is located.</param>
+        public void FoundMsBuildInstance(string instanceName, string instancePath)
+        {
+            _logMessageActions.FoundMsBuildInstance(_logger, instanceName, instancePath);
+        }
+
+        /// <summary>
+        /// Logging action for when a workspace has failed.
+        /// </summary>
+        /// <param name="e">Workspace Diagnostic Event Args.</param>
+        public void WorkspaceFailed(WorkspaceDiagnosticEventArgs e)
         {
             _logMessageActions.WorkspaceFailed(_logger, e);
         }

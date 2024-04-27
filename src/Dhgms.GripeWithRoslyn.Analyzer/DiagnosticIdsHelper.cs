@@ -93,5 +93,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string ConstructorShouldAcceptSchedulerArgument => "GR0043";
 
         internal static string ProjectShouldEnableNullableReferenceTypes => "GR0044";
+        
+        internal static string MicrosoftAppCenterShouldNotBeUsed => "GR0045";
     }
 }

@@ -22,7 +22,7 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         private readonly Action<ILogger, Exception?> _noMsBuildInstanceFound;
         private readonly Action<ILogger, string, Exception?> _requestedMsBuildInstanceNotFound;
         private readonly Action<ILogger, int, Exception?> _multipleMsBuildInstancesFound;
-        private readonly Action<ILogger, WorkspaceDiagnosticEventArgs, Exception?> _workspaceFailed;
+        private readonly Action<ILogger, string, Exception?> _workspaceFailed;
         private readonly Action<ILogger, string, string, Exception?> _foundMsBuildInstance;
         private readonly Action<ILogger, string, Exception?> _diagnosticError;
         private readonly Action<ILogger, string, Exception?> _diagnosticHidden;
@@ -80,7 +80,7 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 new EventId(9, nameof(MultipleMsBuildInstancesFound)),
                 "Multiple MSBuild Instance found: {Number}");
 
-            _workspaceFailed = LoggerMessage.Define<WorkspaceDiagnosticEventArgs>(
+            _workspaceFailed = LoggerMessage.Define<string>(
                 LogLevel.Error,
                 new EventId(10, nameof(WorkspaceFailed)),
                 "Workspace failed: {Diagnostic}");
@@ -206,7 +206,7 @@ namespace Dhgms.GripeWithRoslyn.Cmd
 
         internal void WorkspaceFailed(ILogger<Job> logger, WorkspaceDiagnosticEventArgs workspaceDiagnosticEventArgs)
         {
-            _workspaceFailed(logger, workspaceDiagnosticEventArgs, null);
+            _workspaceFailed(logger, workspaceDiagnosticEventArgs.Diagnostic.ToString(), null);
         }
 
         internal void FoundMsBuildInstance(ILogger<Job> logger, string instanceName, string instancePath)

@@ -24,6 +24,10 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         private readonly Action<ILogger, int, Exception?> _multipleMsBuildInstancesFound;
         private readonly Action<ILogger, WorkspaceDiagnosticEventArgs, Exception?> _workspaceFailed;
         private readonly Action<ILogger, string, string, Exception?> _foundMsBuildInstance;
+        private readonly Action<ILogger, string, Exception?> _diagnosticError;
+        private readonly Action<ILogger, string, Exception?> _diagnosticHidden;
+        private readonly Action<ILogger, string, Exception?> _diagnosticInfo;
+        private readonly Action<ILogger, string, Exception?> _diagnosticWarning;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobLogMessageActions"/> class.
@@ -84,6 +88,26 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 LogLevel.Information,
                 new EventId(10, nameof(WorkspaceFailed)),
                 "MSBuild Instance: {Name} - {Location}");
+
+            _diagnosticError = LoggerMessage.Define<string>(
+                LogLevel.Error,
+                new EventId(11, nameof(DiagnosticError)),
+                "Diagnostic Error: {Message}");
+
+            _diagnosticHidden = LoggerMessage.Define<string>(
+                LogLevel.Information,
+                new EventId(12, nameof(DiagnosticHidden)),
+                "Diagnostic Hidden: {Message}");
+
+            _diagnosticInfo = LoggerMessage.Define<string>(
+                LogLevel.Error,
+                new EventId(13, nameof(DiagnosticInfo)),
+                "Diagnostic Info: {Message}");
+
+            _diagnosticWarning = LoggerMessage.Define<string>(
+                LogLevel.Warning,
+                new EventId(14, nameof(DiagnosticWarning)),
+                "Diagnostic Warning: {Message}");
         }
 
         /// <summary>
@@ -182,6 +206,26 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         internal void FoundMsBuildInstance(ILogger<Job> logger, string instanceName, string instancePath)
         {
             _foundMsBuildInstance(logger, instanceName, instancePath, null);
+        }
+
+        internal void DiagnosticError(ILogger<Job> logger, string message)
+        {
+            _diagnosticError(logger, message, null);
+        }
+
+        internal void DiagnosticHidden(ILogger<Job> logger, string message)
+        {
+            _diagnosticHidden(logger, message, null);
+        }
+
+        internal void DiagnosticInfo(ILogger<Job> logger, string message)
+        {
+            _diagnosticInfo(logger, message, null);
+        }
+
+        internal void DiagnosticWarning(ILogger<Job> logger, string message)
+        {
+            _diagnosticWarning(logger, message, null);
         }
     }
 }

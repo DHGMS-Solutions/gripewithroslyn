@@ -123,5 +123,41 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         {
             _logMessageActions.WorkspaceFailed(_logger, e);
         }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic error report.
+        /// </summary>
+        /// <param name="message">Message from the diagnostic.</param>
+        public void DiagnosticError(string message)
+        {
+            _logMessageActions.DiagnosticError(_logger, message);
+        }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic hidden report.
+        /// </summary>
+        /// <param name="message">Message from the diagnostic.</param>
+        public void DiagnosticHidden(string message)
+        {
+            _logMessageActions.DiagnosticHidden(_logger, message);
+        }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic information report.
+        /// </summary>
+        /// <param name="message">Message from the diagnostic.</param>
+        public void DiagnosticInfo(string message)
+        {
+            _logMessageActions.DiagnosticInfo(_logger, message);
+        }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic warning report.
+        /// </summary>
+        /// <param name="message">Message from the diagnostic.</param>
+        public void DiagnosticWarning(string message)
+        {
+            _logMessageActions.DiagnosticWarning(_logger, message);
+        }
     }
 }

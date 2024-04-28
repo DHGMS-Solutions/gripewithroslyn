@@ -17,6 +17,7 @@ using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
 using Dhgms.GripeWithRoslyn.Analyzer.Project;
 using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
 using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
 
@@ -92,6 +93,8 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                     var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
                     var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
                     hasIssues |= !diagnostics.IsEmpty;
+
+                    OutputDiagnostics(diagnostics);
                 }
             }
 
@@ -183,6 +186,41 @@ namespace Dhgms.GripeWithRoslyn.Cmd
 
             var analyzers = analyzersBuilder.ToImmutable();
             return analyzers;
+        }
+
+        private void OutputDiagnostics(ImmutableArray<Diagnostic> diagnostics)
+        {
+            foreach (var diagnostic in diagnostics)
+            {
+                OutputDiagnostic(diagnostic);
+            }
+        }
+
+        private void OutputDiagnostic(Diagnostic diagnostic)
+        {
+            try
+            {
+                var message = diagnostic.ToString();
+                switch (diagnostic.Severity)
+                {
+                    case DiagnosticSeverity.Error:
+                        _logMessageActionsWrapper.DiagnosticError(message);
+                        break;
+                    case DiagnosticSeverity.Hidden:
+                        _logMessageActionsWrapper.DiagnosticHidden(message);
+                        break;
+                    case DiagnosticSeverity.Info:
+                        _logMessageActionsWrapper.DiagnosticInfo(message);
+                        break;
+                    case DiagnosticSeverity.Warning:
+                        _logMessageActionsWrapper.DiagnosticWarning(message);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private class ConsoleProgressReporter : IProgress<ProjectLoadProgress>

@@ -76,26 +76,11 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 var diagnosticCount = new DiagnosticCountModel();
                 foreach (var project in solution.Projects)
                 {
-                    if (project.FilePath == null)
-                    {
-                        continue;
-                    }
-
-                    _logMessageActionsWrapper.StartingAnalysisOfProject(project.FilePath);
-                    var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
-                    if (compilation == null)
-                    {
-                        // TODO: warn about failure to get compilation object.
-                        _logMessageActionsWrapper.FailedToGetCompilationObjectForProject(project.FilePath);
-                        hasIssues = true;
-                        continue;
-                    }
-
-                    var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
-                    var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
-                    hasIssues |= !diagnostics.IsEmpty;
-
-                    OutputDiagnostics(diagnostics, diagnosticCount);
+                    hasIssues |= await AnalyzeProject(
+                        project,
+                        analyzers,
+                        diagnosticCount)
+                        .ConfigureAwait(false);
                 }
 
                 OutputDiagnosticCounts(diagnosticCount);
@@ -154,6 +139,30 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             return await DoAnalysis(
                 instance,
                 commandLineArgModel.SolutionPath).ConfigureAwait(false);
+        }
+
+        private async Task<bool> AnalyzeProject(Project project, ImmutableArray<DiagnosticAnalyzer> analyzers, DiagnosticCountModel diagnosticCount)
+        {
+            if (project.FilePath == null)
+            {
+                return false;
+            }
+
+            _logMessageActionsWrapper.StartingAnalysisOfProject(project.FilePath);
+            var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
+            if (compilation == null)
+            {
+                // TODO: warn about failure to get compilation object.
+                _logMessageActionsWrapper.FailedToGetCompilationObjectForProject(project.FilePath);
+                return true;
+            }
+
+            var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
+            var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
+
+            OutputDiagnostics(diagnostics, diagnosticCount);
+
+            return !diagnostics.IsEmpty;
         }
 
         private ImmutableArray<DiagnosticAnalyzer> GetDiagnosticAnalyzers()

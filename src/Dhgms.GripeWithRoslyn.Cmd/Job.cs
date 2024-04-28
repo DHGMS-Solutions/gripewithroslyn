@@ -73,6 +73,7 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 var analyzers = GetDiagnosticAnalyzers();
 
                 _logMessageActionsWrapper.StartingAnalysisOfProjects();
+                var diagnosticCount = new DiagnosticCountModel();
                 foreach (var project in solution.Projects)
                 {
                     if (project.FilePath == null)
@@ -94,8 +95,10 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                     var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
                     hasIssues |= !diagnostics.IsEmpty;
 
-                    OutputDiagnostics(diagnostics);
+                    OutputDiagnostics(diagnostics, diagnosticCount);
                 }
+
+                OutputDiagnosticCounts(diagnosticCount);
             }
 
             return hasIssues ? 1 : 0;
@@ -188,15 +191,20 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             return analyzers;
         }
 
-        private void OutputDiagnostics(ImmutableArray<Diagnostic> diagnostics)
+        private void OutputDiagnosticCounts(DiagnosticCountModel diagnosticCount)
+        {
+            _logMessageActionsWrapper.DiagnosticCount(diagnosticCount);
+        }
+
+        private void OutputDiagnostics(ImmutableArray<Diagnostic> diagnostics, DiagnosticCountModel diagnosticCount)
         {
             foreach (var diagnostic in diagnostics)
             {
-                OutputDiagnostic(diagnostic);
+                OutputDiagnostic(diagnostic, diagnosticCount);
             }
         }
 
-        private void OutputDiagnostic(Diagnostic diagnostic)
+        private void OutputDiagnostic(Diagnostic diagnostic, DiagnosticCountModel diagnosticCount)
         {
             try
             {
@@ -204,15 +212,19 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 switch (diagnostic.Severity)
                 {
                     case DiagnosticSeverity.Error:
+                        diagnosticCount.ErrorCount.Increment();
                         _logMessageActionsWrapper.DiagnosticError(message);
                         break;
                     case DiagnosticSeverity.Hidden:
+                        diagnosticCount.HiddenCount.Increment();
                         _logMessageActionsWrapper.DiagnosticHidden(message);
                         break;
                     case DiagnosticSeverity.Info:
+                        diagnosticCount.InformationCount.Increment();
                         _logMessageActionsWrapper.DiagnosticInfo(message);
                         break;
                     case DiagnosticSeverity.Warning:
+                        diagnosticCount.WarningCount.Increment();
                         _logMessageActionsWrapper.DiagnosticWarning(message);
                         break;
                 }

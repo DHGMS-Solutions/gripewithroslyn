@@ -2,6 +2,7 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using Microsoft.Build.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
@@ -158,6 +159,15 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         public void DiagnosticWarning(string message)
         {
             _logMessageActions.DiagnosticWarning(_logger, message);
+        }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic count report.
+        /// </summary>
+        /// <param name="diagnosticCount">Count model for what diagnostics were reported.</param>
+        public void DiagnosticCount(DiagnosticCountModel diagnosticCount)
+        {
+            _logMessageActions.DiagnosticCount(_logger, diagnosticCount);
         }
     }
 }

@@ -23,6 +23,11 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         private readonly Action<ILogger, string, Exception?> _requestedMsBuildInstanceNotFound;
         private readonly Action<ILogger, int, Exception?> _multipleMsBuildInstancesFound;
         private readonly Action<ILogger, WorkspaceDiagnosticEventArgs, Exception?> _workspaceFailed;
+        private readonly Action<ILogger, string, string, Exception?> _foundMsBuildInstance;
+        private readonly Action<ILogger, string, Exception?> _diagnosticError;
+        private readonly Action<ILogger, string, Exception?> _diagnosticHidden;
+        private readonly Action<ILogger, string, Exception?> _diagnosticInfo;
+        private readonly Action<ILogger, string, Exception?> _diagnosticWarning;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobLogMessageActions"/> class.
@@ -47,37 +52,62 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             _startingAnalysisOfProjects = LoggerMessage.Define(
                 LogLevel.Information,
                 new EventId(4, nameof(StartingAnalysisOfProjects)),
-                "Finished load of solution: {Solution}");
+                "Starting analysis of projects in solution.");
 
             _startingAnalysisOfProject = LoggerMessage.Define<string>(
                 LogLevel.Information,
                 new EventId(5, nameof(StartingAnalysisOfProject)),
-                "Finished load of solution: {Solution}");
+                "Starting analysis of project: {Solution}");
 
             _failedToGetCompilationObjectForProject = LoggerMessage.Define<string>(
                 LogLevel.Error,
                 new EventId(6, nameof(FailedToGetCompilationObjectForProject)),
-                "Finished load of solution: {Solution}");
+                "Failed to get compilation object for project: {Solution}");
 
             _noMsBuildInstanceFound = LoggerMessage.Define(
                 LogLevel.Error,
                 new EventId(7, nameof(NoMsBuildInstanceFound)),
-                "Finished load of solution: {Solution}");
+                "No MSBuild Instance Found.");
 
             _requestedMsBuildInstanceNotFound = LoggerMessage.Define<string>(
                 LogLevel.Error,
                 new EventId(8, nameof(RequestedMsBuildInstanceNotFound)),
-                "Finished load of solution: {Solution}");
+                "Requested MSBuild instance not found: {InstanceName}.");
 
             _multipleMsBuildInstancesFound = LoggerMessage.Define<int>(
                 LogLevel.Error,
                 new EventId(9, nameof(MultipleMsBuildInstancesFound)),
-                "Finished load of solution: {Solution}");
+                "Multiple MSBuild Instance found: {Number}");
 
             _workspaceFailed = LoggerMessage.Define<WorkspaceDiagnosticEventArgs>(
                 LogLevel.Error,
                 new EventId(10, nameof(WorkspaceFailed)),
                 "Workspace failed: {Diagnostic}");
+
+            _foundMsBuildInstance = LoggerMessage.Define<string, string>(
+                LogLevel.Information,
+                new EventId(10, nameof(WorkspaceFailed)),
+                "MSBuild Instance: {Name} - {Location}");
+
+            _diagnosticError = LoggerMessage.Define<string>(
+                LogLevel.Error,
+                new EventId(11, nameof(DiagnosticError)),
+                "Diagnostic Error: {Message}");
+
+            _diagnosticHidden = LoggerMessage.Define<string>(
+                LogLevel.Information,
+                new EventId(12, nameof(DiagnosticHidden)),
+                "Diagnostic Hidden: {Message}");
+
+            _diagnosticInfo = LoggerMessage.Define<string>(
+                LogLevel.Error,
+                new EventId(13, nameof(DiagnosticInfo)),
+                "Diagnostic Info: {Message}");
+
+            _diagnosticWarning = LoggerMessage.Define<string>(
+                LogLevel.Warning,
+                new EventId(14, nameof(DiagnosticWarning)),
+                "Diagnostic Warning: {Message}");
         }
 
         /// <summary>
@@ -171,6 +201,31 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         internal void WorkspaceFailed(ILogger<Job> logger, WorkspaceDiagnosticEventArgs workspaceDiagnosticEventArgs)
         {
             _workspaceFailed(logger, workspaceDiagnosticEventArgs, null);
+        }
+
+        internal void FoundMsBuildInstance(ILogger<Job> logger, string instanceName, string instancePath)
+        {
+            _foundMsBuildInstance(logger, instanceName, instancePath, null);
+        }
+
+        internal void DiagnosticError(ILogger<Job> logger, string message)
+        {
+            _diagnosticError(logger, message, null);
+        }
+
+        internal void DiagnosticHidden(ILogger<Job> logger, string message)
+        {
+            _diagnosticHidden(logger, message, null);
+        }
+
+        internal void DiagnosticInfo(ILogger<Job> logger, string message)
+        {
+            _diagnosticInfo(logger, message, null);
+        }
+
+        internal void DiagnosticWarning(ILogger<Job> logger, string message)
+        {
+            _diagnosticWarning(logger, message, null);
         }
     }
 }

@@ -14,8 +14,10 @@ using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.StructureMap;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
+using Dhgms.GripeWithRoslyn.Analyzer.Project;
 using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
 using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
 
@@ -91,6 +93,8 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                     var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
                     var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
                     hasIssues |= !diagnostics.IsEmpty;
+
+                    OutputDiagnostics(diagnostics);
                 }
             }
 
@@ -132,9 +136,16 @@ namespace Dhgms.GripeWithRoslyn.Cmd
 
                     break;
                 default:
+                    instance = visualStudioInstances.OrderByDescending(x => x.Version).First();
+#if TBC
                     _logMessageActionsWrapper.MultipleMsBuildInstancesFound(visualStudioInstances.Length);
-
+                    foreach (var visualStudioInstance in visualStudioInstances)
+                    {
+                        _logMessageActionsWrapper.FoundMsBuildInstance(visualStudioInstance.Name, visualStudioInstance.MSBuildPath);
+                    }
                     return 3;
+#endif
+                    break;
             }
 
             return await DoAnalysis(
@@ -170,10 +181,46 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 new UseEncodingUnicodeInsteadOfASCIIAnalyzer(),
                 new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer(),
                 new StructureMapShouldNotBeUsedAnalyzer(),
-                new DoNotUseXUnitInlineDataAttributeAnalyzer());
+                new DoNotUseXUnitInlineDataAttributeAnalyzer(),
+                new ProjectShouldEnableNullableReferenceTypesAnalyzer());
 
             var analyzers = analyzersBuilder.ToImmutable();
             return analyzers;
+        }
+
+        private void OutputDiagnostics(ImmutableArray<Diagnostic> diagnostics)
+        {
+            foreach (var diagnostic in diagnostics)
+            {
+                OutputDiagnostic(diagnostic);
+            }
+        }
+
+        private void OutputDiagnostic(Diagnostic diagnostic)
+        {
+            try
+            {
+                var message = diagnostic.ToString();
+                switch (diagnostic.Severity)
+                {
+                    case DiagnosticSeverity.Error:
+                        _logMessageActionsWrapper.DiagnosticError(message);
+                        break;
+                    case DiagnosticSeverity.Hidden:
+                        _logMessageActionsWrapper.DiagnosticHidden(message);
+                        break;
+                    case DiagnosticSeverity.Info:
+                        _logMessageActionsWrapper.DiagnosticInfo(message);
+                        break;
+                    case DiagnosticSeverity.Warning:
+                        _logMessageActionsWrapper.DiagnosticWarning(message);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private class ConsoleProgressReporter : IProgress<ProjectLoadProgress>

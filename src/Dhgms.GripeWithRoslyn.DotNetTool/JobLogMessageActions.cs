@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.Tracing;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
@@ -29,6 +30,7 @@ namespace Dhgms.GripeWithRoslyn.DotNetTool
         private readonly Action<ILogger, string, Exception?> _diagnosticInfo;
         private readonly Action<ILogger, string, Exception?> _diagnosticWarning;
         private readonly Action<ILogger, int, int, int, int, Exception?> _diagnosticCount;
+        private readonly Action<ILogger, string, int, Exception?> _groupedDiagnosticCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobLogMessageActions"/> class.
@@ -114,6 +116,11 @@ namespace Dhgms.GripeWithRoslyn.DotNetTool
                 LogLevel.Information,
                 new EventId(15, nameof(DiagnosticCount)),
                 "Diagnostic Counts: Hidden - {HiddenCount}, Information - {InfoCount}, Warning - {WarningCount}, Error - {ErrorCount}");
+
+            _groupedDiagnosticCount = LoggerMessage.Define<string, int>(
+                LogLevel.Information,
+                new EventId(15, nameof(DiagnosticCount)),
+                "Diagnostic Id: {Id}, Count- {Count}.");
         }
 
         /// <summary>
@@ -237,6 +244,11 @@ namespace Dhgms.GripeWithRoslyn.DotNetTool
         internal void DiagnosticCount(ILogger<Job> logger, DiagnosticCountModel diagnosticCount)
         {
             _diagnosticCount(logger, diagnosticCount.HiddenCount.Value, diagnosticCount.InformationCount.Value, diagnosticCount.WarningCount.Value, diagnosticCount.ErrorCount.Value, null);
+        }
+
+        internal void GroupedDiagnosticCount(ILogger<Job> logger, string id, int count)
+        {
+            _groupedDiagnosticCount(logger, id, count, null);
         }
     }
 }

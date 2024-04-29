@@ -3,7 +3,10 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -74,16 +77,19 @@ namespace Dhgms.GripeWithRoslyn.DotNetTool
 
                 _logMessageActionsWrapper.StartingAnalysisOfProjects();
                 var diagnosticCount = new DiagnosticCountModel();
+                var groupedDiagnosticCounts = new ConcurrentDictionary<string, int>();
                 foreach (var project in solution.Projects)
                 {
                     hasIssues |= await AnalyzeProject(
                         project,
                         analyzers,
-                        diagnosticCount)
+                        diagnosticCount,
+                        groupedDiagnosticCounts)
                         .ConfigureAwait(false);
                 }
 
                 OutputDiagnosticCounts(diagnosticCount);
+                OutputGroupedDiagnosticCounts(groupedDiagnosticCounts);
             }
 
             return hasIssues ? 1 : 0;
@@ -141,7 +147,11 @@ namespace Dhgms.GripeWithRoslyn.DotNetTool
                 commandLineArgModel.SolutionPath).ConfigureAwait(false);
         }
 
-        private async Task<bool> AnalyzeProject(Project project, ImmutableArray<DiagnosticAnalyzer> analyzers, DiagnosticCountModel diagnosticCount)
+        private async Task<bool> AnalyzeProject(
+            Project project,
+            ImmutableArray<DiagnosticAnalyzer> analyzers,
+            DiagnosticCountModel diagnosticCount,
+            ConcurrentDictionary<string, int> groupedDiagnosticCounts)
         {
             if (project.FilePath == null)
             {
@@ -160,7 +170,7 @@ namespace Dhgms.GripeWithRoslyn.DotNetTool
             var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
             var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
 
-            OutputDiagnostics(diagnostics, diagnosticCount);
+            OutputDiagnostics(diagnostics, diagnosticCount, groupedDiagnosticCounts);
 
             return !diagnostics.IsEmpty;
         }
@@ -200,15 +210,24 @@ namespace Dhgms.GripeWithRoslyn.DotNetTool
             return analyzers;
         }
 
+        private void OutputGroupedDiagnosticCounts(ConcurrentDictionary<string, int> groupedDiagnosticCounts)
+        {
+            foreach (var groupedDiagnosticCount in groupedDiagnosticCounts)
+            {
+                _logMessageActionsWrapper.GroupedDiagnosticCount(groupedDiagnosticCount.Key, groupedDiagnosticCount.Value);
+            }
+        }
+
         private void OutputDiagnosticCounts(DiagnosticCountModel diagnosticCount)
         {
             _logMessageActionsWrapper.DiagnosticCount(diagnosticCount);
         }
 
-        private void OutputDiagnostics(ImmutableArray<Diagnostic> diagnostics, DiagnosticCountModel diagnosticCount)
+        private void OutputDiagnostics(ImmutableArray<Diagnostic> diagnostics, DiagnosticCountModel diagnosticCount, ConcurrentDictionary<string, int> groupedDiagnosticCounts)
         {
             foreach (var diagnostic in diagnostics)
             {
+                groupedDiagnosticCounts.AddOrUpdate(diagnostic.Id, _ => 1, (s, i) => ++i);
                 OutputDiagnostic(diagnostic, diagnosticCount);
             }
         }

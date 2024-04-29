@@ -174,13 +174,20 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             // QualifiedNameSyntax
             var firstChildNode = childNodes.FirstOrDefault();
 
-            GenericNameSyntax genericNameSyntax = null;
+            GenericNameSyntax genericNameSyntax;
             switch (firstChildNode)
             {
-                case QualifiedNameSyntax _:
+                case QualifiedNameSyntax qualifiedNameSyntax:
                 {
-                    LogWarning(context, node);
-                    return;
+                    var genericNameSyntaxCollection = qualifiedNameSyntax.ChildNodes().OfType<GenericNameSyntax>().ToArray();
+                    if (genericNameSyntaxCollection.Length != 1)
+                    {
+                        LogWarning(context, node);
+                        return;
+                    }
+
+                    genericNameSyntax = genericNameSyntaxCollection[0];
+                    break;
                 }
 
                 case GenericNameSyntax tempGenericNameSyntax:

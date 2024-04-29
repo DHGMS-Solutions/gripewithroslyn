@@ -52,7 +52,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
         {
             context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-            context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.ConstructorDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeConstructorDeclaration, SyntaxKind.ConstructorDeclaration);
         }
 
         private static string GetFullName(
@@ -65,12 +65,18 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             return $"global::{namespaceName}.{classDeclarationSyntax.Identifier}";
         }
 
-        private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
+        private void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var node = context.Node;
 
             var constructorDeclarationSyntax = (ConstructorDeclarationSyntax)context.Node;
             var classDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<ClassDeclarationSyntax>();
+            if (classDeclarationSyntax == null)
+            {
+                // not a class
+                // probably a struct
+                return;
+            }
 
             // skip if the class implements whipstaff ILogMessageActions<T> or ILogMessageActionsWrapper<T>
             // or Splat IEnableLogger<T>

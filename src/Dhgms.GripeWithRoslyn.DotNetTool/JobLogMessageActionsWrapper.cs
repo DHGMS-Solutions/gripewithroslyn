@@ -168,5 +168,15 @@ namespace Dhgms.GripeWithRoslyn.DotNetTool
         {
             _logMessageActions.DiagnosticCount(_logger, diagnosticCount);
         }
+
+        /// <summary>
+        /// Logging action for a grouped diagnostic count report.
+        /// </summary>
+        /// <param name="id">Unique id of the diagnostic.</param>
+        /// <param name="count">Number of times the diagnostic was reported.</param>
+        public void GroupedDiagnosticCount(string id, int count)
+        {
+            _logMessageActions.GroupedDiagnosticCount(_logger, id, count);
+        }
     }
 }

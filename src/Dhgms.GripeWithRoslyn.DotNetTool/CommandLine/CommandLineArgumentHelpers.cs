@@ -8,7 +8,7 @@ using System.CommandLine.Binding;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Dhgms.GripeWithRoslyn.Cmd.CommandLine
+namespace Dhgms.GripeWithRoslyn.DotNetTool.CommandLine
 {
     /// <summary>
     /// Helpers for working with command line arguments.

@@ -3,11 +3,11 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
-using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
+using Dhgms.GripeWithRoslyn.DotNetTool.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Dhgms.GripeWithRoslyn.Cmd
+namespace Dhgms.GripeWithRoslyn.DotNetTool
 {
     /// <summary>
     /// Program entry point holder.

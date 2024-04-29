@@ -4,7 +4,7 @@
 
 using Whipstaff.Runtime.Counters;
 
-namespace Dhgms.GripeWithRoslyn.Cmd
+namespace Dhgms.GripeWithRoslyn.DotNetTool
 {
     /// <summary>
     /// Model for diagnostic counts reported at the end of the run.

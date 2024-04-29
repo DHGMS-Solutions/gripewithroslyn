@@ -15,13 +15,13 @@ using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.StructureMap;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
 using Dhgms.GripeWithRoslyn.Analyzer.Project;
-using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
+using Dhgms.GripeWithRoslyn.DotNetTool.CommandLine;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace Dhgms.GripeWithRoslyn.Cmd
+namespace Dhgms.GripeWithRoslyn.DotNetTool
 {
     /// <summary>
     /// Job to carry out analysis.

@@ -6,7 +6,7 @@ using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
-namespace Dhgms.GripeWithRoslyn.Cmd
+namespace Dhgms.GripeWithRoslyn.DotNetTool
 {
     /// <summary>
     /// Log Message Actions for <see cref="Job"/>.

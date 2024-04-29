@@ -2,11 +2,10 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using Microsoft.Build.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
-namespace Dhgms.GripeWithRoslyn.Cmd
+namespace Dhgms.GripeWithRoslyn.DotNetTool
 {
     /// <summary>
     /// Log Message Actions wrapper for <see cref="Job"/>.

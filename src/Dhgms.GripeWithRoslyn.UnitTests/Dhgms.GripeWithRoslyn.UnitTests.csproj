@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dhgms.GripeWithRoslyn.Analyzer\Dhgms.GripeWithRoslyn.Analyzer.csproj" />
-    <ProjectReference Include="..\Dhgms.GripeWithRoslyn.Cmd\Dhgms.GripeWithRoslyn.DotNetTool.csproj" />
+    <ProjectReference Include="..\Dhgms.GripeWithRoslyn.DotNetTool\Dhgms.GripeWithRoslyn.DotNetTool.csproj" />
   </ItemGroup>
 
 </Project>

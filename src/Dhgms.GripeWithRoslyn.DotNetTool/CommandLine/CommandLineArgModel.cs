@@ -4,7 +4,7 @@
 
 using System.IO;
 
-namespace Dhgms.GripeWithRoslyn.Cmd.CommandLine
+namespace Dhgms.GripeWithRoslyn.DotNetTool.CommandLine
 {
     /// <summary>
     /// Model that represents the command line arguments.

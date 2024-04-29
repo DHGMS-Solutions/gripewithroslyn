@@ -6,7 +6,7 @@ using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
-namespace Dhgms.GripeWithRoslyn.Cmd
+namespace Dhgms.GripeWithRoslyn.DotNetTool
 {
     /// <summary>
     /// Log Message Actions for <see cref="Job"/>.
@@ -22,12 +22,13 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         private readonly Action<ILogger, Exception?> _noMsBuildInstanceFound;
         private readonly Action<ILogger, string, Exception?> _requestedMsBuildInstanceNotFound;
         private readonly Action<ILogger, int, Exception?> _multipleMsBuildInstancesFound;
-        private readonly Action<ILogger, WorkspaceDiagnosticEventArgs, Exception?> _workspaceFailed;
+        private readonly Action<ILogger, string, Exception?> _workspaceFailed;
         private readonly Action<ILogger, string, string, Exception?> _foundMsBuildInstance;
         private readonly Action<ILogger, string, Exception?> _diagnosticError;
         private readonly Action<ILogger, string, Exception?> _diagnosticHidden;
         private readonly Action<ILogger, string, Exception?> _diagnosticInfo;
         private readonly Action<ILogger, string, Exception?> _diagnosticWarning;
+        private readonly Action<ILogger, int, int, int, int, Exception?> _diagnosticCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobLogMessageActions"/> class.
@@ -79,7 +80,7 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 new EventId(9, nameof(MultipleMsBuildInstancesFound)),
                 "Multiple MSBuild Instance found: {Number}");
 
-            _workspaceFailed = LoggerMessage.Define<WorkspaceDiagnosticEventArgs>(
+            _workspaceFailed = LoggerMessage.Define<string>(
                 LogLevel.Error,
                 new EventId(10, nameof(WorkspaceFailed)),
                 "Workspace failed: {Diagnostic}");
@@ -108,6 +109,11 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 LogLevel.Warning,
                 new EventId(14, nameof(DiagnosticWarning)),
                 "Diagnostic Warning: {Message}");
+
+            _diagnosticCount = LoggerMessage.Define<int, int, int, int>(
+                LogLevel.Information,
+                new EventId(15, nameof(DiagnosticCount)),
+                "Diagnostic Counts: Hidden - {HiddenCount}, Information - {InfoCount}, Warning - {WarningCount}, Error - {ErrorCount}");
         }
 
         /// <summary>
@@ -200,7 +206,7 @@ namespace Dhgms.GripeWithRoslyn.Cmd
 
         internal void WorkspaceFailed(ILogger<Job> logger, WorkspaceDiagnosticEventArgs workspaceDiagnosticEventArgs)
         {
-            _workspaceFailed(logger, workspaceDiagnosticEventArgs, null);
+            _workspaceFailed(logger, workspaceDiagnosticEventArgs.Diagnostic.ToString(), null);
         }
 
         internal void FoundMsBuildInstance(ILogger<Job> logger, string instanceName, string instancePath)
@@ -226,6 +232,11 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         internal void DiagnosticWarning(ILogger<Job> logger, string message)
         {
             _diagnosticWarning(logger, message, null);
+        }
+
+        internal void DiagnosticCount(ILogger<Job> logger, DiagnosticCountModel diagnosticCount)
+        {
+            _diagnosticCount(logger, diagnosticCount.HiddenCount.Value, diagnosticCount.InformationCount.Value, diagnosticCount.WarningCount.Value, diagnosticCount.ErrorCount.Value, null);
         }
     }
 }

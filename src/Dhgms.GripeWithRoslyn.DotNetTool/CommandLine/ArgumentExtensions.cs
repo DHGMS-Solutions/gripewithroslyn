@@ -8,7 +8,7 @@ using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
 
-namespace Dhgms.GripeWithRoslyn.Cmd.CommandLine
+namespace Dhgms.GripeWithRoslyn.DotNetTool.CommandLine
 {
     internal static class ArgumentExtensions
     {

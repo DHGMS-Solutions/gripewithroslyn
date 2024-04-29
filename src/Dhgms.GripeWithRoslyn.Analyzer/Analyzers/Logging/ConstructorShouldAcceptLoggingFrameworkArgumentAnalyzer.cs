@@ -172,16 +172,34 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             var childNodes = lastParameter.ChildNodes();
 
             // QualifiedNameSyntax
-            var qualifiedNameSyntax = childNodes.OfType<QualifiedNameSyntax>().FirstOrDefault();
+            var firstChildNode = childNodes.FirstOrDefault();
 
-            // GenericNameSyntax
-            var genericNameSyntax = qualifiedNameSyntax.ChildNodes().OfType<GenericNameSyntax>().ToArray();
+            GenericNameSyntax genericNameSyntax;
+            switch (firstChildNode)
+            {
+                case QualifiedNameSyntax qualifiedNameSyntax:
+                {
+                    var genericNameSyntaxCollection = qualifiedNameSyntax.ChildNodes().OfType<GenericNameSyntax>().ToArray();
+                    if (genericNameSyntaxCollection.Length != 1)
+                    {
+                        LogWarning(context, node);
+                        return;
+                    }
 
-            // GenericTokenSyntax
-            var genericTokenSyntax = genericNameSyntax[0];
+                    genericNameSyntax = genericNameSyntaxCollection[0];
+                    break;
+                }
+
+                case GenericNameSyntax tempGenericNameSyntax:
+                    genericNameSyntax = tempGenericNameSyntax;
+                    break;
+
+                default:
+                    throw new InvalidOperationException($"Unexpected node type: {firstChildNode.GetType()}");
+            }
 
             // type arg list
-            var typeArgumentList = genericTokenSyntax.TypeArgumentList;
+            var typeArgumentList = genericNameSyntax.TypeArgumentList;
             var typeArgumentListArgs = typeArgumentList.Arguments;
 
             // we should only have 1 arg for ILogger<T>.

@@ -5,7 +5,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
-namespace Dhgms.GripeWithRoslyn.Cmd
+namespace Dhgms.GripeWithRoslyn.DotNetTool
 {
     /// <summary>
     /// Log Message Actions wrapper for <see cref="Job"/>.
@@ -158,6 +158,15 @@ namespace Dhgms.GripeWithRoslyn.Cmd
         public void DiagnosticWarning(string message)
         {
             _logMessageActions.DiagnosticWarning(_logger, message);
+        }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic count report.
+        /// </summary>
+        /// <param name="diagnosticCount">Count model for what diagnostics were reported.</param>
+        public void DiagnosticCount(DiagnosticCountModel diagnosticCount)
+        {
+            _logMessageActions.DiagnosticCount(_logger, diagnosticCount);
         }
     }
 }

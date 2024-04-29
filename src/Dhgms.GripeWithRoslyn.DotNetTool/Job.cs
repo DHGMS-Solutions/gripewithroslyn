@@ -15,13 +15,13 @@ using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.StructureMap;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
 using Dhgms.GripeWithRoslyn.Analyzer.Project;
-using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
+using Dhgms.GripeWithRoslyn.DotNetTool.CommandLine;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace Dhgms.GripeWithRoslyn.Cmd
+namespace Dhgms.GripeWithRoslyn.DotNetTool
 {
     /// <summary>
     /// Job to carry out analysis.
@@ -73,29 +73,17 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 var analyzers = GetDiagnosticAnalyzers();
 
                 _logMessageActionsWrapper.StartingAnalysisOfProjects();
+                var diagnosticCount = new DiagnosticCountModel();
                 foreach (var project in solution.Projects)
                 {
-                    if (project.FilePath == null)
-                    {
-                        continue;
-                    }
-
-                    _logMessageActionsWrapper.StartingAnalysisOfProject(project.FilePath);
-                    var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
-                    if (compilation == null)
-                    {
-                        // TODO: warn about failure to get compilation object.
-                        _logMessageActionsWrapper.FailedToGetCompilationObjectForProject(project.FilePath);
-                        hasIssues = true;
-                        continue;
-                    }
-
-                    var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
-                    var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
-                    hasIssues |= !diagnostics.IsEmpty;
-
-                    OutputDiagnostics(diagnostics);
+                    hasIssues |= await AnalyzeProject(
+                        project,
+                        analyzers,
+                        diagnosticCount)
+                        .ConfigureAwait(false);
                 }
+
+                OutputDiagnosticCounts(diagnosticCount);
             }
 
             return hasIssues ? 1 : 0;
@@ -153,6 +141,30 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 commandLineArgModel.SolutionPath).ConfigureAwait(false);
         }
 
+        private async Task<bool> AnalyzeProject(Project project, ImmutableArray<DiagnosticAnalyzer> analyzers, DiagnosticCountModel diagnosticCount)
+        {
+            if (project.FilePath == null)
+            {
+                return false;
+            }
+
+            _logMessageActionsWrapper.StartingAnalysisOfProject(project.FilePath);
+            var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
+            if (compilation == null)
+            {
+                // TODO: warn about failure to get compilation object.
+                _logMessageActionsWrapper.FailedToGetCompilationObjectForProject(project.FilePath);
+                return true;
+            }
+
+            var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
+            var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
+
+            OutputDiagnostics(diagnostics, diagnosticCount);
+
+            return !diagnostics.IsEmpty;
+        }
+
         private ImmutableArray<DiagnosticAnalyzer> GetDiagnosticAnalyzers()
         {
             // TODO: build source generator to detect these at build time instead of manual maintenance. got basics of logic in Vetuviem.
@@ -188,15 +200,20 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             return analyzers;
         }
 
-        private void OutputDiagnostics(ImmutableArray<Diagnostic> diagnostics)
+        private void OutputDiagnosticCounts(DiagnosticCountModel diagnosticCount)
+        {
+            _logMessageActionsWrapper.DiagnosticCount(diagnosticCount);
+        }
+
+        private void OutputDiagnostics(ImmutableArray<Diagnostic> diagnostics, DiagnosticCountModel diagnosticCount)
         {
             foreach (var diagnostic in diagnostics)
             {
-                OutputDiagnostic(diagnostic);
+                OutputDiagnostic(diagnostic, diagnosticCount);
             }
         }
 
-        private void OutputDiagnostic(Diagnostic diagnostic)
+        private void OutputDiagnostic(Diagnostic diagnostic, DiagnosticCountModel diagnosticCount)
         {
             try
             {
@@ -204,15 +221,19 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 switch (diagnostic.Severity)
                 {
                     case DiagnosticSeverity.Error:
+                        diagnosticCount.ErrorCount.Increment();
                         _logMessageActionsWrapper.DiagnosticError(message);
                         break;
                     case DiagnosticSeverity.Hidden:
+                        diagnosticCount.HiddenCount.Increment();
                         _logMessageActionsWrapper.DiagnosticHidden(message);
                         break;
                     case DiagnosticSeverity.Info:
+                        diagnosticCount.InformationCount.Increment();
                         _logMessageActionsWrapper.DiagnosticInfo(message);
                         break;
                     case DiagnosticSeverity.Warning:
+                        diagnosticCount.WarningCount.Increment();
                         _logMessageActionsWrapper.DiagnosticWarning(message);
                         break;
                 }

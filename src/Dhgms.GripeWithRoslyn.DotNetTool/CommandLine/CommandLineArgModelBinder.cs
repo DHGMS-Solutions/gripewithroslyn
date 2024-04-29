@@ -6,7 +6,7 @@ using System.CommandLine;
 using System.CommandLine.Binding;
 using System.IO;
 
-namespace Dhgms.GripeWithRoslyn.Cmd.CommandLine
+namespace Dhgms.GripeWithRoslyn.DotNetTool.CommandLine
 {
     /// <summary>
     /// Binding logic for the command line arguments.

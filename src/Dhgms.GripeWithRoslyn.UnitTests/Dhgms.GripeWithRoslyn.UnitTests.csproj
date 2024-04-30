@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net48</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
+    <LangVersion>12</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Dhgms.GripeWithRoslyn.Analyzer\Dhgms.GripeWithRoslyn.Analyzer.csproj" />
+    <ProjectReference Include="..\Dhgms.GripeWithRoslyn.DotNetTool\Dhgms.GripeWithRoslyn.DotNetTool.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('net48')) ">
-    <ProjectReference Include="..\Dhgms.GripeWithRoslyn.Cmd\Dhgms.GripeWithRoslyn.Cmd.csproj" />
-  </ItemGroup>
 </Project>

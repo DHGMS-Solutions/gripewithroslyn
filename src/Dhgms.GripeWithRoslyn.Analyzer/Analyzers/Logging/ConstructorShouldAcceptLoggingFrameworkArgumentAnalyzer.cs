@@ -52,7 +52,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
         {
             context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-            context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.ConstructorDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeConstructorDeclaration, SyntaxKind.ConstructorDeclaration);
         }
 
         private static string GetFullName(
@@ -65,12 +65,18 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             return $"global::{namespaceName}.{classDeclarationSyntax.Identifier}";
         }
 
-        private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
+        private void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var node = context.Node;
 
             var constructorDeclarationSyntax = (ConstructorDeclarationSyntax)context.Node;
             var classDeclarationSyntax = constructorDeclarationSyntax.GetAncestor<ClassDeclarationSyntax>();
+            if (classDeclarationSyntax == null)
+            {
+                // not a class
+                // probably a struct
+                return;
+            }
 
             // skip if the class implements whipstaff ILogMessageActions<T> or ILogMessageActionsWrapper<T>
             // or Splat IEnableLogger<T>
@@ -172,16 +178,34 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Logging
             var childNodes = lastParameter.ChildNodes();
 
             // QualifiedNameSyntax
-            var qualifiedNameSyntax = childNodes.OfType<QualifiedNameSyntax>().FirstOrDefault();
+            var firstChildNode = childNodes.FirstOrDefault();
 
-            // GenericNameSyntax
-            var genericNameSyntax = qualifiedNameSyntax.ChildNodes().OfType<GenericNameSyntax>().ToArray();
+            GenericNameSyntax genericNameSyntax;
+            switch (firstChildNode)
+            {
+                case QualifiedNameSyntax qualifiedNameSyntax:
+                {
+                    var genericNameSyntaxCollection = qualifiedNameSyntax.ChildNodes().OfType<GenericNameSyntax>().ToArray();
+                    if (genericNameSyntaxCollection.Length != 1)
+                    {
+                        LogWarning(context, node);
+                        return;
+                    }
 
-            // GenericTokenSyntax
-            var genericTokenSyntax = genericNameSyntax[0];
+                    genericNameSyntax = genericNameSyntaxCollection[0];
+                    break;
+                }
+
+                case GenericNameSyntax tempGenericNameSyntax:
+                    genericNameSyntax = tempGenericNameSyntax;
+                    break;
+
+                default:
+                    throw new InvalidOperationException($"Unexpected node type: {firstChildNode.GetType()}");
+            }
 
             // type arg list
-            var typeArgumentList = genericTokenSyntax.TypeArgumentList;
+            var typeArgumentList = genericNameSyntax.TypeArgumentList;
             var typeArgumentListArgs = typeArgumentList.Arguments;
 
             // we should only have 1 arg for ILogger<T>.

@@ -24,6 +24,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
                 return symbol.ToString();
             }
 
+            if (symbol.Kind == SymbolKind.ArrayType)
+            {
+                var arrayTypeSymbol = (IArrayTypeSymbol)symbol;
+                return arrayTypeSymbol.ElementType.ToString();
+            }
+
             var fullName = symbol.Name;
             var containingSymbol = symbol.ContainingSymbol;
             while (!(containingSymbol is INamespaceSymbol))

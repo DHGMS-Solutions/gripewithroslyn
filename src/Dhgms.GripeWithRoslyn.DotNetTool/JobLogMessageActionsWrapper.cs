@@ -5,7 +5,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
-namespace Dhgms.GripeWithRoslyn.Cmd
+namespace Dhgms.GripeWithRoslyn.DotNetTool
 {
     /// <summary>
     /// Log Message Actions wrapper for <see cref="Job"/>.
@@ -105,9 +105,78 @@ namespace Dhgms.GripeWithRoslyn.Cmd
             _logMessageActions.MultipleMsBuildInstancesFound(_logger, count);
         }
 
-        internal void WorkspaceFailed(WorkspaceDiagnosticEventArgs e)
+        /// <summary>
+        /// Logging action for when an MSBuild instance was found.
+        /// </summary>
+        /// <param name="instanceName">Name of the MSBuild instance.</param>
+        /// <param name="instancePath">Path where the instance is located.</param>
+        public void FoundMsBuildInstance(string instanceName, string instancePath)
+        {
+            _logMessageActions.FoundMsBuildInstance(_logger, instanceName, instancePath);
+        }
+
+        /// <summary>
+        /// Logging action for when a workspace has failed.
+        /// </summary>
+        /// <param name="e">Workspace Diagnostic Event Args.</param>
+        public void WorkspaceFailed(WorkspaceDiagnosticEventArgs e)
         {
             _logMessageActions.WorkspaceFailed(_logger, e);
+        }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic error report.
+        /// </summary>
+        /// <param name="message">Message from the diagnostic.</param>
+        public void DiagnosticError(string message)
+        {
+            _logMessageActions.DiagnosticError(_logger, message);
+        }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic hidden report.
+        /// </summary>
+        /// <param name="message">Message from the diagnostic.</param>
+        public void DiagnosticHidden(string message)
+        {
+            _logMessageActions.DiagnosticHidden(_logger, message);
+        }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic information report.
+        /// </summary>
+        /// <param name="message">Message from the diagnostic.</param>
+        public void DiagnosticInfo(string message)
+        {
+            _logMessageActions.DiagnosticInfo(_logger, message);
+        }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic warning report.
+        /// </summary>
+        /// <param name="message">Message from the diagnostic.</param>
+        public void DiagnosticWarning(string message)
+        {
+            _logMessageActions.DiagnosticWarning(_logger, message);
+        }
+
+        /// <summary>
+        /// Logging action for a Roslyn diagnostic count report.
+        /// </summary>
+        /// <param name="diagnosticCount">Count model for what diagnostics were reported.</param>
+        public void DiagnosticCount(DiagnosticCountModel diagnosticCount)
+        {
+            _logMessageActions.DiagnosticCount(_logger, diagnosticCount);
+        }
+
+        /// <summary>
+        /// Logging action for a grouped diagnostic count report.
+        /// </summary>
+        /// <param name="id">Unique id of the diagnostic.</param>
+        /// <param name="count">Number of times the diagnostic was reported.</param>
+        public void GroupedDiagnosticCount(string id, int count)
+        {
+            _logMessageActions.GroupedDiagnosticCount(_logger, id, count);
         }
     }
 }

@@ -3,7 +3,10 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,12 +17,14 @@ using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.ReactiveUi;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.StructureMap;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.XUnit;
-using Dhgms.GripeWithRoslyn.Cmd.CommandLine;
+using Dhgms.GripeWithRoslyn.Analyzer.Project;
+using Dhgms.GripeWithRoslyn.DotNetTool.CommandLine;
 using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace Dhgms.GripeWithRoslyn.Cmd
+namespace Dhgms.GripeWithRoslyn.DotNetTool
 {
     /// <summary>
     /// Job to carry out analysis.
@@ -71,27 +76,20 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 var analyzers = GetDiagnosticAnalyzers();
 
                 _logMessageActionsWrapper.StartingAnalysisOfProjects();
+                var diagnosticCount = new DiagnosticCountModel();
+                var groupedDiagnosticCounts = new ConcurrentDictionary<string, int>();
                 foreach (var project in solution.Projects)
                 {
-                    if (project.FilePath == null)
-                    {
-                        continue;
-                    }
-
-                    _logMessageActionsWrapper.StartingAnalysisOfProject(project.FilePath);
-                    var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
-                    if (compilation == null)
-                    {
-                        // TODO: warn about failure to get compilation object.
-                        _logMessageActionsWrapper.FailedToGetCompilationObjectForProject(project.FilePath);
-                        hasIssues = true;
-                        continue;
-                    }
-
-                    var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
-                    var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
-                    hasIssues |= !diagnostics.IsEmpty;
+                    hasIssues |= await AnalyzeProject(
+                        project,
+                        analyzers,
+                        diagnosticCount,
+                        groupedDiagnosticCounts)
+                        .ConfigureAwait(false);
                 }
+
+                OutputDiagnosticCounts(diagnosticCount);
+                OutputGroupedDiagnosticCounts(groupedDiagnosticCounts);
             }
 
             return hasIssues ? 1 : 0;
@@ -132,14 +130,49 @@ namespace Dhgms.GripeWithRoslyn.Cmd
 
                     break;
                 default:
+                    instance = visualStudioInstances.OrderByDescending(x => x.Version).First();
+#if TBC
                     _logMessageActionsWrapper.MultipleMsBuildInstancesFound(visualStudioInstances.Length);
-
+                    foreach (var visualStudioInstance in visualStudioInstances)
+                    {
+                        _logMessageActionsWrapper.FoundMsBuildInstance(visualStudioInstance.Name, visualStudioInstance.MSBuildPath);
+                    }
                     return 3;
+#endif
+                    break;
             }
 
             return await DoAnalysis(
                 instance,
                 commandLineArgModel.SolutionPath).ConfigureAwait(false);
+        }
+
+        private async Task<bool> AnalyzeProject(
+            Project project,
+            ImmutableArray<DiagnosticAnalyzer> analyzers,
+            DiagnosticCountModel diagnosticCount,
+            ConcurrentDictionary<string, int> groupedDiagnosticCounts)
+        {
+            if (project.FilePath == null)
+            {
+                return false;
+            }
+
+            _logMessageActionsWrapper.StartingAnalysisOfProject(project.FilePath);
+            var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
+            if (compilation == null)
+            {
+                // TODO: warn about failure to get compilation object.
+                _logMessageActionsWrapper.FailedToGetCompilationObjectForProject(project.FilePath);
+                return true;
+            }
+
+            var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
+            var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync().ConfigureAwait(false);
+
+            OutputDiagnostics(diagnostics, diagnosticCount, groupedDiagnosticCounts);
+
+            return !diagnostics.IsEmpty;
         }
 
         private ImmutableArray<DiagnosticAnalyzer> GetDiagnosticAnalyzers()
@@ -170,10 +203,64 @@ namespace Dhgms.GripeWithRoslyn.Cmd
                 new UseEncodingUnicodeInsteadOfASCIIAnalyzer(),
                 new UseSystemTextJsonInsteadOfNewtonsoftJsonAnalyzer(),
                 new StructureMapShouldNotBeUsedAnalyzer(),
-                new DoNotUseXUnitInlineDataAttributeAnalyzer());
+                new DoNotUseXUnitInlineDataAttributeAnalyzer(),
+                new ProjectShouldEnableNullableReferenceTypesAnalyzer());
 
             var analyzers = analyzersBuilder.ToImmutable();
             return analyzers;
+        }
+
+        private void OutputGroupedDiagnosticCounts(ConcurrentDictionary<string, int> groupedDiagnosticCounts)
+        {
+            foreach (var groupedDiagnosticCount in groupedDiagnosticCounts)
+            {
+                _logMessageActionsWrapper.GroupedDiagnosticCount(groupedDiagnosticCount.Key, groupedDiagnosticCount.Value);
+            }
+        }
+
+        private void OutputDiagnosticCounts(DiagnosticCountModel diagnosticCount)
+        {
+            _logMessageActionsWrapper.DiagnosticCount(diagnosticCount);
+        }
+
+        private void OutputDiagnostics(ImmutableArray<Diagnostic> diagnostics, DiagnosticCountModel diagnosticCount, ConcurrentDictionary<string, int> groupedDiagnosticCounts)
+        {
+            foreach (var diagnostic in diagnostics)
+            {
+                groupedDiagnosticCounts.AddOrUpdate(diagnostic.Id, _ => 1, (s, i) => ++i);
+                OutputDiagnostic(diagnostic, diagnosticCount);
+            }
+        }
+
+        private void OutputDiagnostic(Diagnostic diagnostic, DiagnosticCountModel diagnosticCount)
+        {
+            try
+            {
+                var message = diagnostic.ToString();
+                switch (diagnostic.Severity)
+                {
+                    case DiagnosticSeverity.Error:
+                        diagnosticCount.ErrorCount.Increment();
+                        _logMessageActionsWrapper.DiagnosticError(message);
+                        break;
+                    case DiagnosticSeverity.Hidden:
+                        diagnosticCount.HiddenCount.Increment();
+                        _logMessageActionsWrapper.DiagnosticHidden(message);
+                        break;
+                    case DiagnosticSeverity.Info:
+                        diagnosticCount.InformationCount.Increment();
+                        _logMessageActionsWrapper.DiagnosticInfo(message);
+                        break;
+                    case DiagnosticSeverity.Warning:
+                        diagnosticCount.WarningCount.Increment();
+                        _logMessageActionsWrapper.DiagnosticWarning(message);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private class ConsoleProgressReporter : IProgress<ProjectLoadProgress>

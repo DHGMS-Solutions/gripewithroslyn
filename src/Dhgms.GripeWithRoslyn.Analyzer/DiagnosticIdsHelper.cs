@@ -6,7 +6,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
 {
     internal static class DiagnosticIdsHelper
     {
-        internal static string FluentDataAutoMapAnalyzer => "GR0000";
+        internal static string FluentDataAutoMapAnalyzer => "GR0001";
 
         internal static string FluentDataQueryManyWithNullArgumentAnalyzer => "GR0002";
 
@@ -69,5 +69,31 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string MethodsThatUseReturnYieldShouldHaveNameThatBeginsWithEnumerate => "GR0031";
 
         internal static string DoNotUseManualEventSubscriptions => "GR0032";
+
+        internal static string DoNotUseObjectAsParameterType => "GR0033";
+
+        internal static string ViewModelClassShouldInheritFromViewModelInterface => "GR0034";
+
+        internal static string UseTypeofInsteadOfMethodBaseGetCurrentMethodDeclaringType => "GR0035";
+
+        internal static string UseTypeofInsteadOfSystemTypeGetType => "GR0036";
+
+        internal static string ApiShouldUseGenericActionResult => "GR0037";
+
+        internal static string DoNotUseObjectAsReturnType => "GR0038";
+
+        internal static string DoNotUseObjectAsPropertyType => "GR0039";
+
+        internal static string DoNotUseObjectAsFieldType => "GR0040";
+
+        internal static string DoNotUseObjectAsLocalVariableType => "GR0041";
+
+        internal static string DoNotUseDynamicAsParameterType => "GR0042";
+
+        internal static string ConstructorShouldAcceptSchedulerArgument => "GR0043";
+
+        internal static string ProjectShouldEnableNullableReferenceTypes => "GR0044";
+
+        internal static string MicrosoftAppCenterShouldNotBeUsed => "GR0045";
     }
 }

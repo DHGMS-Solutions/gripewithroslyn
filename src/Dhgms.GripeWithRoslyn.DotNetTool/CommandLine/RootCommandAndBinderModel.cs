@@ -4,7 +4,7 @@
 
 using System.CommandLine;
 
-namespace Dhgms.GripeWithRoslyn.Cmd.CommandLine
+namespace Dhgms.GripeWithRoslyn.DotNetTool.CommandLine
 {
     /// <summary>
     /// Model that represents the root command and command line binder logic.

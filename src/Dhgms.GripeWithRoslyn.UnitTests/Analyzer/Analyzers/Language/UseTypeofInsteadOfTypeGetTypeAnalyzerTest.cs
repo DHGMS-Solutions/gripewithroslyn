@@ -38,7 +38,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Language
     }";
             var expected = new DiagnosticResult
             {
-                Id = DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
+                Id = DiagnosticIdsHelper.UseTypeofInsteadOfSystemTypeGetType,
                 Message = "Consider usage of typeof(x) instead of System.Type.GetType.",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =

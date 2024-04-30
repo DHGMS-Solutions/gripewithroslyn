@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dhgms.GripeWithRoslyn.Analy
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dhgms.GripeWithRoslyn.UnitTests", "Dhgms.GripeWithRoslyn.UnitTests\Dhgms.GripeWithRoslyn.UnitTests.csproj", "{0D5026BC-C817-4153-BCF4-2AE53809A2A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dhgms.GripeWithRoslyn.Cmd", "Dhgms.GripeWithRoslyn.Cmd\Dhgms.GripeWithRoslyn.Cmd.csproj", "{343C46ED-B318-4E49-A219-D142DC309461}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dhgms.GripeWithRoslyn.DotNetTool", "Dhgms.GripeWithRoslyn.DotNetTool\Dhgms.GripeWithRoslyn.DotNetTool.csproj", "{343C46ED-B318-4E49-A219-D142DC309461}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Vsix", "Dhgms.GripeWithRoslyn.Vsix\Dhgms.GripeWithRoslyn.Vsix.csproj", "{E558BA1B-3DDE-48C4-9E58-1450D65FE9B5}"
 EndProject

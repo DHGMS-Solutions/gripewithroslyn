@@ -6,6 +6,7 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.Analyzer.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -32,6 +33,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
         private const string GlobalSystemArgumentNullExceptionNamespace = "global::System.ArgumentNullException";
         private const string GlobalReactiveMarblesObservableEventsNamespace = "global::ReactiveMarbles.ObservableEvents.ObservableGeneratorExtensions";
         private const string GlobalSystemIObservableNamespace = "global::System.IObservable";
+        private const string GlobalMicrosoftExtensionsLoggingLoggerMessage = "global::Microsoft.Extensions.Logging.LoggerMessage";
 
         private readonly DiagnosticDescriptor _rule;
 
@@ -71,6 +73,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
                 new[]
                 {
                     "Subscribe"
+                }),
+            (
+                GlobalMicrosoftExtensionsLoggingLoggerMessage,
+                new[]
+                {
+                    "Define"
                 }),
         };
 
@@ -131,6 +139,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
 
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
+            if (GetInheritsFromBaseClassThatShouldBeIgnored(context, invocationExpression))
+            {
+                return;
+            }
+
             if (GetIsWhitelistedMethod(context, invocationExpression))
             {
                 return;
@@ -144,6 +157,33 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
             }
 
             context.ReportDiagnostic(Diagnostic.Create(_rule, node.GetLocation()));
+        }
+
+        private bool GetInheritsFromBaseClassThatShouldBeIgnored(
+            SyntaxNodeAnalysisContext context,
+            InvocationExpressionSyntax invocationExpression)
+        {
+            var classDeclarationSyntax = invocationExpression.GetAncestor<ClassDeclarationSyntax>();
+            if (classDeclarationSyntax == null)
+            {
+                // not a class
+                // probably a struct
+                return false;
+            }
+
+            var baseClasses = new[]
+            {
+                "global::Xunit.TheoryData"
+            };
+
+            var interfaces = Array.Empty<string>();
+
+            if (classDeclarationSyntax.HasImplementedAnyOfType(baseClasses, interfaces, context.SemanticModel))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private bool GetIsWhitelistedMethod(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)

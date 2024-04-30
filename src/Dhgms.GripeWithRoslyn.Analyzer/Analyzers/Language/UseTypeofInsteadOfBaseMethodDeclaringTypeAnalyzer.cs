@@ -28,7 +28,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
         /// </summary>
         public UseTypeofInsteadOfBaseMethodDeclaringTypeAnalyzer()
             : base(
-            DiagnosticIdsHelper.UseEncodingUnicodeInsteadOfAscii,
+            DiagnosticIdsHelper.UseTypeofInsteadOfMethodBaseGetCurrentMethodDeclaringType,
             Title,
             MessageFormat,
             Category,

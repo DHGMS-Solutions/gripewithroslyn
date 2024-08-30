@@ -14,6 +14,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
     /// <summary>
     /// Analyzer for warning on usages of method groups.
     /// </summary>
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public sealed class DoNotUseMethodGroupsAnalyzer : DiagnosticAnalyzer
     {
         internal const string Title = "Do not use method groups. For readability and consistency consider using lambda with manual caching if performance is an issue.";

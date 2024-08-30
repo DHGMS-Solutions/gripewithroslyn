@@ -95,5 +95,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string ProjectShouldEnableNullableReferenceTypes => "GR0044";
 
         internal static string MicrosoftAppCenterShouldNotBeUsed => "GR0045";
+
+        internal static string DoNotUseMethodGroups => "GR0046";
     }
 }

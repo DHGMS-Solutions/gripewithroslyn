@@ -101,5 +101,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string UseValueObjectsInsteadOfPrimitiveTypes => "GR0047";
 
         internal static string DoNotChainPublicMethodInvocation => "GR0048";
+
+        internal static string EfCoreQueriesShouldUseProjections => "GR0049";
     }
 }

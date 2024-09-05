@@ -97,5 +97,9 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string MicrosoftAppCenterShouldNotBeUsed => "GR0045";
 
         internal static string DoNotUseMethodGroups => "GR0046";
+
+        internal static string UseValueObjectsInsteadOfPrimitiveTypes => "GR0047";
+
+        internal static string DoNotChainPublicMethodInvocation => "GR0048";
     }
 }

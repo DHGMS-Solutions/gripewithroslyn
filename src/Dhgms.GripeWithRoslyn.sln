@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dhgms.GripeWithRoslyn.DotNe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhgms.GripeWithRoslyn.Vsix", "Dhgms.GripeWithRoslyn.Vsix\Dhgms.GripeWithRoslyn.Vsix.csproj", "{E558BA1B-3DDE-48C4-9E58-1450D65FE9B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gripe.SourceGenerators", "Gripe.SourceGenerators\Gripe.SourceGenerators.csproj", "{8E27A646-F421-4C90-88C2-2512E19DC8EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{E558BA1B-3DDE-48C4-9E58-1450D65FE9B5}.Release|arm64.Build.0 = Release|arm64
 		{E558BA1B-3DDE-48C4-9E58-1450D65FE9B5}.Release|x86.ActiveCfg = Release|x86
 		{E558BA1B-3DDE-48C4-9E58-1450D65FE9B5}.Release|x86.Build.0 = Release|x86
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Debug|arm64.Build.0 = Debug|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Debug|x86.Build.0 = Debug|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Release|arm64.ActiveCfg = Release|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Release|arm64.Build.0 = Release|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Release|x86.ActiveCfg = Release|Any CPU
+		{8E27A646-F421-4C90-88C2-2512E19DC8EF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

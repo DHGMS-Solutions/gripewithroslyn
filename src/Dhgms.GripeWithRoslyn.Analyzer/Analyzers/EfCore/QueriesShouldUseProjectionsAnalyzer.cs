@@ -76,7 +76,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.EfCore
             // Check if the type is a DbSet<TEntity>
             if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
             {
-                return namedTypeSymbol.ConstructedFrom.ToString() == "Microsoft.EntityFrameworkCore.DbSet";
+                return namedTypeSymbol.ConstructedFrom.ToString() == "Microsoft.EntityFrameworkCore.DbSet<TEntity>";
             }
 
             return false;

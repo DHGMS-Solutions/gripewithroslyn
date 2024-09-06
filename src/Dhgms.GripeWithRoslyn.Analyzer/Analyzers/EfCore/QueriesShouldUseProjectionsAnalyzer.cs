@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections.Immutable;
+using System.Data;
+using System.Linq;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -46,74 +48,126 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.EfCore
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
-            context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.SimpleMemberAccessExpression);
         }
 
-        private static bool IsDbSet(ISymbol symbol)
+        private static bool IsDbSetMemberAccess(SyntaxNodeAnalysisContext context, MemberAccessExpressionSyntax memberAccessExpr)
         {
-            // Ensure the symbol is an EF Core DbSet
-            var type = symbol.ContainingType;
-            if (type == null)
+            var semanticModel = context.SemanticModel;
+
+            // Check if the left side of the member access is a property access (e.g., dbContext.Users)
+            if (memberAccessExpr.Expression is IdentifierNameSyntax)
             {
-                return false;
+                var symbolInfo = semanticModel.GetSymbolInfo(memberAccessExpr);
+                var symbol = symbolInfo.Symbol as IPropertySymbol;
+
+                // Ensure that the property type is DbSet<TEntity>
+                if (symbol != null && IsDbSet(symbol.Type))
+                {
+                    return true;
+                }
             }
 
-            // Check if it's an instance of DbSet<TEntity>
-            return type.ToString().Contains("Microsoft.EntityFrameworkCore.DbSet");
+            return false;
+        }
+
+        private static bool IsDbSet(ITypeSymbol typeSymbol)
+        {
+            // Check if the type is a DbSet<TEntity>
+            if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
+            {
+                return namedTypeSymbol.ConstructedFrom.ToString() == "Microsoft.EntityFrameworkCore.DbSet";
+            }
+
+            return false;
         }
 
         private static bool QueryHasSelectClause(SyntaxNode node)
         {
-            // Traverse the query chain and check for a Select() invocation
+            // Traverse the query chain to check for a .Select() method call
             while (node != null)
             {
-                if (node is InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax { Name.Identifier.Text: "Select" } })
+                if (node is InvocationExpressionSyntax invocation)
                 {
-                    return true;  // Found a projection with Select()
+                    var memberAccess = invocation.Expression as MemberAccessExpressionSyntax;
+                    if (memberAccess != null && memberAccess.Name.Identifier.Text.Equals("Select"))
+                    {
+                        return true; // .Select() projection found
+                    }
                 }
 
                 node = node.Parent;
             }
 
-            return false;  // No Select found in the query chain
+            return false; // No .Select() found
+        }
+
+        private static bool IsEntityTypeReturn(SyntaxNodeAnalysisContext context, MemberAccessExpressionSyntax memberAccessExpr)
+        {
+            var semanticModel = context.SemanticModel;
+
+            // Get the type information of the expression
+            var typeInfo = semanticModel.GetTypeInfo(memberAccessExpr);
+            var returnType = typeInfo.Type;
+
+            if (returnType == null || !(returnType is INamedTypeSymbol namedReturnType))
+            {
+                return false;
+            }
+
+            // Check if the return type is DbSet<TEntity>
+            if (IsDbSet(namedReturnType))
+            {
+                var entityType = namedReturnType.TypeArguments.FirstOrDefault();
+                if (entityType == null)
+                {
+                    return false;
+                }
+
+                // Check if the return type is the entity type itself (like IQueryable<TEntity>)
+                if (namedReturnType.ConstructedFrom.ToString() == "System.Linq.IQueryable" &&
+                    namedReturnType.TypeArguments.FirstOrDefault()?.Equals(entityType, SymbolEqualityComparer.Default) == true)
+                {
+                    return true;
+                }
+
+                // Check if the return type is Task<TEntity> (like async calls)
+                if (namedReturnType.ConstructedFrom.ToString() == "System.Threading.Tasks.Task" &&
+                    namedReturnType.TypeArguments.FirstOrDefault()?.Equals(entityType, SymbolEqualityComparer.Default) == true)
+                {
+                    return true;
+                }
+
+                // Check if the return type is a generic type that contains TEntity (like List<TEntity>)
+                if (namedReturnType.TypeArguments.Any(t => t.Equals(entityType, SymbolEqualityComparer.Default)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
-            var invocationExpr = (InvocationExpressionSyntax)context.Node;
+            var memberAccessExpr = (MemberAccessExpressionSyntax)context.Node;
 
-            // First, check if the expression is operating on IQueryable
-            var memberAccessExpr = invocationExpr.Expression as MemberAccessExpressionSyntax;
-            if (memberAccessExpr == null)
+            // Check if the expression starts with accessing a DbSet<TEntity>
+            if (!IsDbSetMemberAccess(context, memberAccessExpr))
             {
                 return;
             }
 
-            // Check if the query is an IQueryable off of a DbSet (from DbContext)
-            var semanticModel = context.SemanticModel;
-            var symbolInfo = semanticModel.GetSymbolInfo(memberAccessExpr.Expression);
-            var symbol = symbolInfo.Symbol;
-
-            if (symbol == null)
+            // Walk through the fluent chain and check if it includes a .Select() projection
+            if (!QueryHasSelectClause(memberAccessExpr))
             {
-                return;
+                // If there's no .Select() clause, analyze the final return type
+                if (IsEntityTypeReturn(context, memberAccessExpr))
+                {
+                    var diagnostic = Diagnostic.Create(_rule, memberAccessExpr.GetLocation());
+                    context.ReportDiagnostic(diagnostic);
+                }
             }
-
-            // Ensure the symbol is an EF Core DbSet
-            if (!IsDbSet(symbol))
-            {
-                return;
-            }
-
-            // Check if the chain does NOT include a .Select() clause (missing projection)
-            if (QueryHasSelectClause(invocationExpr))
-            {
-                return;
-            }
-
-            // If there's no .Select() clause, raise a diagnostic warning
-            var diagnostic = Diagnostic.Create(_rule, invocationExpr.GetLocation());
-            context.ReportDiagnostic(diagnostic);
         }
-    }
+   }
 }

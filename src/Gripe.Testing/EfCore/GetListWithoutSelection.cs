@@ -34,7 +34,7 @@ namespace Gripe.Testing.EfCore
         /// Gets a list of users.
         /// </summary>
         /// <returns>List of users.</returns>
-        public async Task<List<IdentityUser>> GetResult()
+        public async Task<List<IdentityUser>> ToListAsyncWithoutASelect()
         {
             using (var dbContext = await _dbContextFactory.CreateDbContextAsync().ConfigureAwait(false))
             {

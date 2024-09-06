@@ -31,7 +31,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore
             {
                 var project =
                     await workspace.OpenProjectAsync(
-                        "C:\\GitHub\\dhgms-solutions\\gripewithroslyn\\src\\Gripe.Testing\\Gripe.Testing.csproj");
+                        "../../../../Gripe.Testing/Gripe.Testing.csproj");
 
                 var analyzer = GetAnalyzer();
                 var compilation = await project.GetCompilationAsync();

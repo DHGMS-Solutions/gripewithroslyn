@@ -105,5 +105,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string EfCoreQueriesShouldUseProjections => "GR0049";
 
         internal static string DoNotUseAnonymousTypes => "GR0050";
+
+        internal static string DoNotUseDefaultParameters => "GR0051";
     }
 }

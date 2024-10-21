@@ -12,23 +12,23 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.EfCore
     /// Analyzer to ensure the EF Core DbSet method is not used in an Application.
     /// </summary>
     [Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public sealed class DoNotUseEntityFrameworkCoreDbSetUpdateAsyncAnalyzer : BaseInvocationExpressionAnalyzer
+    public sealed class DoNotUseEntityFrameworkCoreDbSetUpdateRangeAnalyzer : BaseInvocationExpressionAnalyzer
     {
-        private const string Title = "Do not use Entity Framework DbSet<T>.UpdateAsync.";
+        private const string Title = "Do not use Entity Framework DbSet<T>.UpdateRange.";
 
         private const string MessageFormat = Title;
 
         private const string Category = SupportedCategories.Design;
 
         private const string Description =
-            "UpdateAsync should not be used in an Application. It invalidates the entire poco object. Just select the desired entity, update the relevant properties and call SaveChangesAsync.";
+            "UpdateRange should not be used in an Application. It invalidates the entire poco object. Just select the desired entities, update the relevant properties and call SaveChangesAsync.";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DoNotUseEntityFrameworkCoreDbSetUpdateAsyncAnalyzer"/> class.
+        /// Initializes a new instance of the <see cref="DoNotUseEntityFrameworkCoreDbSetUpdateRangeAnalyzer"/> class.
         /// </summary>
-        public DoNotUseEntityFrameworkCoreDbSetUpdateAsyncAnalyzer()
+        public DoNotUseEntityFrameworkCoreDbSetUpdateRangeAnalyzer()
             : base(
-                DiagnosticIdsHelper.DoNotUseEntityFrameworkCoreDbSetUpdate,
+                DiagnosticIdsHelper.DoNotUseEntityFrameworkCoreDbSetUpdateRange,
                 Title,
                 MessageFormat,
                 Category,
@@ -38,7 +38,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.EfCore
         }
 
         /// <inheritdoc />
-        protected override string MethodName => "UpdateAsync";
+        protected override string MethodName => "UpdateRange";
 
         /// <inheritdoc />
         protected override string[] ContainingTypes => new[]

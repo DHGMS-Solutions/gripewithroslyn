@@ -100,6 +100,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
 
         internal static string DoNotUseEntityFrameworkCoreDbSetUpdate => "GR0047";
 
-        internal static string DoNotUseEntityFrameworkCoreDbSetUpdateAsync => "GR0047";
+        internal static string DoNotUseEntityFrameworkCoreDbSetUpdateRange => "GR0048";
     }
 }

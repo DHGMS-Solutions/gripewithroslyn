@@ -45,6 +45,7 @@
         <!--<PackageReference Include="PublicApiGenerator" Version="8.1.0" />-->
         <PackageReference Include="GitHubActionsTestLogger" Version="2.3.3" />
         <!--<Compile Include="$(MSBuildThisFileDirectory)ApiGeneratorGlobalSuppressions.cs" />-->
+        <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
       </ItemGroup>
     </When>
     <Otherwise>

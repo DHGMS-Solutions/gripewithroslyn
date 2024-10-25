@@ -27,5 +27,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string ConstructorShouldAcceptSchedulerArgument() => $"ReactiveUI ViewModel Constructors should accept a parameter of \nSystem.Reactive.Concurrency.Scheduler.\n\nThis is to aid with Unit Testing time sensitive logic.";
 
         internal static string ProjectShouldEnableNullableReferenceTypes() => $"Project should enable Nullable Reference Types. This is to aid with code correctness and to avoid null reference exceptions.";
+
+        internal static string DoNotUseTuples() => $"Do not use Tuples. Consider the use of Record types or Classes. This allows for easier to read and more sustainable code.";
     }
 }

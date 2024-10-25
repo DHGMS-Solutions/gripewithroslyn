@@ -20,7 +20,7 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore
                 new ExpectedDiagnosticModel(
                     "EfCore\\DbSetUpdateProof.cs",
                     DiagnosticSeverity.Error,
-                    46,
+                    47,
                     12)
             ];
         }

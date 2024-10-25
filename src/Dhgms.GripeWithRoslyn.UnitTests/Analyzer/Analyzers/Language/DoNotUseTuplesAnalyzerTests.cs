@@ -24,25 +24,25 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Language
                 new ExpectedDiagnosticModel(
                     TupleProofFilePath,
                     DiagnosticSeverity.Error,
-                    17,
+                    18,
                     22),
 
                 new ExpectedDiagnosticModel(
                     TupleProofFilePath,
                     DiagnosticSeverity.Error,
-                    17,
+                    18,
                     23),
 
                 new ExpectedDiagnosticModel(
                     TupleProofFilePath,
                     DiagnosticSeverity.Error,
-                    17,
+                    18,
                     35),
 
                 new ExpectedDiagnosticModel(
                     TupleProofFilePath,
                     DiagnosticSeverity.Error,
-                    19,
+                    20,
                     19),
             ];
         }

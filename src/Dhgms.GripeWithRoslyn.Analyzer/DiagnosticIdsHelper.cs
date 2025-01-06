@@ -103,5 +103,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string DoNotUseEntityFrameworkCoreDbSetUpdateRange => "GR0048";
 
         internal static string DoNotUseTuples => "GR0049";
+
+        internal static string UseFileProviderOverload => "GR0050";
     }
 }

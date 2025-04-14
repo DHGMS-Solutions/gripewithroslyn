@@ -35,6 +35,12 @@ namespace Dhgms.GripeWithRoslyn.Testing.EfCore
         /// Proof of <see cref="DbSet{TEntity}.Update(TEntity)"/> method invocation to trigger <see cref="DoNotUseEntityFrameworkCoreDbSetUpdateRangeAnalyzer"/>.
         /// </summary>
         /// <param name="dbContext">Identity Db Context instance.</param>
+        /// <example>
+        /// <code>
+        /// var dbContext = new IdentityDbContext();
+        /// DbSetUpdateProof.CallsUpdateRange(dbContext);
+        /// </code>
+        /// </example>
         /// <remarks>
         /// This code is just a proof for
         /// 1) making sure the code builds

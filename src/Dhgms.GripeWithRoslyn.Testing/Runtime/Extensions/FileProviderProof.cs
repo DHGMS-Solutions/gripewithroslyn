@@ -15,6 +15,11 @@ namespace Dhgms.GripeWithRoslyn.Testing.Runtime.Extensions
         /// <summary>
         /// Proof that the analyzer triggers when a <see cref="IFileProvider"/> is not passed as an argument where a relevant overload exists.
         /// </summary>
+        /// <example>
+        /// <code>
+        /// FileProviderProof.ProofWarningIsRaised();
+        /// </code>
+        /// </example>
         public static void ProofWarningIsRaised()
         {
             SomeMethod();
@@ -23,6 +28,11 @@ namespace Dhgms.GripeWithRoslyn.Testing.Runtime.Extensions
         /// <summary>
         /// Proof that the analyzer doesn't trigger when a <see cref="IFileProvider"/> is passed as an argument, even if another valid overload exists.
         /// </summary>
+        /// <example>
+        /// <code>
+        /// FileProviderProof.ProofWarningIsNotRaisedWhereAlreadyUsingFileProviderArg();
+        /// </code>
+        /// </example>
         public static void ProofWarningIsNotRaisedWhereAlreadyUsingFileProviderArg()
         {
             var fileProvider = new NullFileProvider();

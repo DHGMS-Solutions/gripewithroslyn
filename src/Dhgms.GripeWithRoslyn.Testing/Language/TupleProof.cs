@@ -15,6 +15,11 @@ namespace Dhgms.GripeWithRoslyn.Testing.Language
         /// <summary>
         /// Proof of <see cref="Tuple"/> method invocation to trigger <see cref="DoNotUseTuplesAnalyzer"/>.
         /// </summary>
+        /// <example>
+        /// <code>
+        /// TupleProof.GetTuple();
+        /// </code>
+        /// </example>
         /// <returns>A <see cref="Tuple"/>.</returns>
         public static (int Number, string Name) GetTuple()
         {

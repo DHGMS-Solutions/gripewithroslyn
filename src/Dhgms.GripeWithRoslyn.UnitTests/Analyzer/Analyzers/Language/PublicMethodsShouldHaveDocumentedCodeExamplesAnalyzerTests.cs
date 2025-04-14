@@ -2,16 +2,16 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
+using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language;
 using Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore;
 using Microsoft.CodeAnalysis;
 
-namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Runtime
+namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Language
 {
     /// <summary>
-    /// Unit test for <see cref="UseFileProviderOverloadAnalyzer"/>.
+    /// Unit test for <see cref="PublicMethodsShouldHaveDocumentedCodeExamplesAnalyzer"/>.
     /// </summary>
-    public sealed class UseFileProviderOverloadAnalyzerTests : AbstractAnalyzerTest<UseFileProviderOverloadAnalyzer>
+    public sealed class PublicMethodsShouldHaveDocumentedCodeExamplesAnalyzerTests : AbstractAnalyzerTest<PublicMethodsShouldHaveDocumentedCodeExamplesAnalyzer>
     {
         /// <inheritdoc/>
         protected override ExpectedDiagnosticModel[] GetExpectedDiagnosticLines()
@@ -19,10 +19,10 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Runtime
             return
             [
                 new ExpectedDiagnosticModel(
-                    "Runtime\\Extensions\\FileProviderProof.cs",
+                    "EfCore\\DbSetUpdateProof.cs",
                     DiagnosticSeverity.Error,
-                    24,
-                    12)
+                    27,
+                    27)
             ];
         }
     }

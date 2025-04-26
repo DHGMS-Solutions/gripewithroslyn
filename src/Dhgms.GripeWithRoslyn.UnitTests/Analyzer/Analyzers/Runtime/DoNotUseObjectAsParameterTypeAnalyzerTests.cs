@@ -4,73 +4,43 @@
 
 using Dhgms.GripeWithRoslyn.Analyzer;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
-using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
+using Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Xunit;
 
 namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Runtime
 {
     /// <summary>
     /// Unit Tests for <see cref="DoNotUseObjectAsParameterTypeAnalyzer"/>.
     /// </summary>
-    public sealed class DoNotUseObjectAsParameterTypeAnalyzerTests : CodeFixVerifier
+    public sealed class DoNotUseObjectAsParameterTypeAnalyzerTests : AbstractAnalyzerTest<DoNotUseObjectAsParameterTypeAnalyzer>
     {
-        /// <summary>
-        /// Test to ensure bad code returns a warning.
-        /// </summary>
-        [Fact]
-        public void ReturnsWarning()
+        /// <inheritdoc/>
+        protected override string GetExpectedDiagnosticId()
         {
-            var test = @"
-    namespace ConsoleApplication1
-    {
-        class TypeName
-        {
-            public void MethodName(object arg)
-            {
-                var name = SomeEnum.SomeValue.ToString();
-            }
-
-            public void MethodName2(System.Object arg)
-            {
-                var name = SomeEnum.SomeValue.ToString();
-            }
-        }
-    }";
-            var expected = new[]
-            {
-                new DiagnosticResult
-                {
-                    Id = DiagnosticIdsHelper.DoNotUseObjectAsParameterType,
-                    Message = DoNotUseObjectAsParameterTypeAnalyzer.Title,
-                    Severity = DiagnosticSeverity.Warning,
-                    Locations =
-                        [
-                            new DiagnosticResultLocation("Test0.cs", 6, 36)
-                        ]
-                },
-                new DiagnosticResult
-                {
-                    Id = DiagnosticIdsHelper.DoNotUseObjectAsParameterType,
-                    Message = DoNotUseObjectAsParameterTypeAnalyzer.Title,
-                    Severity = DiagnosticSeverity.Warning,
-                    Locations =
-                        [
-                            new DiagnosticResultLocation("Test0.cs", 11, 37)
-                        ]
-                }
-            };
-
-            VerifyCSharpDiagnostic(
-                test,
-                expected);
+            return DiagnosticIdsHelper.DoNotUseObjectAsParameterType;
         }
 
         /// <inheritdoc />
-        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
+        protected override ExpectedDiagnosticModel[] GetExpectedDiagnosticLines()
         {
-            return new DoNotUseObjectAsParameterTypeAnalyzer();
+            return
+            [
+                new ExpectedDiagnosticModel(
+                    "Runtime\\DoNotUseObjectAsParameterTypeProof.cs",
+                    DiagnosticSeverity.Error,
+                    66,
+                    12),
+                new ExpectedDiagnosticModel(
+                    "Runtime\\DoNotUseObjectAsParameterTypeProof.cs",
+                    DiagnosticSeverity.Error,
+                    86,
+                    31),
+                new ExpectedDiagnosticModel(
+                    "Runtime\\DoNotUseObjectAsParameterTypeProof.cs",
+                    DiagnosticSeverity.Error,
+                    104,
+                    32),
+            ];
         }
     }
 }

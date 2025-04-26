@@ -17,6 +17,12 @@ namespace Dhgms.GripeWithRoslyn.Testing.Runtime
         /// Initializes a new instance of the <see cref="DoNotUseObjectAsParameterTypeProof"/> class.
         /// </summary>
         /// <param name="target">The object to track or <see langword="null" />.</param>
+        /// <example>
+        /// <code>
+        /// var target = new object();
+        /// var proof = new DoNotUseObjectAsParameterTypeProof(target);
+        /// </code>
+        /// </example>
         public DoNotUseObjectAsParameterTypeProof(object? target)
             : base(target)
         {
@@ -27,6 +33,12 @@ namespace Dhgms.GripeWithRoslyn.Testing.Runtime
         /// </summary>
         /// <param name="target">An object to track.</param>
         /// <param name="trackResurrection">Indicates when to stop tracking the object. If <see langword="true" />, the object is tracked after finalization; if <see langword="false" />, the object is only tracked until finalization.</param>
+        /// <example>
+        /// <code>
+        /// var target = new object();
+        /// var proof = new DoNotUseObjectAsParameterTypeProof(target, false);
+        /// </code>
+        /// </example>
         public DoNotUseObjectAsParameterTypeProof(
             object? target,
             bool trackResurrection)
@@ -42,6 +54,13 @@ namespace Dhgms.GripeWithRoslyn.Testing.Runtime
         /// <param name="target">An object to track.</param>
         /// <param name="trackResurrection">Indicates when to stop tracking the object. If <see langword="true" />, the object is tracked after finalization; if <see langword="false" />, the object is only tracked until finalization.</param>
         /// <param name="someExtraObject">An extra object used to check a warning is created.</param>
+        /// <example>
+        /// <code>
+        /// var target = new object();
+        /// var someExtraObject = new object();
+        /// var proof = new DoNotUseObjectAsParameterTypeProof(target, false, someExtraObject);
+        /// </code>
+        /// </example>
         public DoNotUseObjectAsParameterTypeProof(
             object? target,
             bool trackResurrection,
@@ -57,6 +76,14 @@ namespace Dhgms.GripeWithRoslyn.Testing.Runtime
         /// Method to ensure <see cref="object"/> is not used in a parameter declaration.
         /// </summary>
         /// <param name="arg">The object arg.</param>
+        /// <example>
+        /// <code>
+        /// var target = new object();
+        /// var proof = new DoNotUseObjectAsParameterTypeProof(target);
+        /// var arg = new object();
+        /// proof.MethodName(arg);
+        /// </code>
+        /// </example>
         public void MethodName(object arg)
         {
         }
@@ -66,6 +93,15 @@ namespace Dhgms.GripeWithRoslyn.Testing.Runtime
         /// Method to ensure <see cref="object"/> is not used in a parameter declaration.
         /// </summary>
         /// <param name="arg">The object arg.</param>
+        /// <example>
+        /// <code>
+        /// var target = new object();
+        /// var proof = new DoNotUseObjectAsParameterTypeProof(target);
+        /// var x = new object();
+        /// var y = new object();
+        /// proof.MethodName(x, y);
+        /// </code>
+        /// </example>
         public void MethodName2(System.Object arg)
 #pragma warning restore SA1121 // Use built-in type alias
         {

@@ -2,6 +2,7 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using Dhgms.GripeWithRoslyn.Analyzer;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore;
 using Microsoft.CodeAnalysis;
@@ -13,6 +14,12 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Runtime
     /// </summary>
     public sealed class DoNotUseObjectAsParameterTypeAnalyzerTests : AbstractAnalyzerTest<DoNotUseObjectAsParameterTypeAnalyzer>
     {
+        /// <inheritdoc/>
+        protected override string GetExpectedDiagnosticId()
+        {
+            return DiagnosticIdsHelper.DoNotUseObjectAsParameterType;
+        }
+
         /// <inheritdoc />
         protected override ExpectedDiagnosticModel[] GetExpectedDiagnosticLines()
         {
@@ -21,17 +28,17 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Runtime
                 new ExpectedDiagnosticModel(
                     "Runtime\\DoNotUseObjectAsParameterTypeProof.cs",
                     DiagnosticSeverity.Error,
-                    47,
+                    66,
                     12),
                 new ExpectedDiagnosticModel(
                     "Runtime\\DoNotUseObjectAsParameterTypeProof.cs",
                     DiagnosticSeverity.Error,
-                    59,
+                    86,
                     31),
                 new ExpectedDiagnosticModel(
                     "Runtime\\DoNotUseObjectAsParameterTypeProof.cs",
                     DiagnosticSeverity.Error,
-                    68,
+                    104,
                     32),
             ];
         }

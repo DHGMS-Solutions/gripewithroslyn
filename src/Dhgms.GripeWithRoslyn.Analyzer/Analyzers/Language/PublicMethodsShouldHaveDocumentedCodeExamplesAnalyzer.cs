@@ -6,7 +6,9 @@ using System.Collections.Immutable;
 using System.Data;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.Analyzer.Extensions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
@@ -55,6 +57,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
             var methodSymbol = (IMethodSymbol)context.Symbol;
 
             if (methodSymbol.DeclaredAccessibility != Accessibility.Public)
+            {
+                return;
+            }
+
+            if (methodSymbol.IsDefinedByOverridenMethodOrInterface())
             {
                 return;
             }

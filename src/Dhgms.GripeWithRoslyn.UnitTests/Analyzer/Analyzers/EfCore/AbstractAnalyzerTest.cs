@@ -59,10 +59,11 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore
                 Assert.NotEmpty(diagnostics);
 
                 var issues = new List<string>();
+                var expectedDiagnosticId = GetExpectedDiagnosticId();
                 for (var i = 0; i < diagnostics.Length; i++)
                 {
                     var diagnostic = diagnostics[i];
-                    AnalyseDiagnostic(diagnostic, i, expectedDiagnostics, issues);
+                    AnalyseDiagnostic(diagnostic, i, expectedDiagnostics, issues, expectedDiagnosticId);
                 }
 
                 foreach (var expectedDiagnostic in expectedDiagnostics.Where(ed => !ed.Matched))
@@ -85,6 +86,12 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore
         }
 
         /// <summary>
+        /// Gets the expected diagnostic id.
+        /// </summary>
+        /// <returns>Expected diagnostic id.</returns>
+        protected abstract string GetExpectedDiagnosticId();
+
+        /// <summary>
         /// Gets the expected lines that will report a diagnostic.
         /// </summary>
         /// <returns>Collection of line numbers.</returns>
@@ -94,7 +101,8 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore
             Diagnostic diagnostic,
             int index,
             ExpectedDiagnosticModel[] expectedDiagnostics,
-            List<string> issues)
+            List<string> issues,
+            string expectedDiagnosticId)
         {
             var actualSpan = diagnostic.Location.GetLineSpan();
 
@@ -123,7 +131,13 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore
 
             foreach (var expectedDiagnostic in expectedDiagnostics.Where(ed => !ed.Matched))
             {
-                if (MatchesExpectedDiagnostic(actualSpan, expectedDiagnostic, actualLine, actualCharacterPosition, diagnostic.Severity))
+                if (MatchesExpectedDiagnostic(
+                        actualSpan,
+                        expectedDiagnostic,
+                        actualLine,
+                        actualCharacterPosition,
+                        diagnostic,
+                        expectedDiagnosticId))
                 {
                     expectedDiagnostic.Matched = true;
                     return;
@@ -138,10 +152,12 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore
             ExpectedDiagnosticModel expectedDiagnostic,
             int actualLine,
             int actualCharacterPosition,
-            DiagnosticSeverity diagnosticSeverity)
+            Diagnostic diagnostic,
+            string expectedDiagnosticId)
         {
             return actualSpan.Path.EndsWith(expectedDiagnostic.FilePath)
-                   && expectedDiagnostic.Severity == diagnosticSeverity
+                   && expectedDiagnostic.Severity == diagnostic.Severity
+                   && expectedDiagnosticId == diagnostic.Id
                    && expectedDiagnostic.LineNumber == actualLine
                    && expectedDiagnostic.CharacterPosition == actualCharacterPosition;
         }

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.Analyzer.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -85,42 +86,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
             return false;
         }
 
-        private static bool IsDefinedByOverridenMethodOrInterface(SemanticModel semanticModel, MethodDeclarationSyntax method)
-        {
-            // it's a method
-            var methodSymbol = semanticModel.GetDeclaredSymbol(method);
-            if (methodSymbol is not null)
-            {
-                // Check if it overrides something from a base class
-                if (methodSymbol.IsOverride)
-                {
-                    return true;
-                }
-
-                if (methodSymbol.ExplicitInterfaceImplementations.Length > 0)
-                {
-                    return true;
-                }
-
-                // Check if it implements interface methods
-                var implementedInterfaces = methodSymbol.ContainingType.AllInterfaces;
-
-                foreach (var implemented in implementedInterfaces)
-                {
-                    foreach (var ifaceMember in implemented.GetMembers())
-                    {
-                        var impl = methodSymbol.ContainingType.FindImplementationForInterfaceMember(ifaceMember);
-                        if (SymbolEqualityComparer.Default.Equals(impl, methodSymbol))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
         private void AnalyzeParameter(SyntaxNodeAnalysisContext syntaxNodeAnalysisContext)
         {
             var parameterSyntax = (ParameterSyntax)syntaxNodeAnalysisContext.Node;
@@ -159,7 +124,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
             // This could be a MethodDeclarationSyntax, ConstructorDeclarationSyntax, DelegateDeclarationSyntax, etc.
             if (methodOrCtor is MethodDeclarationSyntax method)
             {
-                if (IsDefinedByOverridenMethodOrInterface(semanticModel, method))
+                if (method.IsDefinedByOverridenMethodOrInterface(semanticModel))
                 {
                     return;
                 }

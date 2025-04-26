@@ -2,6 +2,7 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using Dhgms.GripeWithRoslyn.Analyzer;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.EfCore;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language;
 using Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore;
@@ -14,6 +15,12 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.Language
     /// </summary>
     public sealed class DoNotUseTuplesAnalyzerTests : AbstractAnalyzerTest<DoNotUseTuplesAnalyzer>
     {
+        /// <inheritdoc/>
+        protected override string GetExpectedDiagnosticId()
+        {
+            return DiagnosticIdsHelper.DoNotUseTuples;
+        }
+
         /// <inheritdoc/>
         protected override ExpectedDiagnosticModel[] GetExpectedDiagnosticLines()
         {

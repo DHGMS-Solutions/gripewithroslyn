@@ -41,12 +41,7 @@ namespace Gripe.MSBuildBinLogStats.DotNetTool
             {
                 LogMessageActionsWrapper.StartingHandleCommand();
 
-                var build = BinaryLog.ReadBuild(commandLineArgModel.BinLogPath.FullName);
-
-                var warningCounts = new Dictionary<string, int>();
-                var errorCounts = new Dictionary<string, int>();
-
-                Visit(build, warningCounts, errorCounts);
+                var (warningCounts, errorCounts) = GetStats(commandLineArgModel);
 
                 Console.WriteLine("Warnings:");
                 if (warningCounts.Count == 0)
@@ -77,6 +72,18 @@ namespace Gripe.MSBuildBinLogStats.DotNetTool
 
                 return 0;
             });
+        }
+
+        private static (IDictionary<string, int> Warnings, IDictionary<string, int> Errors) GetStats(CommandLineArgModel commandLineArgModel)
+        {
+            var build = BinaryLog.ReadBuild(commandLineArgModel.BinLogPath.FullName);
+
+            var warningCounts = new Dictionary<string, int>();
+            var errorCounts = new Dictionary<string, int>();
+
+            Visit(build, warningCounts, errorCounts);
+
+            return (warningCounts, errorCounts);
         }
 
         private static void Visit(

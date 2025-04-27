@@ -49,16 +49,30 @@ namespace Gripe.MSBuildBinLogStats.DotNetTool
                 Visit(build, warningCounts, errorCounts);
 
                 Console.WriteLine("Warnings:");
-                foreach (var kvp in warningCounts.OrderBy(kvp => kvp.Key))
+                if (warningCounts.Count == 0)
                 {
-                    Console.WriteLine($"  {kvp.Key}: {kvp.Value}");
+                    Console.WriteLine("  None");
+                }
+                else
+                {
+                    foreach (var kvp in warningCounts.OrderByDescending(kvp => kvp.Value))
+                    {
+                        Console.WriteLine($"  {kvp.Key}: {kvp.Value}");
+                    }
                 }
 
                 Console.WriteLine();
                 Console.WriteLine("Errors:");
-                foreach (var kvp in errorCounts.OrderBy(kvp => kvp.Key))
+                if (errorCounts.Count == 0)
                 {
-                    Console.WriteLine($"  {kvp.Key}: {kvp.Value}");
+                    Console.WriteLine("  None");
+                }
+                else
+                {
+                    foreach (var kvp in errorCounts.OrderByDescending(kvp => kvp.Value))
+                    {
+                        Console.WriteLine($"  {kvp.Key}: {kvp.Value}");
+                    }
                 }
 
                 return 0;

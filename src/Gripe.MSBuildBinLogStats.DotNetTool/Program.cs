@@ -2,12 +2,8 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Abstractions;
-using System.Linq;
-using Microsoft.Build.Logging.StructuredLogger;
+using Gripe.MSBuildBinLogStats.DotNetTool.CommandLine;
 using Whipstaff.CommandLine.Hosting;
 
 namespace Gripe.MSBuildBinLogStats.DotNetTool
@@ -22,7 +18,7 @@ namespace Gripe.MSBuildBinLogStats.DotNetTool
         /// </summary>
         /// <param name="args">Command line arguments.</param>
         /// <returns>0 for success, 1 for failure.</returns>
-        public static int Main(string[] args)
+        public static Task<int> Main(string[] args)
         {
             return HostRunner.RunSimpleCliJob<
                 CommandLineJob,

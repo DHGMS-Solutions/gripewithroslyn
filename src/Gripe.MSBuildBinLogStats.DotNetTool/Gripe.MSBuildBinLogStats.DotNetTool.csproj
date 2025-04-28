@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>gripe-msbuildlogstats</ToolCommandName>
+    <AssemblyName>gripe-msbuildlogstats</AssemblyName>
+    <PackageDescription>dot net tool to produce stats from an MSBuild structured log.</PackageDescription>
+    <NoWarn>NU5104</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSBuild.StructuredLogger" Version="2.2.472" />
+    <PackageReference Include="Whipstaff.CommandLine" Version="8.2.2-beta" />
+  </ItemGroup>
+
+</Project>

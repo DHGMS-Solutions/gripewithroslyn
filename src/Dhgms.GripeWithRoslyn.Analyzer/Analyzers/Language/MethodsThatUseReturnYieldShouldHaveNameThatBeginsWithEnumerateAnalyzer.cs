@@ -66,6 +66,12 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
                 return;
             }
 
+            var semanticModel = context.SemanticModel;
+            if (methodDeclarationSyntax.IsDefinedByOverridenMethodOrInterface(semanticModel))
+            {
+                return;
+            }
+
             var identifier = methodDeclarationSyntax.Identifier;
             if (identifier.Text.StartsWith("Enumerate", StringComparison.OrdinalIgnoreCase))
             {

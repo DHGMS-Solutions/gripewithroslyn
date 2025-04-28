@@ -44,34 +44,29 @@ namespace Gripe.MSBuildBinLogStats.DotNetTool
                 var (warningCounts, errorCounts) = GetStats(commandLineArgModel);
 
                 Console.WriteLine("Warnings:");
-                if (warningCounts.Count == 0)
-                {
-                    Console.WriteLine("  None");
-                }
-                else
-                {
-                    foreach (var kvp in warningCounts.OrderByDescending(kvp => kvp.Value))
-                    {
-                        Console.WriteLine($"  {kvp.Key}: {kvp.Value}");
-                    }
-                }
+                ProduceSummary(warningCounts);
 
                 Console.WriteLine();
                 Console.WriteLine("Errors:");
-                if (errorCounts.Count == 0)
-                {
-                    Console.WriteLine("  None");
-                }
-                else
-                {
-                    foreach (var kvp in errorCounts.OrderByDescending(kvp => kvp.Value))
-                    {
-                        Console.WriteLine($"  {kvp.Key}: {kvp.Value}");
-                    }
-                }
+                ProduceSummary(errorCounts);
 
                 return 0;
             });
+        }
+
+        private static void ProduceSummary(IDictionary<string, int> codesAndCounts)
+        {
+            if (codesAndCounts.Count == 0)
+            {
+                Console.WriteLine("  None");
+            }
+            else
+            {
+                foreach (var kvp in codesAndCounts.OrderByDescending(kvp => kvp.Value))
+                {
+                    Console.WriteLine($"  {kvp.Key}: {kvp.Value}");
+                }
+            }
         }
 
         private static (IDictionary<string, int> Warnings, IDictionary<string, int> Errors) GetStats(CommandLineArgModel commandLineArgModel)

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -6,16 +6,11 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>gripe</ToolCommandName>
-    <AssemblyName>gripe</AssemblyName>
+    <ToolCommandName>gripe-scanner</ToolCommandName>
+    <AssemblyName>gripe-scanner</AssemblyName>
     <PackageDescription>dot net tool to run Gripe Code Analysis.</PackageDescription>
+    <NoWarn>NU5104</NoWarn>
   </PropertyGroup>
-
-  <Target Name="AdjustVersion" DependsOnTargets="GetBuildVersion" AfterTargets="GetBuildVersion">
-    <PropertyGroup>
-      <PackageVersion>$(PackageVersion)-beta</PackageVersion>
-    </PropertyGroup>
-  </Target>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />

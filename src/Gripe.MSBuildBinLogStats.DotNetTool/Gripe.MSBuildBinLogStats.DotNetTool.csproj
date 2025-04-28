@@ -8,6 +8,7 @@
     <ToolCommandName>gripe-msbuildlogstats</ToolCommandName>
     <AssemblyName>gripe-msbuildlogstats</AssemblyName>
     <PackageDescription>dot net tool to produce stats from an MSBuild structured log.</PackageDescription>
+    <NoWarn>NU5104</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

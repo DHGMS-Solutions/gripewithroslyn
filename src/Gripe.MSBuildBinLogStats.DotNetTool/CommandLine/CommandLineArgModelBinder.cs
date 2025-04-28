@@ -5,6 +5,7 @@
 using System;
 using System.CommandLine;
 using System.CommandLine.Binding;
+using System.IO;
 
 namespace Gripe.MSBuildBinLogStats.DotNetTool.CommandLine
 {

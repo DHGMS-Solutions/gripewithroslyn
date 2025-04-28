@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 
 namespace Gripe.MSBuildBinLogStats.DotNetTool.CommandLine
 {

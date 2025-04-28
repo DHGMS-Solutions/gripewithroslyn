@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.IO.Abstractions;
+using System.Threading.Tasks;
 using Gripe.MSBuildBinLogStats.DotNetTool.CommandLine;
 using Whipstaff.CommandLine.Hosting;
 

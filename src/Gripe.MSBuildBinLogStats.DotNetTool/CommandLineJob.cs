@@ -3,7 +3,10 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
+using System.Linq;
+using System.Threading.Tasks;
 using Gripe.MSBuildBinLogStats.DotNetTool.CommandLine;
 using Microsoft.Build.Logging.StructuredLogger;
 using Whipstaff.CommandLine;

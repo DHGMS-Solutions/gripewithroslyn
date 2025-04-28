@@ -2,34 +2,35 @@
 // This file is licensed to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using Microsoft.CodeAnalysis;
 
 namespace Dhgms.GripeWithRoslyn.Analyzer.Extensions
 {
     /// <summary>
-    /// Extensions for <see cref="IMethodSymbol"/>.
+    /// Extensions for <see cref="IPropertySymbol"/>.
     /// </summary>
-    public static class MethodSymbolExtensions
+    public static class PropertySymbolExtensions
     {
         /// <summary>
-        /// Checks if the method is defined by an overridden method or an interface.
+        /// Checks if the property is defined by an overridden property or an interface.
         /// </summary>
-        /// <param name="methodSymbol">Method to check.</param>
+        /// <param name="propertySymbol">Property to check.</param>
         /// <returns>Whether the method is defined by an overridden method or an interface.</returns>
-        public static bool IsDefinedByOverridenMethodOrInterface(this IMethodSymbol methodSymbol)
+        public static bool IsDefinedByOverridenMethodOrInterface(this IPropertySymbol propertySymbol)
         {
             // Check if it overrides something from a base class
-            if (methodSymbol.IsOverride)
+            if (propertySymbol.IsOverride)
             {
                 return true;
             }
 
-            if (methodSymbol.ExplicitInterfaceImplementations.Length > 0)
+            if (propertySymbol.ExplicitInterfaceImplementations.Length > 0)
             {
                 return true;
             }
 
-            return methodSymbol.ImplementsInterface();
+            return propertySymbol.ImplementsInterface();
         }
     }
 }

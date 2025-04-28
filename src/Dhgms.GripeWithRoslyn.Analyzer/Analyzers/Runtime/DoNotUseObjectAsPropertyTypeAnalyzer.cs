@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using Dhgms.GripeWithRoslyn.Analyzer.CodeCracker.Extensions;
+using Dhgms.GripeWithRoslyn.Analyzer.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -53,10 +54,17 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Runtime
 
         private void AnalyzeParameter(SyntaxNodeAnalysisContext syntaxNodeAnalysisContext)
         {
-            var parameterSyntax = (PropertyDeclarationSyntax)syntaxNodeAnalysisContext.Node;
+            var propertySyntax = (PropertyDeclarationSyntax)syntaxNodeAnalysisContext.Node;
 
             var semanticModel = syntaxNodeAnalysisContext.SemanticModel;
-            var type = parameterSyntax.Type;
+
+            var propertySymbol = semanticModel.GetDeclaredSymbol(propertySyntax);
+            if (propertySymbol is null || propertySymbol.IsDefinedByOverridenMethodOrInterface())
+            {
+                return;
+            }
+
+            var type = propertySyntax.Type;
             if (type == null)
             {
                 return;

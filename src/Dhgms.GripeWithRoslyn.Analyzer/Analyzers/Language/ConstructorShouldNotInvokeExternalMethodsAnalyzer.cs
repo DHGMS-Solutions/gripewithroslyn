@@ -119,9 +119,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
                 }
 
                 if (currentNode is MethodDeclarationSyntax
-                    || currentNode is PropertyDeclarationSyntax
-                    || currentNode is FieldDeclarationSyntax
-                    || currentNode is ClassDeclarationSyntax)
+                        or PropertyDeclarationSyntax
+                        or FieldDeclarationSyntax
+                        or ClassDeclarationSyntax
+                        or SimpleLambdaExpressionSyntax
+                        or ParenthesizedLambdaExpressionSyntax)
                 {
                     // short circuit out
                     break;
@@ -133,11 +135,50 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
             return null;
         }
 
+        private static bool IsPrivateMethodOnSameClass(InvocationExpressionSyntax invocation, SemanticModel semanticModel)
+        {
+            // Step 1: Get the symbol info for the invoked method
+            var symbolInfo = semanticModel.GetSymbolInfo(invocation);
+            var methodSymbol = symbolInfo.Symbol as IMethodSymbol;
+            if (methodSymbol == null)
+            {
+                return false;
+            }
+
+            // Step 2: Check if the method is private
+            if (methodSymbol.DeclaredAccessibility != Accessibility.Private)
+            {
+                return false;
+            }
+
+            // Step 3: Get the enclosing class of the invocation
+            var enclosingClass = invocation.Ancestors().OfType<ClassDeclarationSyntax>().FirstOrDefault();
+            if (enclosingClass == null)
+            {
+                return false;
+            }
+
+            // Step 4: Get the symbol for the enclosing class
+            var classSymbol = semanticModel.GetDeclaredSymbol(enclosingClass);
+            if (classSymbol == null)
+            {
+                return false;
+            }
+
+            // Step 5: Check if the method's containing type is the same as the enclosing class
+            return SymbolEqualityComparer.Default.Equals(methodSymbol.ContainingType, classSymbol);
+        }
+
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
             var node = context.Node;
 
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
+
+            if (IsPrivateMethodOnSameClass(invocationExpression, context.SemanticModel))
+            {
+                return;
+            }
 
             if (GetInheritsFromBaseClassThatShouldBeIgnored(context, invocationExpression))
             {

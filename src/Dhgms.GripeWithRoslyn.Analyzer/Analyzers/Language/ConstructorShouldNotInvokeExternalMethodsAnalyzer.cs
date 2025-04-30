@@ -135,17 +135,14 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
             return null;
         }
 
-        private static bool IsPrivateMethodOnSameClass(InvocationExpressionSyntax invocation, SemanticModel semanticModel)
+        private static bool IsPrivateMethodOnSameClass(InvocationExpressionSyntax invocation, SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration)
         {
-            // Step 1: Get the symbol info for the invoked method
             var symbolInfo = semanticModel.GetSymbolInfo(invocation);
-            var methodSymbol = symbolInfo.Symbol as IMethodSymbol;
-            if (methodSymbol == null)
+            if (symbolInfo.Symbol is not IMethodSymbol methodSymbol)
             {
                 return false;
             }
 
-            // Step 2: Check if the method is private
             if (methodSymbol.DeclaredAccessibility != Accessibility.Private)
             {
                 return false;
@@ -158,8 +155,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
                 return false;
             }
 
-            // Step 4: Get the symbol for the enclosing class
-            var classSymbol = semanticModel.GetDeclaredSymbol(enclosingClass);
+            var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
             if (classSymbol == null)
             {
                 return false;
@@ -175,7 +171,16 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
 
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
-            if (IsPrivateMethodOnSameClass(invocationExpression, context.SemanticModel))
+            var parentMethodDeclaration = GetConstructorDeclarationSyntax(invocationExpression);
+
+            if (parentMethodDeclaration == null)
+            {
+                return;
+            }
+
+            var classDeclaration = parentMethodDeclaration.Ancestors().OfType<ClassDeclarationSyntax>().FirstOrDefault();
+
+            if (IsPrivateMethodOnSameClass(invocationExpression, context.SemanticModel, classDeclaration))
             {
                 return;
             }
@@ -186,13 +191,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
             }
 
             if (GetIsWhitelistedMethod(context, invocationExpression))
-            {
-                return;
-            }
-
-            var parentMethodDeclaration = GetConstructorDeclarationSyntax(invocationExpression);
-
-            if (parentMethodDeclaration == null)
             {
                 return;
             }

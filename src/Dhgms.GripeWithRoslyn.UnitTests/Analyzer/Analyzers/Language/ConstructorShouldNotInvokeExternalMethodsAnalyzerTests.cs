@@ -4,6 +4,7 @@
 
 using Dhgms.GripeWithRoslyn.Analyzer;
 using Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language;
+using Dhgms.GripeWithRoslyn.UnitTests.Analyzer.Analyzers.EfCore;
 using Dhgms.GripeWithRoslyn.UnitTests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -15,94 +16,37 @@ namespace Dhgms.GripeWithRoslyn.UnitTests.Analyzers.Language
     /// <summary>
     /// Unit Tests for checking if a Constructor invokes external methods.
     /// </summary>
-    public sealed class ConstructorShouldNotInvokeExternalMethodsAnalyzerTests : CodeFixVerifier
+    public sealed class ConstructorShouldNotInvokeExternalMethodsAnalyzerTests : AbstractAnalyzerTest<ConstructorShouldNotInvokeExternalMethodsAnalyzer>
     {
-        /// <summary>
-        /// Test to ensure bad code returns a warning.
-        /// </summary>
-        [Fact]
-        public void ReturnsWarning()
+        /// <inheritdoc/>
+        protected override string GetExpectedDiagnosticId()
         {
-            const string test = @"
-    namespace TestConsole
-    {
-        public class TestObject
-        {
-            public TestObject()
-            {
-                SomeMethod();
-            }
-
-            private static void SomeMethod()
-            {
-            }
-        }
-    }";
-
-            var expected = new DiagnosticResult
-            {
-                Id = DiagnosticIdsHelper.ConstructorShouldNotInvokeExternalMethods,
-                Message = ConstructorShouldNotInvokeExternalMethodsAnalyzer.Title,
-                Severity = DiagnosticSeverity.Warning,
-                Locations =
-                    new[]
-                    {
-                        new DiagnosticResultLocation("Test0.cs", 8, 17)
-                    }
-            };
-
-            VerifyCSharpDiagnostic(test, expected);
+            return DiagnosticIdsHelper.ConstructorShouldNotInvokeExternalMethods;
         }
 
-        /// <summary>
-        /// Test to ensure good code doesn't return a warning.
-        /// </summary>
-        [Fact]
-        public void ReturnsNoWarning()
+        /// <inheritdoc/>
+        protected override ExpectedDiagnosticModel[] GetExpectedDiagnosticLines()
         {
-            const string test = @"
-    namespace TestConsole
-    {
-        public class TestObject
-        {
-            private readonly int _someField = SomeMethod2();
+            const string TupleProofFilePath = "Language\\ConstructorExternalMethodInvocationProof.cs";
 
-            public TestObject(string name)
-            {
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    throw new ArgumentNullException(nameof(name));
-                }
-            }
-
-            private int Property
-            {
-                get
-                {
-                    // horrid test
-                    return SomeMethod2();
-                }
-            }
-
-            private static int SomeMethod()
-            {
-                return SomeMethod2();
-            }
-
-            private static int SomeMethod2()
-            {
-                return 0;
-            }
-        }
-    }";
-
-            VerifyCSharpDiagnostic(test);
-        }
-
-        /// <inheritdoc />
-        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
-        {
-            return new ConstructorShouldNotInvokeExternalMethodsAnalyzer();
+            return
+            [
+                new ExpectedDiagnosticModel(
+                    TupleProofFilePath,
+                    DiagnosticSeverity.Error,
+                    32,
+                    16),
+                new ExpectedDiagnosticModel(
+                    TupleProofFilePath,
+                    DiagnosticSeverity.Error,
+                    38,
+                    12),
+                new ExpectedDiagnosticModel(
+                    TupleProofFilePath,
+                    DiagnosticSeverity.Error,
+                    43,
+                    12),
+            ];
         }
     }
 }

@@ -119,9 +119,11 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
                 }
 
                 if (currentNode is MethodDeclarationSyntax
-                    || currentNode is PropertyDeclarationSyntax
-                    || currentNode is FieldDeclarationSyntax
-                    || currentNode is ClassDeclarationSyntax)
+                        or PropertyDeclarationSyntax
+                        or FieldDeclarationSyntax
+                        or ClassDeclarationSyntax
+                        or SimpleLambdaExpressionSyntax
+                        or ParenthesizedLambdaExpressionSyntax)
                 {
                     // short circuit out
                     break;
@@ -133,11 +135,55 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
             return null;
         }
 
+        private static bool IsPrivateMethodOnSameClass(InvocationExpressionSyntax invocation, SemanticModel semanticModel, ClassDeclarationSyntax classDeclaration)
+        {
+            var symbolInfo = semanticModel.GetSymbolInfo(invocation);
+            if (symbolInfo.Symbol is not IMethodSymbol methodSymbol)
+            {
+                return false;
+            }
+
+            if (methodSymbol.DeclaredAccessibility != Accessibility.Private)
+            {
+                return false;
+            }
+
+            // Step 3: Get the enclosing class of the invocation
+            var enclosingClass = invocation.Ancestors().OfType<ClassDeclarationSyntax>().FirstOrDefault();
+            if (enclosingClass == null)
+            {
+                return false;
+            }
+
+            var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
+            if (classSymbol == null)
+            {
+                return false;
+            }
+
+            // Step 5: Check if the method's containing type is the same as the enclosing class
+            return SymbolEqualityComparer.Default.Equals(methodSymbol.ContainingType, classSymbol);
+        }
+
         private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
             var node = context.Node;
 
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
+
+            var parentMethodDeclaration = GetConstructorDeclarationSyntax(invocationExpression);
+
+            if (parentMethodDeclaration == null)
+            {
+                return;
+            }
+
+            var classDeclaration = parentMethodDeclaration.Ancestors().OfType<ClassDeclarationSyntax>().FirstOrDefault();
+
+            if (IsPrivateMethodOnSameClass(invocationExpression, context.SemanticModel, classDeclaration))
+            {
+                return;
+            }
 
             if (GetInheritsFromBaseClassThatShouldBeIgnored(context, invocationExpression))
             {
@@ -145,13 +191,6 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Language
             }
 
             if (GetIsWhitelistedMethod(context, invocationExpression))
-            {
-                return;
-            }
-
-            var parentMethodDeclaration = GetConstructorDeclarationSyntax(invocationExpression);
-
-            if (parentMethodDeclaration == null)
             {
                 return;
             }

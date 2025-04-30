@@ -50,6 +50,11 @@ namespace Dhgms.GripeWithRoslyn.Testing.Language
         /// <summary>
         /// A public method to test the analyzer.
         /// </summary>
+        /// <example>
+        /// <code>
+        /// ConstructorExternalMethodInvocationProof.SomePublicStaticMethod();
+        /// </code>
+        /// </example>
         public static void SomePublicStaticMethod()
         {
         }
@@ -57,6 +62,11 @@ namespace Dhgms.GripeWithRoslyn.Testing.Language
         /// <summary>
         /// A public method to test the analyzer.
         /// </summary>
+        /// <example>
+        /// <code>
+        /// ConstructorExternalMethodInvocationProof.SomePublicMethod();
+        /// </code>
+        /// </example>
         public void SomePublicMethod()
         {
             if (_lazyLambaTestShouldNotRaise.IsValueCreated)

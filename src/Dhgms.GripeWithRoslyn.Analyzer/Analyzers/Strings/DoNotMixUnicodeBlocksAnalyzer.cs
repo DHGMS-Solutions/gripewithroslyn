@@ -63,6 +63,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer.Analyzers.Strings
                 UnicodeRanges.Arabic,
                 UnicodeRanges.Hebrew,
                 UnicodeRanges.GreekandCoptic,
+                UnicodeRanges.Javanese
             };
 
             var usedRanges = new HashSet<UnicodeRange>();

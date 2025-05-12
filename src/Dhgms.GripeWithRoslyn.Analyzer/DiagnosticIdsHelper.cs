@@ -107,5 +107,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string UseFileProviderOverload => "GR0050";
 
         internal static string PublicMethodsShouldHaveDocumentedCodeExamples => "GR0051";
+
+        internal static string DoNotMixUnicodeBlocks => "GR0052";
     }
 }

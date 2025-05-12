@@ -29,5 +29,7 @@ namespace Dhgms.GripeWithRoslyn.Analyzer
         internal static string ProjectShouldEnableNullableReferenceTypes() => $"Project should enable Nullable Reference Types. This is to aid with code correctness and to avoid null reference exceptions.";
 
         internal static string DoNotUseTuples() => $"Do not use Tuples. Consider the use of Record types or Classes. This allows for easier to read and more sustainable code.";
+
+        internal static string DoNotMixUnicodeBlocks() => $"Avoid mixing characters from different scripts (e.g., Latin and Cyrillic) in the same string literal.";
     }
 }
